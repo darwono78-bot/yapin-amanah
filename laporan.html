@@ -347,6 +347,102 @@
     <a href="laporan.html" class="active">Laporan Keuangan</a>
     <a href="donatur YAPIN.html">Donatur YAPIN</a>
   </nav>
+<section id="laporan-terbaru-section" class="section" style="display:none;">
+      <h2>Daftar Transaksi Bulan Ini (Input Instan)</h2>
+      <table id="laporan-terbaru">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Keterangan</th>
+            <th>Dana Masuk</th>
+            <th>Dana Keluar</th>
+            <th>Saldo</th>
+            <th class="admin-only" style="display: none;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          </tbody>
+        <tfoot>
+            <tr style="background: rgba(255, 215, 0, 0.4); font-weight: bold;">
+                <td colspan="3" style="text-align: right;">TOTAL SALDO AKHIR:</td>
+                <td id="total-masuk">Rp 0</td>
+                <td id="total-keluar">Rp 0</td>
+                <td id="saldo-akhir">Rp 0</td>
+                <td class="admin-only" style="display: none;"></td>
+            </tr>
+        </tfoot>
+      </table>
+</section>
+
+
+<section class="section login-section" id="loginArea">
+    <h2>Login Admin Laporan Keuangan</h2>
+    <p style="text-align: center; color: #fff; margin-bottom: 25px;">
+        Masukkan password untuk mengakses kolom input data laporan.
+    </p>
+    
+    <div style="text-align: center;">
+        <input type="password" id="adminPassword" placeholder="Masukkan Password Admin" style="
+            width: 70%; 
+            max-width: 300px;
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #ffd700;
+            background-color: rgba(0, 50, 0, 0.7);
+            color: #fff; 
+            margin-bottom: 20px;
+        ">
+        <button type="button" class="btn" onclick="checkPassword()" style="border: none; cursor: pointer; margin-top: 0;">Login</button>
+    </div>
+</section>
+
+<section class="section form-section" id="inputForm" style="display:none;">
+    
+    <div style="text-align: right; margin-bottom: 20px;">
+        <button id="logout-button-2" class="btn" style="background-color: #dc3545; color: white; margin-top: 0; padding: 8px 15px;">Logout Admin</button>
+    </div>
+
+    <h2>Input Data Laporan Keuangan</h2>
+    <p style="text-align: center; color: #f8d77b; margin-bottom: 25px;">
+        Data yang diinput akan disimpan secara **lokal** (di browser Anda) dan tampil di bawah.
+    </p>
+    
+    <form id="laporan-form">
+      <p>
+        <label for="f_nomor">Nomor:</label>
+        <input type="number" name="nomor" id="f_nomor" min="1" required>
+      </p>
+      <p>
+        <label for="f_tanggal">Tanggal:</label>
+        <input type="date" name="tanggal" id="f_tanggal" required>
+      </p>
+      <p>
+        <label for="f_keterangan">Keterangan:</label>
+        <textarea name="keterangan" id="f_keterangan" rows="2" required></textarea>
+      </p>
+      <div style="display: flex; gap: 20px;">
+          <p style="flex: 1;">
+            <label for="f_masuk">Dana Masuk (Rp):</label>
+            <input type="number" name="dana_masuk" id="f_masuk" value="0">
+          </p>
+          <p style="flex: 1;">
+            <label for="f_keluar">Dana Keluar (Rp):</label>
+            <input type="number" name="dana_keluar" id="f_keluar" value="0">
+          </p>
+      </div>
+
+      <p style="text-align: center; margin-top: 20px;">
+        <button type="submit" class="btn" id="submit-btn">Tambah Data Laporan</button>
+        <button type="button" class="btn" style="display: none;" id="update-btn">Simpan Perubahan</button>
+      </p>
+    </form>
+    <div class="action-buttons">
+        <button id="reset-button" class="reset-btn">RESET LAPORAN BULAN BARU</button>
+        <button id="unduh-pdf-button" class="btn" style="margin-left: 10px;">Unduh Laporan PDF (Template)</button>
+    </div>
+</section>
+
 <section class="section">
     <h2>Laporan Keuangan Yayasan (Data Lama)</h2>
     <table>
@@ -656,5 +752,4 @@
     window.checkPassword = checkPassword;
   </script>
 </body>
-
 </html>
