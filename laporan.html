@@ -5,31 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Laporan Keuangan | Yayasan Pendidikan Islam Nurul Huda</title>
   <style>
-    /* --- CSS GLOBAL DAN STRUKTUR (DARI KODE ASLI) --- */
     * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
-    scroll-behavior: smooth;
-  }
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+      scroll-behavior: smooth;
+    }
 
-  body {
-    background:
-      linear-gradient(rgba(0, 40, 0, 0.85), rgba(0, 40, 0, 0.85)),
-      url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #fff;
-    overflow-x: hidden;
-  }
+    body {
+      background:
+        linear-gradient(rgba(0, 40, 0, 0.85), rgba(0, 40, 0, 0.85)),
+        url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      overflow-x: hidden;
+    }
 
-  header {
-    position: relative;
-    background: rgba(0, 60, 0, 0.9);
-    text-align: center;
-    padding: 25px 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  }
+    header {
+      position: relative;
+      background: rgba(0, 60, 0, 0.9);
+      text-align: center;
+      padding: 25px 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
 
     header img {
       width: 150px;
@@ -57,209 +56,104 @@
     .atas-kiri { top: 5px; left: 5px; transform: rotate(0deg); }
     .atas-kanan { top: 5px; right: 5px; transform: scaleX(-1); }
     .bawah-kiri { bottom: 5px; left: 5px; transform: scaleY(-1); }
-    .bawah-kanan { bottom: 5px; right: 5px; transform: rotate(180deg); }    
-    
-    nav {
-    background: rgba(0, 80, 0, 0.9);
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 10px 0;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-  }
+    .bawah-kanan { bottom: 5px; right: 5px; transform: rotate(180deg); }    nav {
+      background: rgba(0, 80, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 10px 0;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
 
-  nav a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 8px 18px;
-    margin: 5px;
-    border-radius: 25px;
-    transition: all 0.3s ease;
-  }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 18px;
+      margin: 5px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
 
-  nav a:hover, nav a.active {
-    background-color: #ffd700;
-    color: #004000;
-    transform: scale(1.05);
-  }
+    nav a:hover, nav a.active {
+      background-color: #ffd700;
+      color: #004000;
+      transform: scale(1.05);
+    }
 
-  .section {
-    background: rgba(0, 45, 0, 0.93);
-    margin: 50px auto;
-    width: 90%;
-    max-width: 900px;
-    padding: 40px;
-    border-radius: 20px;
-    border: 1.8px solid rgba(255, 215, 0, 0.6);
-    box-shadow:
-      0 0 25px rgba(255, 215, 0, 0.4),
-      0 0 35px rgba(255, 215, 0, 0.2),
-      inset 0 0 25px rgba(255, 215, 0, 0.25);
-    text-align: center;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 1s ease;
-  }
-  .section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    .section {
+      background: rgba(0, 45, 0, 0.93);
+      margin: 50px auto;
+      width: 90%;
+      max-width: 900px;
+      padding: 40px;
+      border-radius: 20px;
+      border: 1.8px solid rgba(255, 215, 0, 0.6);
+      box-shadow:
+        0 0 25px rgba(255, 215, 0, 0.4),
+        0 0 35px rgba(255, 215, 0, 0.2),
+        inset 0 0 25px rgba(255, 215, 0, 0.25);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s ease;
+    }
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-  h2 {
-    color: #ffd700;
-    margin-bottom: 25px;
-    font-size: 1.8em;
-    text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
-  }
+    h2 {
+      color: #ffd700;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+      text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
+    }
 
-  /* Blok Table Umum: Tambahkan table-layout: fixed; */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    overflow: hidden;
-    table-layout: fixed; /* KUNCI: Memastikan lebar kolom dihormati */
-  }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
-  /* Blok TH dan TD Umum: Text-align: center; adalah sumber konflik */
-  th, td {
-    padding: 12px 10px;
-    text-align: center; /* Aturan umum untuk rata tengah */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-  }
+    th, td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-  th {
-    background: rgba(255, 215, 0, 0.2);
-    color: #ffd700;
-    font-weight: 700;
-  }
+    th {
+      background: rgba(255, 215, 0, 0.2);
+      color: #ffd700;
+      font-weight: 700;
+    }
 
-  /* KOREKSI LEBAR KOLOM UNTUK LAPORAN KEGIATAN */
-/* PERBAIKAN LEBAR KOLOM NOMOR (Kolom ke-1) */
-.section table th:nth-child(1),
-.section table td:nth-child(1) {
-  width: 50px; /* Menyempitkan kolom Nomor */
-  min-width: 40px;
-  text-align: center; 
-}
+    tr:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transition: 0.3s;
+    }
 
-/* PERBAIKAN LEBAR KOLOM TANGGAL (Kolom ke-2) */
-.section table th:nth-child(2),
-.section table td:nth-child(2) {
-  width: 120px; /* Memberi lebar yang cukup */
-  min-width: 100px;
-  white-space: nowrap; /* Mencegah tanggal tumpuk */
-  text-align: center; 
-}
-
-/* PERBAIKAN LEBAR KOLOM AKSI (Kolom ke-7) */
-.section table th:last-child,
-.section table td:last-child {
-  /* Diperkecil dari 120px */
-  width: 100px; 
-  min-width: 90px;
-  text-align: center; 
-  white-space: nowrap;
-}
-/* ------------------------------------------------------------------- */
-
-  tr:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transition: 0.3s;
-  }
-
-  .btn {
-    display: inline-block;
-    margin-top: 25px;
-    padding: 10px 25px;
-    background:linear-gradient(145deg,#ffd700,#c9a000);
-    color: #004000;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.3s;
-    box-shadow: 0 0 12px rgba(248, 215, 123, 0.4);
-    border: none;
-    cursor: pointer;
+    .btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 10px 25px;
+      background: #ffd700;
+      color: #004000;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+      box-shadow: 0 0 12px rgba(248, 215, 123, 0.4);
     }
 
     .btn:hover {
-      transform:scale(1.05);
-      box-shadow:0 0 15px rgba(255,215,0,0.7);
+      background: #fff799;
+      transform: scale(1.05);
     }
 
-    /* --- Form Styling --- */
-    .form-section {
-        background: rgba(0, 45, 0, 0.93);
-        padding: 30px;
-        margin-bottom: 30px;
-        border-radius: 15px;
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-    }
-    
-    .form-section form p {
-        margin-bottom: 15px;
-        text-align: left;
-    }
-    .form-section form label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 600;
-        color: #fff;
-    }
-    .form-section form input[type="text"], 
-    .form-section form input[type="date"],
-    .form-section form input[type="number"],
-    .form-section form textarea {
-        width: 100%; 
-        padding: 10px; 
-        border-radius: 8px; 
-        border: 1px solid #ffd700;
-        background-color: rgba(0, 50, 0, 0.7);
-        color: #fff;
-    }
-    .form-section form input:focus, .form-section form textarea:focus {
-        outline: none;
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
-    }
-
-    /* --- Tombol Aksi (Edit/Hapus/Reset) --- */
-    .action-buttons {
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        white-space: nowrap; 
-    }
-    
-    /* MODIFIKASI UKURAN TOMBOL AKSI DI DALAM TABEL */
-    .action-buttons button {
-        padding: 4px 4px; /* Lebih kecil */
-        margin: 2px;      /* Lebih rapat */
-        border: none;
-        border-radius: 6px; /* Radius lebih kecil */
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 0.8em; /* Font lebih kecil */
-        transition: 0.3s;
-        display: inline-block; 
-    }
-    
-    .action-buttons .edit-btn { background-color: #007bff; color: white; }
-    .action-buttons .hapus-btn { background-color: #dc3545; color: white; }
-    .action-buttons .reset-btn { 
-        background-color: #ffc107; 
-        color: #343a40; 
-        padding: 8px 12px; /* Dikecualikan, agar tombol Reset tetap besar */
-        font-size: 0.9em;
-    }
-    .action-buttons button:hover { opacity: 0.8; transform: scale(1.02); }
-    
-    
-    /* --- Footer & Floating Buttons --- */
     footer {
       background: rgba(0, 60, 0, 0.85);
       text-align: center;
@@ -269,45 +163,49 @@
       box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
       border-top: 1.5px solid rgba(248, 215, 123, 0.3);
     }
-    .floating-buttons {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 1000;
-    }
-    .floating-buttons a {
-      text-decoration: none;
-      padding: 10px 18px;
-      border-radius: 25px;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-      font-weight: 600;
-      font-size: 0.95em;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .floating-buttons a:first-child {
-      background: linear-gradient(135deg, #009900, #00cc00);
-      color: #fff;
-    }
-    .floating-buttons a.email {
-      background: linear-gradient(135deg, #e6b800, #ffcc00);
-      color: #004000;
-    }
-    .floating-buttons a:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
-    }
 
-    /* --- Keyframes --- */
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  /* --- Tombol Melayang WhatsApp & Email --- */
+  .floating-buttons {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+
+  .floating-buttons a {
+    background: linear-gradient(135deg, #009900, #00cc00);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 25px;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    font-weight: 600;
+    font-size: 0.95em;
+    transition: all 0.3s ease;
+  }
+
+  .floating-buttons a.email {
+    background: linear-gradient(135deg, #e6b800, #ffcc00);
+    color: #004000;
+  }
+
+  .floating-buttons a:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
+  }
+
   </style>
 </head>
 <body>
@@ -319,7 +217,7 @@
 
     <img src="logo yayasan.png" alt="Logo Yayasan">
     <h1>Yayasan Pendidikan Islam Nurul Huda ( YAPIN )</h1>
-</header>
+  </header>
 <div style="
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -337,6 +235,14 @@
     font-weight: bold;
   ">Yakin - Amanah - Profesional - Integritas - Niat Lillah  </span>
 </marquee>
+    </h1>
+    <style>
+      @keyframes glow {
+        from { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
+        to { filter: drop-shadow(0 0 20px rgba(255,215,0,1)); }
+      }
+    </style>
+</header>
 
   <nav>
     <a href="index.html">Beranda</a>
@@ -347,38 +253,10 @@
     <a href="laporan.html" class="active">Laporan Keuangan</a>
     <a href="donatur YAPIN.html">Donatur YAPIN</a>
   </nav>
-<section id="laporan-terbaru-section" class="section" style="display:none;">
-      <h2>Daftar Transaksi Bulan Ini (Input Instan)</h2>
-      <table id="laporan-terbaru">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Tanggal</th>
-            <th>Keterangan</th>
-            <th>Dana Masuk</th>
-            <th>Dana Keluar</th>
-            <th>Saldo</th>
-            <th class="admin-only" style="display: none;">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          </tbody>
-        <tfoot>
-            <tr style="background: rgba(255, 215, 0, 0.4); font-weight: bold;">
-                <td colspan="3" style="text-align: right;">TOTAL SALDO AKHIR:</td>
-                <td id="total-masuk">Rp 0</td>
-                <td id="total-keluar">Rp 0</td>
-                <td id="saldo-akhir">Rp 0</td>
-                <td class="admin-only" style="display: none;"></td>
-            </tr>
-        </tfoot>
-      </table>
-</section>
 
+  <section class="section">
+    <h2>Laporan Keuangan Yayasan</h2>
 
-
-<section class="section">
-    <h2>Laporan Keuangan Yayasan (Data Lama)</h2>
     <table>
       <thead>
         <tr>
@@ -390,301 +268,143 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>01/11/2025</td><td>Saldo bulan Oktober 2025</td><td>8.150.000</td><td>-</td><td>8.150.000</td></tr>
-        <tr><td>01/11/2025</td><td>Takziyah di Orang Tua Siswa Madin</td><td>-</td><td>85.000</td><td>8.065.000</td></tr>
-        <tr><td>03/11/2025</td><td>Takziyah</td><td>-</td><td>200.000</td><td>7.865.000</td></tr>
-        <tr><td>03/11/2025</td><td>Jenguk Orang sakit</td><td>-</td><td>200.000</td><td>7.665.000</td></tr>
-       <tr><td>03/11/2025</td><td>Beli alat Tulis Bendahara</td><td>-</td><td>32.000</td><td>7.633.000</td></tr>
-       <tr><td>04/11/2025</td><td>Bayar Bisyaroh Guru dan TU</td><td>-</td><td>1.900.000</td><td>5.733.000</td></tr>
-       <tr><td>04/11/2025</td><td>Beli Gembok kotak amal</td><td>-</td><td>100.000</td><td>5.633.000</td></tr>
-       <tr><td>04/11/2025</td><td>kurangan beli gula untuk takziyah</td><td>-</td><td>20.000</td><td>5.613.000</td></tr>
-       <tr><td>04/11/2025</td><td>servis laptop</td><td>-</td><td>400.000</td><td>5.213.000</td></tr>
-       <tr><td>04/11/2025</td><td>Bayar Listrik</td><td>-</td><td>60.000</td><td>5.153.000</td></tr>
-       <tr><td>04/11/2025</td><td>Bayar Wifi</td><td>-</td><td>100.000</td><td>5.053.000</td></tr>
-       <tr><td>04/11/2025</td><td>Bayar Pam</td><td>-</td><td>10.000</td><td>5.043.000</td></tr>
-        <tr><td>07/11/2025</td><td>uang sertivikasi</td><td>3.700.000</td><td>-</td><td>8.743.000</td></tr>
- 	<tr><td>07/11/2025</td><td>Beli Bensin</td><td>-</td><td>100.000</td><td>8.643.000</td></tr>
+        <tr>
+          <td>01/11/2025</td>
+          <td>Saldo bulan Oktober 2025</td>
+          <td>8.150.000</td>
+          <td>-</td>
+          <td>8.150.000</td>
+        </tr>
+        <tr>
+          <td>01/11/2025</td>
+          <td>Takziyah di Orang Tua Siswa Madin</td>
+          <td>-</td>
+          <td>85.000</td>
+          <td>8.065.000</td>
+        </tr>
+        <tr>
+          <td>03/11/2025</td>
+          <td>Takziyah</td>
+          <td>-</td>
+          <td>200.000</td>
+          <td>7.865.000</td>
+        </tr>
+        <tr>
+          <td>03/11/2025</td>
+          <td>Jenguk Orang sakit</td>
+          <td>-</td>
+          <td>200.000</td>
+          <td>7.665.000</td>
+        </tr>
+       <tr>
+          <td>03/11/2025</td>
+          <td>Beli alat Tulis Bendahara</td>
+          <td>-</td>
+          <td>32.000</td>
+          <td>7.633.000</td>
+        </tr>
+       <tr>
+          <td>04/11/2025</td>
+          <td>Bayar Bisyaroh Guru dan TU</td>
+          <td>-</td>
+          <td>1.900.000</td>
+          <td>5.733.000</td>
+        </tr>
+       <tr>
+          <td>04/11/2025</td>
+          <td>Beli Gembok kotak amal</td>
+          <td>-</td>
+          <td>100.000</td>
+          <td>5.633.000</td>
+        </tr>
+       <tr>
+          <td>04/11/2025</td>
+          <td>kurangan beli gula untuk takziyah</td>
+          <td>-</td>
+          <td>20.000</td>
+          <td>5.613.000</td>
+        </tr>
+       <tr>
+          <td>04/11/2025</td>
+          <td>servis laptop</td>
+          <td>-</td>
+          <td>400.000</td>
+          <td>5.213.000</td>
+        </tr>
+       <tr>
+          <td>04/11/2025</td>
+          <td>Bayar Listrik</td>
+          <td>-</td>
+          <td>60.000</td>
+          <td>5.153.000</td>
+        </tr>
+       <tr>
+          <td>04/11/2025</td>
+          <td>Bayar Wifi</td>
+          <td>-</td>
+          <td>100.000</td>
+          <td>5.053.000</td>
+        </tr>
+       <tr>
+          <td>04/11/2025</td>
+          <td>Bayar Pam</td>
+          <td>-</td>
+          <td>10.000</td>
+          <td>5.043.000</td>
+        </tr>
+        <tr>
+          <td>07/11/2025</td>
+          <td>uang sertivikasi</td>
+          <td>3.700.000</td>
+          <td>-</td>
+          <td>8.743.000</td>
+        </tr>
+ 	<tr>
+          <td>07/11/2025</td>
+          <td>Beli Bensin</td>
+          <td>-</td>
+          <td>100.000</td>
+          <td>8.643.000</td>
+        </tr>
+
       </tbody>
     </table>
-    
+
     <a href="https://sites.google.com/view/laporankeuangantransparan" target="_blank" class="btn">
-      Lihat Laporan Lengkap di DI SINI
-    </a>
-    <a href="https://docs.google.com/spreadsheets/d/1DdTczB7j_YhEhSchQEl-1zpi4-QpMYt1/edit?gid=799962566#gid=799962566" target="_blank" class="btn">
-      Laporan Lengkap Oktober 2025
+      🔗 Lihat Laporan Lengkap di DI SINI
+    </a><p>
+  <a href="https://docs.google.com/spreadsheets/d/1DdTczB7j_YhEhSchQEl-1zpi4-QpMYt1/edit?gid=799962566#gid=799962566" target="_blank" class="btn">
+      🔗 Laporan Lengkap Oktober 2025
     </a>
   </section>
-  
-  
-
   <section class="section">
     <h2>Laporan Keuangan Yayasan</h2>
     <p>Berikut ini adalah laporan pertanggungjawaban keuangan Yayasan Pendidikan Islam Nurul Huda untuk bulan Oktober 2025.  
       Laporan ini disusun secara transparan untuk mendukung akuntabilitas pengelolaan dana yayasan.</p>
   <a href="LPJ_Keuangan_Oktober_2025.pdf" target="_blank" class="btn">
-      Unduh Laporan PDF
+      🔗 Unduh Laporan PDF
     </a>
   </section>
-  
-  <footer>
+<p><br>
+
+   </section>
+
+    <footer>
     &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
   </footer>
   <div class="floating-buttons">
-    <a href="https://wa.me/6282324153933" target="_blank">Chat via WA</a>
-    <a href="mailto:info@yayasannurulhuda.or.id" class="email">Kirim Email</a>
+    <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
+    <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
-  
   <script>
-    // ==========================================================
-    // BAGIAN JAVASCRIPT: LOGIKA LAPORAN KEGIATAN
-    // ==========================================================
-    const LOCAL_STORAGE_KEY = 'yapin_laporan_keuangan_data';
-    const ADMIN_PASSWORD = 'adminyapin'; // <<< GANTI PASSWORD INI!
-    const laporanForm = document.getElementById('laporan-form');
-    const laporanTableBody = document.querySelector('#laporan-terbaru tbody');
-    const laporanTerbaruSection = document.getElementById('laporan-terbaru-section');
-    
-    // Variabel baru untuk struktur login seragam
-    const loginArea = document.getElementById('loginArea');
-    const inputForm = document.getElementById('inputForm');
-    
-    const totalMasukElement = document.getElementById('total-masuk');
-    const totalKeluarElement = document.getElementById('total-keluar');
-    const saldoAkhirElement = document.getElementById('saldo-akhir');
-    const submitBtn = document.getElementById('submit-btn');
-    const updateBtn = document.getElementById('update-btn');
-
-    let isEditing = false;
-    let editingIndex = -1;
-
-    // --- Fungsi Utilitas ---
-    const formatRupiah = (number) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(number);
-    };
-
-    // --- Data Management ---
-    const loadData = () => {
-        const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-        return data ? JSON.parse(data) : [];
-    };
-
-    const saveData = (data) => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-    };
-    
-    // --- Render Table ---
-    const renderTable = () => {
-        // Sortir data berdasarkan tanggal/nomor
-        const data = loadData().sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal) || a.nomor - b.nomor);
-        laporanTableBody.innerHTML = '';
-        
-        let saldo = 0;
-        let totalMasuk = 0;
-        let totalKeluar = 0;
-        
-        const isAdmin = localStorage.getItem('is_admin_logged_in') === 'true';
-
-        if (data.length > 0) {
-            laporanTerbaruSection.style.display = 'block';
-        } else {
-            laporanTerbaruSection.style.display = 'none';
-        }
-
-        data.forEach((item, index) => {
-            const masuk = parseFloat(item.dana_masuk) || 0;
-            const keluar = parseFloat(item.dana_keluar) || 0;
-            
-            saldo += masuk - keluar;
-            totalMasuk += masuk;
-            totalKeluar += keluar;
-
-            const row = laporanTableBody.insertRow();
-            row.classList.add('unsynced-row');
-            
-            row.innerHTML = `
-                <td>${item.nomor}</td>
-                <td>${item.tanggal}</td>
-                <td style="text-align: left;">${item.keterangan}</td>
-                <td style="color: #6eff6e;">${formatRupiah(masuk)}</td>
-                <td style="color: #ff6e6e;">${formatRupiah(keluar)}</td>
-                <td>${formatRupiah(saldo)}</td>
-                <td class="admin-only action-buttons" style="display: ${isAdmin ? '' : 'none'};">
-                    <button class="edit-btn" data-index="${index}">Edit</button>
-                    <button class="hapus-btn" data-index="${index}">Hapus</button>
-                </td>
-            `;
-        });
-        
-        // Update Total dan Saldo Akhir
-        totalMasukElement.textContent = formatRupiah(totalMasuk);
-        totalKeluarElement.textContent = formatRupiah(totalKeluar);
-        saldoAkhirElement.textContent = formatRupiah(saldo);
-
-        // Tampilkan/Sembunyikan kolom Admin di footer tabel
-        document.querySelectorAll('#laporan-terbaru .admin-only').forEach(el => {
-            el.style.display = isAdmin ? '' : 'none';
-        });
-    };
-
-    // --- Handle Form Submission (Tambah/Update Data) ---
-    laporanForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Cek login sebelum submit
-        if (localStorage.getItem('is_admin_logged_in') !== 'true') {
-             alert('Akses ditolak. Silakan Login Admin terlebih dahulu.');
-             return;
-        }
-        
-        const data = loadData();
-        
-        const newItem = {
-            nomor: document.getElementById('f_nomor').value,
-            tanggal: document.getElementById('f_tanggal').value,
-            keterangan: document.getElementById('f_keterangan').value,
-            dana_masuk: document.getElementById('f_masuk').value,
-            dana_keluar: document.getElementById('f_keluar').value,
-        };
-
-        if (isEditing && editingIndex !== -1) {
-            // Update mode
-            data[editingIndex] = newItem;
-            isEditing = false;
-            editingIndex = -1;
-            submitBtn.style.display = 'inline-block';
-            updateBtn.style.display = 'none';
-        } else {
-            // Add mode
-            data.push(newItem);
-        }
-
-        saveData(data);
-        renderTable();
-        laporanForm.reset();
-        document.getElementById('f_masuk').value = 0; // Reset nilai default
-        document.getElementById('f_keluar').value = 0;
-        alert('Data Laporan berhasil disimpan secara lokal!');
+    const sections = document.querySelectorAll('.section');
+    window.addEventListener('scroll', () => {
+      const triggerBottom = window.innerHeight * 0.85;
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if(sectionTop < triggerBottom) section.classList.add('visible');
+      });
     });
-
-    // --- Handle Edit/Delete Button Clicks ---
-    laporanTableBody.addEventListener('click', (e) => {
-        if (localStorage.getItem('is_admin_logged_in') !== 'true') return; // Hanya admin
-
-        const target = e.target;
-        const index = target.getAttribute('data-index');
-        let data = loadData();
-
-        if (target.classList.contains('hapus-btn')) {
-            if (confirm('Yakin ingin menghapus data ini?')) {
-                data.splice(index, 1);
-                saveData(data);
-                renderTable();
-            }
-        } else if (target.classList.contains('edit-btn')) {
-            const item = data[index];
-            document.getElementById('f_nomor').value = item.nomor;
-            document.getElementById('f_tanggal').value = item.tanggal;
-            document.getElementById('f_keterangan').value = item.keterangan;
-            document.getElementById('f_masuk').value = item.dana_masuk;
-            document.getElementById('f_keluar').value = item.dana_keluar;
-            
-            isEditing = true;
-            editingIndex = index;
-            submitBtn.style.display = 'none';
-            updateBtn.style.display = 'inline-block';
-
-            // Scroll ke form input
-            inputForm.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-
-    // --- Handle Reset Button ---
-    document.getElementById('reset-button').addEventListener('click', () => {
-        if (localStorage.getItem('is_admin_logged_in') !== 'true') return;
-        if (confirm('PERINGATAN! Ini akan menghapus SEMUA data Laporan Instan saat ini untuk memulai Laporan Keuangan bulan baru. Pastikan Anda sudah memindahkan data ke Google Sheets/PDF. Lanjutkan?')) {
-            localStorage.removeItem(LOCAL_STORAGE_KEY);
-            renderTable();
-            alert('Data Laporan Keuangan sudah dikosongkan.');
-        }
-    });
-    
-    // --- Handle Unduh PDF (Placeholder) ---
-    document.getElementById('unduh-pdf-button').addEventListener('click', () => {
-        alert('Fitur Unduh PDF (Laporan Instan) hanya menyediakan Template saat ini. Untuk mengunduh data real, silakan salin data dari tabel di bawah ke file Google Sheets/Excel Anda, lalu buat PDF dari sana.');
-    });
-
-
-    // ==========================================================
-    // BAGIAN LOGIC LOGIN/LOGOUT (Gaya Seragam)
-    // ==========================================================
-    
-    function checkPassword() {
-        const inputPassword = document.getElementById('adminPassword').value;
-        
-        if (inputPassword === ADMIN_PASSWORD) {
-            // Jika password benar, sembunyikan area login dan tampilkan form input
-            loginArea.style.display = 'none';
-            inputForm.style.display = 'block';
-            localStorage.setItem('is_admin_logged_in', 'true'); // Gunakan key yang sama
-            alert('Login Berhasil! Kolom input data laporan sudah diaktifkan.');
-            renderTable(); // Render ulang tabel untuk menampilkan kolom Aksi
-        } else {
-            alert('Password Salah. Silakan coba lagi.');
-            document.getElementById('adminPassword').value = ''; // Kosongkan input
-        }
-    }
-    
-    const checkLoginStatus = () => {
-        const isLoggedIn = localStorage.getItem('is_admin_logged_in') === 'true';
-        if (isLoggedIn) {
-            loginArea.style.display = 'none';
-            inputForm.style.display = 'block';
-        } else {
-            loginArea.style.display = 'block';
-            inputForm.style.display = 'none';
-        }
-    };
-    
-    // Inisialisasi dan Logout Event Listener
-    document.addEventListener('DOMContentLoaded', () => {
-        checkLoginStatus(); 
-        
-        // Hanya render tabel data instan jika ada data
-        if (loadData().length > 0) {
-            renderTable();
-        }
-        
-        // Listener untuk tombol Logout di dalam form
-        const logoutButton2 = document.getElementById('logout-button-2');
-        if (logoutButton2) {
-            logoutButton2.addEventListener('click', () => {
-                localStorage.removeItem('is_admin_logged_in');
-                alert('Anda telah Logout.');
-                checkLoginStatus();
-                renderTable(); // Render ulang untuk menyembunyikan kolom Aksi
-            });
-        }
-        
-        // Script untuk animasi scroll (tetap dipertahankan)
-        const sections = document.querySelectorAll('.section');
-        const scrollAnimation = () => {
-          const triggerBottom = window.innerHeight * 0.85;
-          sections.forEach(section => {
-            const sectionTop = section.getBoundingClientRect().top;
-            if(sectionTop < triggerBottom) section.classList.add('visible');
-          });
-        };
-        window.addEventListener('scroll', scrollAnimation);
-        scrollAnimation(); // Jalankan saat load pertama kali
-    });
-    
-    // Agar fungsi checkPassword bisa diakses dari tombol Login (onclick)
-    window.checkPassword = checkPassword;
   </script>
 </body>
 </html>
-
