@@ -270,9 +270,9 @@
     <a href="galeri.html">Galeri</a>
     <a href="kontak.html">Kontak & Donasi</a>
     <a href="laporan.html">Laporan Keuangan</a>
-    <a href="Donatur-YAPIN.html" class="active">Donatur YAPIN</a>
+    <a href="donatur YAPIN.html" class="active">Donatur YAPIN</a>
   </nav>
-<section class="section">
+  <section class="section">
     <h2>List Donatur - Ajakan Berjariyah & Doa untuk para Donatur</h2>
     <p>
       <strong>Terima kasih kepada para dermawan</strong> yang telah menjadi bagian dari perjalanan Yayasan Pendidikan Islam Nurul Huda.  
@@ -439,7 +439,7 @@
 
 <script>
     // GANTI PASSWORD INI dengan password yang Anda inginkan (misalnya: 'yapinadmin2025')
-    const CORRECT_PASSWORD = 'adminyapin';
+    const CORRECT_PASSWORD = 'adminyapin'; //
 
     function checkPassword() {
         const inputPassword = document.getElementById('adminPassword').value;
@@ -452,7 +452,7 @@
             inputForm.style.display = 'block';
             alert('Login Berhasil! Kolom input data donatur sudah diaktifkan.');
             
-            // Opsional: Simpan status login di localStorage agar tidak perlu login lagi
+            // Simpan status login di localStorage agar tidak perlu login lagi
             localStorage.setItem('donaturLoggedIn', 'true');
         } else {
             alert('Password Salah. Silakan coba lagi.');
@@ -469,11 +469,23 @@
         }
     });
 
-    // Catatan: Jika Anda ingin logout, buka Console di browser (F12) dan ketik: localStorage.removeItem('donaturLoggedIn');
+    // FUNGSI BARU UNTUK LOGOUT
+    function logoutAdmin() {
+        // 1. Hapus status login dari penyimpanan browser
+        localStorage.removeItem('donaturLoggedIn');
+        
+        // 2. Sembunyikan form input
+        document.getElementById('inputForm').style.display = 'none';
+        
+        // 3. Tampilkan kembali area login
+        document.getElementById('loginArea').style.display = 'block';
+        
+        // 4. Kosongkan field password
+        document.getElementById('adminPassword').value = '';
+        
+        alert('Anda telah berhasil Logout dan harus login ulang untuk input data.');
+    }
 </script>
 
 </body>
-
 </html>
-
-
