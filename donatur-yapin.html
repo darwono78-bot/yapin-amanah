@@ -360,7 +360,25 @@
             color: #004000;
             border: 1px solid #ffd700;
         }
+        
+        /* CSS Tambahan untuk Modal Edit */
+        .modal-content {
+            background-color: #004000; /* Hijau Tua */
+            margin: 5% auto; 
+            padding: 30px;
+            border: 2px solid #ffd700;
+            width: 80%; 
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
         /* END CSS Tambahan */
+
     </style>
 </head>
 <body>
@@ -417,7 +435,7 @@
                 <th style="width: 30%;">Nama Donatur</th>
                 <th style="width: 30%;">Keterangan</th>
                 <th style="width: 20%;">Jumlah Donasi</th>
-            </tr>
+                </tr>
         </thead>
         <tbody id="donatur-body">
         </tbody>
@@ -470,7 +488,49 @@
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
 </div>
 
+<div id="editModal" style="
+    display: none; 
+    position: fixed; 
+    z-index: 1001; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.7); 
+    padding-top: 50px;
+">
+    <div class="modal-content">
+        <span onclick="closeModal()" style="
+            color: #ffd700; 
+            float: right; 
+            font-size: 28px; 
+            font-weight: bold; 
+            cursor: pointer;
+        ">&times;</span>
+        <h3 style="color: #ffd700; border-bottom: 1px solid #ffd700; padding-bottom: 10px; margin-bottom: 20px;">
+            Edit Data Donatur
+        </h3>
+        
+        <input type="hidden" id="edit-id">
 
+        <label style="color: white; display: block; margin-bottom: 5px; text-align: left;">Tanggal:</label>
+        <input type="date" id="edit-tanggal" required>
+
+        <label style="color: white; display: block; margin-bottom: 5px; text-align: left;">Nama Donatur:</label>
+        <input type="text" id="edit-nama" placeholder="Nama Donatur" required>
+
+        <label style="color: white; display: block; margin-bottom: 5px; text-align: left;">Keterangan:</label>
+        <input type="text" id="edit-keterangan" placeholder="Keterangan" required>
+        
+        <label style="color: white; display: block; margin-bottom: 5px; text-align: left;">Jumlah Donasi (Rp.):</label>
+        <input type="number" id="edit-jumlah" placeholder="Jumlah Donasi (Rp.)" required>
+
+        <button onclick="updateDonation()" class="btn-action" style="margin-top: 20px;">
+            Simpan Perubahan
+        </button>
+    </div>
+</div>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -704,8 +764,9 @@
                 // Tambahkan Kolom Aksi HANYA jika pengurus login
                 if (isLoggedIn) {
                     const actionCell = row.insertCell(5);
+                    // BARIS INI SUDAH DIGANTI AGAR MEMANGGIL openModalForEdit
                     actionCell.innerHTML = `
-                        <button class="aksi-btn" onclick="alert('Fungsi Edit memerlukan popup/modal tambahan.')">Edit</button>
+                        <button class="aksi-btn" onclick="openModalForEdit('${id}')">Edit</button>
                         <button class="aksi-btn" onclick="deleteDonation('${id}')">Hapus</button>
                     `;
                 }
@@ -740,6 +801,64 @@
                 const emptyActionCell = footerRow.insertCell(2);
                 emptyActionCell.textContent = '';
             }
+        });
+    }
+
+    // --- Fungsi untuk membuka Modal Edit dan memuat data ---
+    function openModalForEdit(docId) {
+        // 1. Ambil data dari Firestore
+        db.collection(FINANCE_COLLECTION).doc(docId).get().then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+
+                // 2. Isi formulir modal dengan data yang ada
+                document.getElementById('edit-id').value = docId;
+                document.getElementById('edit-tanggal').value = data.tanggal; // Tanggal dalam format YYYY-MM-DD
+                document.getElementById('edit-nama').value = data.nama;
+                document.getElementById('edit-keterangan').value = data.keterangan;
+                document.getElementById('edit-jumlah').value = data.jumlah;
+
+                // 3. Tampilkan Modal
+                document.getElementById('editModal').style.display = 'block';
+            } else {
+                alert("Dokumen tidak ditemukan!");
+            }
+        }).catch((error) => {
+            alert("Error mengambil data: " + error.message);
+        });
+    }
+
+    // --- Fungsi untuk menutup Modal ---
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    // --- Fungsi untuk menyimpan perubahan ke Firebase ---
+    function updateDonation() {
+        const docId = document.getElementById('edit-id').value;
+        const tanggal = document.getElementById('edit-tanggal').value;
+        const nama = document.getElementById('edit-nama').value;
+        const keterangan = document.getElementById('edit-keterangan').value;
+        const jumlah = parseInt(document.getElementById('edit-jumlah').value) || 0;
+
+        if (!tanggal || !nama || !keterangan || jumlah <= 0) {
+            alert("Semua kolom harus diisi dan Jumlah Donasi harus lebih dari 0!");
+            return;
+        }
+
+        db.collection(FINANCE_COLLECTION).doc(docId).update({
+            tanggal: tanggal,
+            nama: nama,
+            keterangan: keterangan,
+            jumlah: jumlah,
+            // timestamp: tidak diubah agar riwayat tetap terjaga
+        })
+        .then(() => {
+            alert("Data donasi berhasil diperbarui!");
+            closeModal(); // Tutup modal setelah sukses
+        })
+        .catch((error) => {
+            alert("Error memperbarui data: Pastikan Anda login. " + error.message);
         });
     }
 
