@@ -130,12 +130,6 @@
         ::placeholder {
             color: #ccc;
         }
-        select {
-            appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23fff" d="M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 00-1.414-1.414z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-        }
 
         button.btn-action {
             display: inline-block;
@@ -164,6 +158,19 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             background: rgba(0, 0, 0, 0.2);
+            text-align: left; /* Teks di form rata kiri */
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .input-group > div {
+            flex: 1;
+        }
+        .input-group input[type="number"] {
+            margin-bottom: 0;
         }
 
         /* Kustomisasi Tabel untuk Konten Dinamis */
@@ -395,14 +402,17 @@
 
         <div id="input-form">
             <h3>Input Transaksi Baru</h3>
-            <select id="input-type">
-                <option value="">Pilih Jenis Transaksi...</option>
-                <option value="masuk">Dana Masuk</option>
-                <option value="keluar">Dana Keluar</option>
-            </select>
             <input type="date" id="input-tanggal" required>
             <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
-            <input type="number" id="input-jumlah" placeholder="Jumlah (hanya angka)" required>
+            
+            <div class="input-group">
+                <div>
+                    <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
+                </div>
+                <div>
+                    <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
+                </div>
+            </div>
 
             <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
         </div>
@@ -501,18 +511,17 @@
     // -----------------------------------------------------------
 
     function addTransaction() {
-        const type = document.getElementById('input-type').value;
+        // HANYA MENGAMBIL NILAI DARI MASUK DAN KELUAR
         const tanggal = document.getElementById('input-tanggal').value;
         const uraian = document.getElementById('input-uraian').value;
-        const jumlah = parseInt(document.getElementById('input-jumlah').value) || 0;
+        const danaMasuk = parseInt(document.getElementById('input-masuk').value) || 0;
+        const danaKeluar = parseInt(document.getElementById('input-keluar').value) || 0;
 
-        if (!type || !tanggal || !uraian || jumlah <= 0) {
-            alert("Semua field wajib diisi dan Jumlah harus lebih dari 0!");
+        // VALIDASI: Minimal tanggal dan uraian harus diisi, dan salah satu dana harus > 0
+        if (!tanggal || !uraian || (danaMasuk === 0 && danaKeluar === 0)) {
+            alert("Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!");
             return;
         }
-
-        const danaMasuk = type === 'masuk' ? jumlah : 0;
-        const danaKeluar = type === 'keluar' ? jumlah : 0;
 
         db.collection(FINANCE_COLLECTION).add({
             tanggal: tanggal,
@@ -523,10 +532,10 @@
         })
         .then(() => {
             // Bersihkan input setelah disimpan
-            document.getElementById('input-type').value = '';
             document.getElementById('input-tanggal').value = '';
             document.getElementById('input-uraian').value = '';
-            document.getElementById('input-jumlah').value = '';
+            document.getElementById('input-masuk').value = '';
+            document.getElementById('input-keluar').value = '';
             alert("Transaksi berhasil dicatat!");
         })
         .catch((error) => {
@@ -630,7 +639,7 @@
             // Kolom Uraian digabung untuk Label TOTAL
             const totalLabelCell = footerRow.insertCell(0);
             totalLabelCell.colSpan = 3; 
-            totalLabelCell.textContent = 'TOTAL:';
+            totalLabelCell.textContent = 'TOTAL AKHIR:';
             totalLabelCell.style.textAlign = 'right'; 
 
             // Kolom Total Dana Masuk
