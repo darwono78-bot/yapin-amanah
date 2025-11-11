@@ -254,6 +254,7 @@
             font-weight: 600;
             transition: 0.3s;
             box-shadow: 0 0 12px rgba(248, 215, 123, 0.4);
+            border: none;
         }
 
         .btn:hover {
@@ -670,37 +671,81 @@
 
 
     // -----------------------------------------------------------
-    // 4. FUNGSI UNDUH PDF (BISA DIAKSES PUBLIK)
+    // 4. FUNGSI UNDUH PDF (BISA DIAKSES PUBLIK) - VERSI FIX TAMPILAN
     // -----------------------------------------------------------
 
     function downloadPDF() {
+        // Ambil elemen tabel laporan
         const tableToPrint = document.getElementById('laporan-table').cloneNode(true);
 
-        // Hapus kolom Aksi di tabel salinan untuk PDF jika ada (saat admin login)
+        // Hapus kolom Aksi di tabel salinan untuk PDF jika ada
         const lastHeader = tableToPrint.querySelector('thead tr th:last-child');
         if (lastHeader && lastHeader.textContent.trim() === 'Aksi') {
             tableToPrint.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
         }
 
-        // Tambahkan judul laporan di atas tabel
+        // 1. Tambahkan CSS Style untuk Cetak yang Jelas
+        const style = document.createElement('style');
+        style.textContent = `
+            /* Aturan Umum */
+            body, html { margin: 0; padding: 0; }
+            h2, p { color: black; font-family: sans-serif; }
+            h2 { text-align: center; margin-bottom: 5px; }
+            p { text-align: right; font-size: 12px; }
+
+            /* Aturan Tabel */
+            #laporan-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                color: black; /* Teks Hitam */
+                font-size: 11px;
+                border: 1px solid #333; /* Border luar tebal */
+            }
+
+            #laporan-table th, #laporan-table td {
+                padding: 8px 5px;
+                text-align: center;
+                border: 1px solid #666; /* Garis tabel jelas */
+                background: white; /* Latar belakang putih */
+            }
+
+            #laporan-table th {
+                background: #f0f0f0; /* Header agak abu-abu */
+                font-weight: bold;
+                color: #333;
+            }
+            
+            /* Aturan Footer Total */
+            .total-row td {
+                font-weight: bold;
+                background-color: #ffffcc !important; /* Latar kuning muda */
+                color: black;
+                border-top: 2px solid #333;
+            }
+        `;
+
+        // Tambahkan judul dan informasi tanggal
         const header = document.createElement('h2');
         header.textContent = 'LAPORAN KEUANGAN YAYASAN';
-        header.style.textAlign = 'center';
 
         const dateInfo = document.createElement('p');
         dateInfo.textContent = `Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`;
-        dateInfo.style.textAlign = 'right';
 
+        // Masukkan semua elemen (Style, Judul, Tanggal, Tabel) ke dalam satu kontainer
         const element = document.createElement('div');
+        element.appendChild(style);
         element.appendChild(header);
         element.appendChild(dateInfo);
         element.appendChild(tableToPrint);
 
+        // Pengaturan html2pdf
         html2pdf(element, {
             margin: 10,
             filename: 'Laporan_Keuangan_' + new Date().toLocaleDateString('id-ID') + '.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
+            // Skala ditingkatkan untuk gambar/tabel yang lebih tajam
+            html2canvas: { scale: 3, logging: false, useCORS: true }, 
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
         });
     }
