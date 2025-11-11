@@ -327,6 +327,38 @@
             transform: scale(1.05);
             box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
         }
+        
+        /* CSS Tambahan untuk Pagination */
+        .pagination-controls {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pagination-controls button {
+            background-color: rgba(255, 215, 0, 0.2); /* Kuning Emas Transparan */
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        .pagination-controls button:hover {
+            background-color: rgba(255, 215, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        .pagination-controls button.active-page {
+            background-color: #ffd700; /* Warna tombol aktif */
+            color: #004000;
+            border: 1px solid #ffd700;
+        }
+        /* END CSS Tambahan */
     </style>
 </head>
 <body>
@@ -372,7 +404,7 @@
     <h2>Laporan Pertanggungjawaban Keuangan</h2>
 
     <div class="actions" style="text-align: right; margin-bottom: 20px;">
-        <button onclick="downloadPDF()" style="background-color: #008CBA;">Unduh Laporan PDF</button>
+        <button onclick="downloadPDF()" style="background-color: #008CBA;">Unduh Laporan PDF (Data Lengkap)</button>
     </div>
 
     <table id="finance-table">
@@ -392,6 +424,8 @@
             </tfoot>
     </table>
     
+    <div id="pagination-controls" class="pagination-controls">
+        </div>
     <hr style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 30px 0;">
 
     <div id="login-container">
@@ -479,9 +513,63 @@
     // --- Nama Koleksi untuk Laporan Keuangan ---
     const FINANCE_COLLECTION = "laporan"; 
     // ---------------------------------------
+    
+    // =========================================================================
+    // 1. LOGIKA PAGINATION (Pembatasan Baris)
+    // =========================================================================
+    const rowsPerPage = 10; // <<< BATASAN BARIS SUDAH DIUBAH MENJADI 10
+    let allDataRows = []; // Array untuk menyimpan semua baris data DOM (<tr>)
+    let currentPage = 1; // <<< Tambahan untuk melacak halaman saat ini
+    
+    // Fungsi untuk menampilkan halaman
+    function displayTablePage(page) {
+        currentPage = page; // Simpan halaman yang sedang dilihat
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        // Sembunyikan semua baris yang dikelola oleh pagination
+        allDataRows.forEach(row => row.style.display = 'none');
+
+        // Tampilkan hanya baris pada halaman yang dipilih
+        allDataRows.slice(start, end).forEach(row => row.style.display = '');
+
+        // Update status tombol aktif
+        const paginationDiv = document.getElementById('pagination-controls');
+        if(paginationDiv){
+            const buttons = paginationDiv.querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('active-page'));
+            const activeButton = paginationDiv.querySelector(`button[data-page="${page}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active-page');
+            }
+        }
+    }
+
+    // Fungsi untuk menyiapkan tombol pagination
+    function setupPagination() {
+        const totalRows = allDataRows.length;
+        const totalPages = Math.ceil(totalRows / rowsPerPage);
+        const paginationDiv = document.getElementById('pagination-controls');
+        paginationDiv.innerHTML = ''; // Bersihkan kontrol yang lama
+
+        if (totalPages <= 1) return; // Tidak perlu pagination jika hanya 1 halaman
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement('button');
+            button.innerText = i;
+            button.setAttribute('data-page', i);
+            button.addEventListener('click', () => displayTablePage(i));
+            paginationDiv.appendChild(button);
+        }
+
+        // Tampilkan halaman pertama secara default
+        displayTablePage(1);
+    }
+    // =========================================================================
+
 
     // -----------------------------------------------------------
-    // 1. FUNGSI UTILITY (PENGGUNAAN UMUM)
+    // 2. FUNGSI UTILITY (PENGGUNAAN UMUM)
     // -----------------------------------------------------------
 
     function formatRupiah(angka) {
@@ -492,7 +580,7 @@
     }
 
     // -----------------------------------------------------------
-    // 2. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
+    // 3. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
     // -----------------------------------------------------------
 
     function login() {
@@ -529,12 +617,12 @@
             document.getElementById('login-container').style.display = 'block';
             document.getElementById('input-control-container').style.display = 'none';
         }
-        loadData(); // Selalu muat ulang data untuk menyesuaikan kolom Aksi
+        loadData(); // Selalu muat ulang data untuk menyesuaikan kolom Aksi dan Pagination
     });
 
 
     // -----------------------------------------------------------
-    // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
+    // 4. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
     // -----------------------------------------------------------
 
     function addTransaction() {
@@ -608,6 +696,10 @@
         .onSnapshot((snapshot) => {
             tableBody.innerHTML = '';
             tableFooter.innerHTML = '';
+            
+            // --- Reset array data rows sebelum diisi ulang ---
+            allDataRows = []; 
+            // --------------------------------------------------
 
             let saldo = 0;
             let totalMasuk = 0;
@@ -657,7 +749,16 @@
                         <button class="aksi-btn" onclick="deleteTransaction('${id}')">Hapus</button>
                     `;
                 }
+                
+                // --- Simpan referensi baris ke array untuk Pagination ---
+                allDataRows.push(row);
+                // -------------------------------------------------------
             });
+            
+            // --- Panggil setupPagination setelah semua data ter-render ---
+            setupPagination();
+            // -----------------------------------------------------------
+
 
             // Tampilkan Total Laporan di Footer
             const footerRow = tableFooter.insertRow();
@@ -743,15 +844,28 @@
 
 
     // -----------------------------------------------------------
-    // 4. FUNGSI UNDUH PDF (Sama seperti sebelumnya)
+    // 5. FUNGSI UNDUH PDF (SUDAH DIKOREKSI AGAR MENCETAK SEMUA DATA)
     // -----------------------------------------------------------
 
     function downloadPDF() {
-        // 1. Clone the table
+        // Cek apakah pagination aktif (jumlah baris > baris per halaman)
+        const isPaginationActive = allDataRows.length > rowsPerPage;
+        
+        // --- Langkah 1: Paksa Semua Baris Tampil untuk PDF ---
+        if (isPaginationActive) {
+            allDataRows.forEach(row => row.style.display = ''); // Tampilkan semua baris
+        }
+        
+        // 2. Clone the table (kini dengan semua baris terlihat)
         const tableToPrint = document.getElementById('finance-table').cloneNode(true);
-        const actionIndex = 6; // Kolom Aksi selalu di indeks ke-6 (kolom ke-7) jika ada
 
-        // 2. Bersihkan Kolom Aksi dari tabel yang di-clone
+        // --- Langkah 3: Kembalikan Tampilan Pagination ke halaman sebelumnya ---
+        if (isPaginationActive) {
+            displayTablePage(currentPage); // Kembali ke halaman yang terakhir dilihat
+        }
+        
+        // 4. Proses pembersihan kolom Aksi pada tabel clone
+        const actionIndex = 6; 
         const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
         
         if (isActionColumnPresent) {
@@ -774,7 +888,7 @@
             }
         }
         
-        // --- Perbaikan CSS khusus untuk PDF ---
+        // --- Perbaikan CSS khusus untuk PDF (lanjutan) ---
         const style = document.createElement('style');
         style.textContent = `
             /* Aturan Umum */
@@ -827,21 +941,21 @@
             .saldo-plus { color: #009900 !important; font-weight: bold; }
         `;
 
-        // 4. Tambahkan judul dan informasi tanggal
+        // 5. Tambahkan judul dan informasi tanggal
         const header = document.createElement('h2');
         header.textContent = 'LAPORAN PERTANGGUNGJAWABAN KEUANGAN YAYASAN';
 
         const dateInfo = document.createElement('p');
         dateInfo.textContent = `Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`;
 
-        // 5. Masukkan semua elemen ke dalam satu kontainer
+        // 6. Masukkan semua elemen ke dalam satu kontainer
         const element = document.createElement('div');
         element.appendChild(style);
         element.appendChild(header);
         element.appendChild(dateInfo);
         element.appendChild(tableToPrint); 
 
-        // 6. Pengaturan html2pdf
+        // 7. Pengaturan html2pdf
         html2pdf(element, {
             margin: 10,
             filename: 'Laporan_Keuangan_' + new Date().toLocaleDateString('id-ID') + '.pdf',
@@ -868,7 +982,3 @@
 </script>
 </body>
 </html>
-
-
-
-
