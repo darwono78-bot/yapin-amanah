@@ -118,7 +118,7 @@
             transform: translateY(0);
         }
 
-        h2, h3 { 
+        h2, h3 {
             color: #ffd700;
             margin-bottom: 25px;
             font-size: 1.8em;
@@ -126,12 +126,12 @@
         }
 
         /* NEW: CSS untuk Form Input dan Tabel Dinamis */
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"], input[type="date"], select {
             padding: 12px;
             margin-bottom: 15px;
             border-radius: 8px;
             border: 1px solid #777;
-            background-color: rgba(255, 255, 255, 0.1); 
+            background-color: rgba(255, 255, 255, 0.1);
             color: #fff;
             width: 100%;
             box-sizing: border-box;
@@ -168,6 +168,19 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             background: rgba(0, 0, 0, 0.2);
+            text-align: left; /* Teks di form rata kiri */
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .input-group > div {
+            flex: 1;
+        }
+        .input-group input[type="number"] {
+            margin-bottom: 0;
         }
 
         /* Kustomisasi Tabel untuk Konten Dinamis */
@@ -201,9 +214,16 @@
 
         .total-row td {
             font-weight: bold;
-            background-color: rgba(255, 255, 0, 0.2); 
+            background-color: rgba(255, 255, 0, 0.2);
             color: #ffd700;
         }
+
+        /* Penyesuaian Kolom Jumlah */
+        #donatur-table td:nth-child(5) {
+            color: #66ff66;
+            font-weight: bold;
+        }
+
         .aksi-btn {
             background-color: #28a745;
             color: white;
@@ -217,6 +237,7 @@
         .aksi-btn:last-child {
             background-color: #dc3545;
         }
+
         .actions button {
             background-color: #17a2b8;
             color: white;
@@ -308,6 +329,38 @@
             transform: scale(1.05);
             box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
         }
+
+        /* CSS Tambahan untuk Pagination */
+        .pagination-controls {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pagination-controls button {
+            background-color: rgba(255, 215, 0, 0.2); /* Kuning Emas Transparan */
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        .pagination-controls button:hover {
+            background-color: rgba(255, 215, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        .pagination-controls button.active-page {
+            background-color: #ffd700; /* Warna tombol aktif */
+            color: #004000;
+            border: 1px solid #ffd700;
+        }
+        /* END CSS Tambahan */
     </style>
 </head>
 <body>
@@ -349,11 +402,11 @@
 </nav>
 
 <section class="section">
-    
-    <h2>Daftar Donatur Bulanan (Transparansi Publik)</h2>
+
+    <h2>Daftar Donatur Yayasan Pendidikan Islam Nurul Huda</h2>
 
     <div class="actions" style="text-align: right; margin-bottom: 20px;">
-        <button onclick="downloadPDF()" style="background-color: #008CBA;">Unduh Daftar Donatur PDF</button>
+        <button onclick="downloadPDF()" style="background-color: #008CBA;">Unduh Daftar Donatur PDF (Data Lengkap)</button>
     </div>
 
     <table id="donatur-table">
@@ -361,46 +414,54 @@
             <tr>
                 <th style="width: 5%;">No</th>
                 <th style="width: 15%;">Tanggal</th>
-                <th style="width: 25%;">Nama Donatur</th>
-                <th style="width: 35%;">Alamat</th>
-                <th style="width: 15%;">Jumlah Donasi</th>
-                </tr>
+                <th style="width: 30%;">Nama Donatur</th>
+                <th style="width: 30%;">Keterangan</th>
+                <th style="width: 20%;">Jumlah Donasi</th>
+            </tr>
         </thead>
         <tbody id="donatur-body">
-            </tbody>
+        </tbody>
         <tfoot id="donatur-footer">
-            </tfoot>
+        </tfoot>
     </table>
-    
+
+    <div id="pagination-controls" class="pagination-controls">
+        </div>
     <hr style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 30px 0;">
 
     <div id="login-container">
-        <h3>Akses Pengurus (Input Data & Kontrol)</h3>
-        <input type="email" id="email" class="login-input" placeholder="Email Pengurus">
+        <h3>Akses Bendahara (Input Data & Kontrol)</h3>
+        <input type="email" id="email" class="login-input" placeholder="Email Bendahara">
         <input type="password" id="password" class="login-input" placeholder="Password">
-        <button onclick="login()" class="login-btn">Login Pengurus</button>
+        <button onclick="login()" class="login-btn">Login Bendahara</button>
         <p id="auth-status" style="color: red;"></p>
     </div>
 
     <div id="input-control-container" style="display: none;">
-        
-        <p style="text-align: right;">Selamat datang, Pengurus! <button onclick="logout()" style="background-color: #6c757d;">Logout</button></p>
+
+        <p style="text-align: right;">Selamat datang, Bendahara! <button onclick="logout()" style="background-color: #6c757d;">Logout</button></p>
 
         <div class="actions" style="text-align: left; margin-bottom: 20px;">
             <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545;">Reset Data (Ganti Bulan)</button>
         </div>
 
         <div id="input-form">
-            <h3>Input Data Donatur Baru</h3>
+            <h3>Input Donasi Baru</h3>
             <input type="date" id="input-tanggal" required>
-            <input type="text" id="input-nama" placeholder="Nama Donatur" required>
-            <input type="text" id="input-alamat" placeholder="Alamat (Contoh: Ngablak/Hamba Allah)" required>
-            <input type="number" id="input-jumlah" placeholder="Jumlah Donasi (hanya angka)" required>
+            <input type="text" id="input-nama" placeholder="Nama Donatur (Contoh: Hamba Allah/Bp. Ahmad)" required>
+            <input type="text" id="input-keterangan" placeholder="Keterangan (Contoh: Donasi Tetap/Amal Jariyah)" required>
+
+            <div class="input-group">
+                <div>
+                    <input type="number" id="input-jumlah" placeholder="Jumlah Donasi (Rp.)" required>
+                </div>
+            </div>
 
             <button onclick="addDonation()" class="btn-action">Simpan Donasi</button>
         </div>
     </div>
 </section>
+
 <footer>
     &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
 </footer>
@@ -431,13 +492,67 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    
-    // --- Nama Koleksi Baru untuk Donatur ---
-    const DONATUR_COLLECTION = "donatur"; 
+
+    // --- Nama Koleksi untuk Daftar Donatur ---
+    const FINANCE_COLLECTION = "donatur"; // Collection untuk donatur
     // ---------------------------------------
 
+    // =========================================================================
+    // 1. LOGIKA PAGINATION (Pembatasan Baris)
+    // =========================================================================
+    const rowsPerPage = 10; // <<< BATASAN BARIS SUDAH DIUBAH MENJADI 10
+    let allDataRows = []; // Array untuk menyimpan semua baris data DOM (<tr>)
+    let currentPage = 1; // Melacak halaman saat ini
+
+    // Fungsi untuk menampilkan halaman
+    function displayTablePage(page) {
+        currentPage = page; // Simpan halaman yang sedang dilihat
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        // Sembunyikan semua baris yang dikelola oleh pagination
+        allDataRows.forEach(row => row.style.display = 'none');
+
+        // Tampilkan hanya baris pada halaman yang dipilih
+        allDataRows.slice(start, end).forEach(row => row.style.display = '');
+
+        // Update status tombol aktif
+        const paginationDiv = document.getElementById('pagination-controls');
+        if(paginationDiv){
+            const buttons = paginationDiv.querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('active-page'));
+            const activeButton = paginationDiv.querySelector(`button[data-page="${page}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active-page');
+            }
+        }
+    }
+
+    // Fungsi untuk menyiapkan tombol pagination
+    function setupPagination() {
+        const totalRows = allDataRows.length;
+        const totalPages = Math.ceil(totalRows / rowsPerPage);
+        const paginationDiv = document.getElementById('pagination-controls');
+        paginationDiv.innerHTML = ''; // Bersihkan kontrol yang lama
+
+        if (totalPages <= 1) return; // Tidak perlu pagination jika hanya 1 halaman
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement('button');
+            button.innerText = i;
+            button.setAttribute('data-page', i);
+            button.addEventListener('click', () => displayTablePage(i));
+            paginationDiv.appendChild(button);
+        }
+
+        // Tampilkan halaman yang terakhir dilihat, atau halaman 1 jika ini adalah load pertama
+        displayTablePage(currentPage > totalPages ? 1 : currentPage);
+    }
+    // =========================================================================
+
+
     // -----------------------------------------------------------
-    // 1. FUNGSI UTILITY (PENGGUNAAN UMUM)
+    // 2. FUNGSI UTILITY (PENGGUNAAN UMUM)
     // -----------------------------------------------------------
 
     function formatRupiah(angka) {
@@ -448,7 +563,7 @@
     }
 
     // -----------------------------------------------------------
-    // 2. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
+    // 3. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
     // -----------------------------------------------------------
 
     function login() {
@@ -460,7 +575,6 @@
             .then(() => {
                 statusText.textContent = 'Login Berhasil!';
                 statusText.style.color = 'lime';
-                // Tampilan diperbarui oleh auth.onAuthStateChanged
             })
             .catch((error) => {
                 statusText.textContent = `Login Gagal: ${error.message}`;
@@ -470,7 +584,6 @@
 
     function logout() {
         auth.signOut().then(() => {
-            // Tampilan diperbarui oleh auth.onAuthStateChanged
             document.getElementById('auth-status').textContent = 'Anda telah Logout.';
             document.getElementById('auth-status').style.color = 'red';
         });
@@ -484,31 +597,30 @@
         } else {
             document.getElementById('login-container').style.display = 'block';
             document.getElementById('input-control-container').style.display = 'none';
-            // Pastikan kolom Aksi hilang saat logout
         }
-        loadData(); // Selalu muat ulang data untuk menyesuaikan kolom Aksi
+        loadData(); // Selalu muat ulang data untuk menyesuaikan kolom Aksi dan Pagination
     });
 
 
     // -----------------------------------------------------------
-    // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
+    // 4. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
     // -----------------------------------------------------------
 
     function addDonation() {
         const tanggal = document.getElementById('input-tanggal').value;
         const nama = document.getElementById('input-nama').value;
-        const alamat = document.getElementById('input-alamat').value;
+        const keterangan = document.getElementById('input-keterangan').value;
         const jumlah = parseInt(document.getElementById('input-jumlah').value) || 0;
 
-        if (!tanggal || !nama || !alamat || jumlah <= 0) {
-            alert("Tanggal, Nama, Alamat, dan Jumlah Donasi wajib diisi dengan benar!");
+        if (!tanggal || !nama || !keterangan || jumlah <= 0) {
+            alert("Semua kolom harus diisi dan Jumlah Donasi harus lebih dari 0!");
             return;
         }
 
-        db.collection(DONATUR_COLLECTION).add({
+        db.collection(FINANCE_COLLECTION).add({
             tanggal: tanggal,
             nama: nama,
-            alamat: alamat,
+            keterangan: keterangan,
             jumlah: jumlah,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         })
@@ -516,7 +628,7 @@
             // Bersihkan input setelah disimpan
             document.getElementById('input-tanggal').value = '';
             document.getElementById('input-nama').value = '';
-            document.getElementById('input-alamat').value = '';
+            document.getElementById('input-keterangan').value = '';
             document.getElementById('input-jumlah').value = '';
             alert("Donasi berhasil dicatat!");
         })
@@ -529,20 +641,20 @@
     function setupTableHeaders(isLoggedIn) {
         const table = document.getElementById('donatur-table');
         const headerRow = table.querySelector('thead tr');
-        
+
         // Cek apakah header 'Aksi' sudah ada
         const existingActionHeader = headerRow.querySelector('th:last-child');
         const hasActionHeader = existingActionHeader && existingActionHeader.textContent.trim() === 'Aksi';
-        
+
         // Hapus Kolom Aksi lama jika ada dan user logout
         if (hasActionHeader && !isLoggedIn) {
             existingActionHeader.remove();
-        } 
+        }
         // Tambahkan Kolom Aksi hanya jika user login dan belum ada
         else if (!hasActionHeader && isLoggedIn) {
             const actionHeader = document.createElement('th');
             actionHeader.textContent = 'Aksi';
-            actionHeader.style.width = '5%';
+            actionHeader.style.width = '10%';
             headerRow.appendChild(actionHeader);
         }
     }
@@ -553,35 +665,41 @@
         const tableFooter = document.getElementById('donatur-footer');
         const user = auth.currentUser;
         const isLoggedIn = !!user; // Cek apakah user sedang login
-        
+
         // Atur header tabel (tambah/hapus kolom Aksi)
         setupTableHeaders(isLoggedIn);
 
 
         // Urutkan berdasarkan waktu paling lama (ASC)
-        db.collection(DONATUR_COLLECTION).orderBy("timestamp", "asc")
+        db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc")
         .onSnapshot((snapshot) => {
             tableBody.innerHTML = '';
             tableFooter.innerHTML = '';
 
+            // --- Reset array data rows sebelum diisi ulang ---
+            allDataRows = [];
+            // --------------------------------------------------
+
             let totalDonasi = 0;
             let no = 1;
-            
+
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 const id = doc.id;
+                const jumlah = data.jumlah || 0;
 
-                totalDonasi += data.jumlah;
+                totalDonasi += jumlah;
 
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = no++;
                 row.insertCell(1).textContent = data.tanggal;
                 row.insertCell(2).textContent = data.nama;
-                row.insertCell(3).textContent = data.alamat;
-                // Sel Donasi harus rata kanan
+                row.insertCell(3).textContent = data.keterangan;
+
+                // Sel Jumlah Donasi harus rata kanan
                 const jumlahCell = row.insertCell(4);
-                jumlahCell.textContent = formatRupiah(data.jumlah);
-                jumlahCell.style.textAlign = 'right'; 
+                jumlahCell.textContent = formatRupiah(jumlah);
+                jumlahCell.style.textAlign = 'right';
 
                 // Tambahkan Kolom Aksi HANYA jika pengurus login
                 if (isLoggedIn) {
@@ -591,28 +709,33 @@
                         <button class="aksi-btn" onclick="deleteDonation('${id}')">Hapus</button>
                     `;
                 }
+
+                // --- Simpan referensi baris ke array untuk Pagination ---
+                allDataRows.push(row);
+                // -------------------------------------------------------
             });
 
-            // Tampilkan Total Donasi di Footer
+            // --- Panggil setupPagination setelah semua data ter-render ---
+            setupPagination();
+            // -----------------------------------------------------------
+
+
+            // Tampilkan Total Laporan di Footer
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
-            
-            // Kolom Jumlah Donasi ada di indeks 4 (kolom ke-5). 
-            // Kita ingin teks 'TOTAL DONASI...' menempati kolom 1 sampai 4.
-            let colSpanValue = 4; // Kolom No, Tanggal, Nama, Alamat
 
-            // Kolom 1 (Label TOTAL DONASI)
+            // Kolom Uraian digabung untuk Label TOTAL
             const totalLabelCell = footerRow.insertCell(0);
-            totalLabelCell.colSpan = colSpanValue; 
-            totalLabelCell.textContent = 'TOTAL DONASI BULAN INI:';
-            totalLabelCell.style.textAlign = 'right'; 
+            totalLabelCell.colSpan = 4; // Menggabung 4 kolom (No, Tgl, Nama, Keterangan)
+            totalLabelCell.textContent = 'TOTAL DONASI AKHIR:';
+            totalLabelCell.style.textAlign = 'right';
 
-            // Kolom 2 (Jumlah Donasi Total) - Ini akan diletakkan tepat di bawah kolom Jumlah Donasi
-            const totalAmountCell = footerRow.insertCell(1);
-            totalAmountCell.textContent = formatRupiah(totalDonasi);
-            totalAmountCell.style.textAlign = 'right';
+            // Kolom Total Jumlah Donasi
+            const totalJumlahCell = footerRow.insertCell(1);
+            totalJumlahCell.textContent = formatRupiah(totalDonasi);
+            totalJumlahCell.style.textAlign = 'right';
 
-            // Jika admin login, perlu satu sel kosong lagi untuk mengisi kolom Aksi (indeks 5)
+            // Jika admin login, perlu satu sel kosong lagi untuk mengisi kolom Aksi
             if (isLoggedIn) {
                 const emptyActionCell = footerRow.insertCell(2);
                 emptyActionCell.textContent = '';
@@ -626,11 +749,11 @@
             alert("Anda harus login sebagai admin untuk menghapus data.");
             return;
         }
-        
-        if (confirm("Yakin ingin menghapus data donatur ini?")) {
-            db.collection(DONATUR_COLLECTION).doc(docId).delete()
+
+        if (confirm("Yakin ingin menghapus donasi ini?")) {
+            db.collection(FINANCE_COLLECTION).doc(docId).delete()
             .then(() => {
-                console.log("Data Donatur berhasil dihapus!");
+                console.log("Donasi berhasil dihapus!");
             })
             .catch((error) => {
                 alert("Error menghapus: Pastikan Anda masih login. " + error.message);
@@ -650,7 +773,7 @@
         }
 
         // Menjalankan Batch Delete (Cara efisien hapus banyak data di Firestore)
-        db.collection(DONATUR_COLLECTION).get().then((snapshot) => {
+        db.collection(FINANCE_COLLECTION).get().then((snapshot) => {
             const batch = db.batch();
             snapshot.docs.forEach((doc) => {
                 batch.delete(doc.ref);
@@ -666,24 +789,37 @@
 
 
     // -----------------------------------------------------------
-    // 4. FUNGSI UNDUH PDF (Sama seperti sebelumnya)
+    // 5. FUNGSI UNDUH PDF (SUDAH DIKOREKSI AGAR MENCETAK SEMUA DATA)
     // -----------------------------------------------------------
 
     function downloadPDF() {
-        // 1. Clone the table
-        const tableToPrint = document.getElementById('donatur-table').cloneNode(true);
-        const actionIndex = 5; // Kolom Aksi selalu di indeks ke-5 (kolom ke-6) jika ada
+        // Cek apakah pagination aktif (jumlah baris > baris per halaman)
+        const isPaginationActive = allDataRows.length > rowsPerPage;
 
-        // 2. Bersihkan Kolom Aksi dari tabel yang di-clone
+        // --- Langkah 1: Paksa Semua Baris Tampil untuk PDF ---
+        if (isPaginationActive) {
+            allDataRows.forEach(row => row.style.display = ''); // Tampilkan semua baris
+        }
+
+        // 2. Clone the table (kini dengan semua baris terlihat)
+        const tableToPrint = document.getElementById('donatur-table').cloneNode(true);
+
+        // --- Langkah 3: Kembalikan Tampilan Pagination ke halaman sebelumnya ---
+        if (isPaginationActive) {
+            displayTablePage(currentPage); // Kembali ke halaman yang terakhir dilihat
+        }
+
+        // 4. Proses pembersihan kolom Aksi pada tabel clone
+        const actionIndex = 5; // Kolom ke-6 (indeks 5) adalah kolom Aksi
         const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
-        
+
         if (isActionColumnPresent) {
             // A. Hapus Header 'Aksi'
             tableToPrint.querySelector('thead tr th:last-child').remove();
-            
+
             // B. Hapus sel 'Aksi' di baris-baris data (tbody)
             tableToPrint.querySelectorAll('tbody tr').forEach(row => {
-                if (row.cells.length > actionIndex) { 
+                if (row.cells.length > actionIndex) {
                     row.cells[actionIndex].remove();
                 }
             });
@@ -692,11 +828,11 @@
             const footerRow = tableToPrint.querySelector('tfoot .total-row');
             if (footerRow) {
                 const totalLabelCell = footerRow.querySelector('td:first-child');
-                // Colspan harus dikurangi dari 5 (saat ada Aksi) menjadi 4 (saat Aksi dihapus)
-                totalLabelCell.colSpan = 4; 
+                // Colspan harus dikurangi dari 4 menjadi 3
+                totalLabelCell.colSpan = 3;
             }
         }
-        
+
         // --- Perbaikan CSS khusus untuk PDF ---
         const style = document.createElement('style');
         style.textContent = `
@@ -711,61 +847,65 @@
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 10px;
-                color: black; 
-                font-size: 11px;
-                border: 1px solid #333; 
+                color: black;
+                font-size: 10px;
+                border: 1px solid #333;
             }
 
             #donatur-table th, #donatur-table td {
-                padding: 8px 5px;
+                padding: 6px 3px;
                 text-align: center;
-                border: 1px solid #666; 
-                background: white; 
+                border: 1px solid #666;
+                background: white;
             }
 
             #donatur-table th {
-                background: #f0f0f0; 
+                background: #f0f0f0;
                 font-weight: bold;
                 color: #333;
             }
-            
+
             /* Aturan Footer Total */
             .total-row td {
                 font-weight: bold;
-                background-color: #ffffcc !important; 
+                background-color: #ffffcc !important;
                 color: black;
                 border-top: 2px solid #333;
             }
             .total-row td:first-child {
                 text-align: right;
             }
-            /* Jumlah Donasi harus rata kanan */
+            /* Kolom nominal harus rata kanan */
             #donatur-table td:nth-child(5) {
-                text-align: right; 
+                text-align: right;
+            }
+            /* Menghapus warna hijau khusus CSS layar */
+            #donatur-table td:nth-child(5) {
+                color: black !important;
             }
         `;
 
-        // 4. Tambahkan judul dan informasi tanggal
+        // 5. Tambahkan judul dan informasi tanggal
         const header = document.createElement('h2');
         header.textContent = 'DAFTAR DONATUR BULANAN YAYASAN';
 
         const dateInfo = document.createElement('p');
         dateInfo.textContent = `Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`;
 
-        // 5. Masukkan semua elemen ke dalam satu kontainer
+        // 6. Masukkan semua elemen ke dalam satu kontainer
         const element = document.createElement('div');
         element.appendChild(style);
         element.appendChild(header);
         element.appendChild(dateInfo);
-        element.appendChild(tableToPrint); 
+        element.appendChild(tableToPrint);
 
-        // 6. Pengaturan html2pdf
+        // 7. Pengaturan html2pdf
         html2pdf(element, {
             margin: 10,
             filename: 'Daftar_Donatur_' + new Date().toLocaleDateString('id-ID') + '.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3, logging: false, useCORS: true }, 
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            html2canvas: { scale: 3, logging: false, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Menggunakan portrait (berdiri) karena kolomnya lebih sedikit
         });
     }
 
@@ -786,4 +926,3 @@
 </script>
 </body>
 </html>
-
