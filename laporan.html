@@ -62,7 +62,7 @@
             position: absolute;
             width: 160px;
             opacity: 0.8;
-            filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
             pointer-events: none;
         }
 
@@ -590,7 +590,8 @@ function loadData() {
     })
     .catch((error) => {
         console.error("Error memuat data: ", error);
-        alert("Gagal memuat data keuangan: " + error.message);
+        // Hapus alert agar tidak mengganggu, tapi tetap log error
+        // alert("Gagal memuat data keuangan: " + error.message);
     });
 }
 
