@@ -5,32 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Laporan Keuangan | Yayasan Pendidikan Islam Nurul Huda</title>
 
-    <script type="module">
-        // Import fungsi-fungsi yang dibutuhkan dari Firebase SDK versi Modular
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, deleteDoc, doc, getDoc, updateDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
-
-        // Konfigurasi Firebase Anda yang AMAN
-        const firebaseConfig = {
-            apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
-            authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
-            projectId: "laporan-keuangan-yayasan",
-            storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
-            messagingSenderId: "616927572689",
-            appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
-        };
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        // ⚠️ GANTI DENGAN KONFIGURASI FIREBASE ANDA YANG SEBENARNYA ⚠️
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
+        authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
+        projectId: "laporan-keuangan-yayasan",
+        storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
+        messagingSenderId: "616927572689",
+        appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
+    };
 
         // Inisialisasi Firebase
-        const app = initializeApp(firebaseConfig);
-        export const auth = getAuth(app);
-        export const db = getFirestore(app);
-        export const FINANCE_COLLECTION = 'laporankeuangan';
-        export const financeCollectionRef = collection(db, FINANCE_COLLECTION);
-        export const serverTimestamp_ = serverTimestamp; // Expose serverTimestamp
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const FINANCE_COLLECTION = 'laporankeuangan';
     </script>
-    
-    <script type="module" src="laporan_logic.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -594,20 +591,10 @@
         </div>
     </div>
 </div>
-<script type="module">
+<script>
     // *************************************************************************
-    // KODE JAVASCRIPT UTAMA (MODULAR FIREBASE V12)
-    // Semua fungsi kini menggunakan import dari bagian <script> di atas.
+    // KODE JAVASCRIPT UTAMA (TERHUBUNG KE FIREBASE AUTH & FIRESTORE)
     // *************************************************************************
-
-    // Import objek dan fungsi dari blok <script type="module"> inisialisasi di atas
-    import { auth, db, FINANCE_COLLECTION, financeCollectionRef, serverTimestamp_ } from './laporangit.html'; // Import dari file yang sama
-
-    // Import fungsi-fungsi modular yang dibutuhkan (jika kode ini dipisah ke file JS lain)
-    // Karena kode ini ada di satu file, kita perlu mendefinisikan ulang imports untuk fungsi-fungsi di dalam modul:
-    import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
-    import { collection, query, orderBy, onSnapshot, addDoc, deleteDoc, doc, getDoc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
-
 
     // Variabel global untuk Pagination
     const rowsPerPage = 10; 
@@ -656,7 +643,6 @@
             const button = document.createElement('button');
             button.innerText = i;
             button.setAttribute('data-page', i);
-            // Tambahkan Event Listener
             button.addEventListener('click', () => displayTablePage(i));
             paginationDiv.appendChild(button);
         }
@@ -697,19 +683,20 @@
     }
 
     // =========================================================================
-    // 3. FUNGSI AUTENTIKASI (LOGIN/LOGOUT) - KINI AMAN DENGAN FIREBASE MODULAR
+    // 3. FUNGSI AUTENTIKASI (LOGIN/LOGOUT) - KINI AMAN DENGAN FIREBASE
     // =========================================================================
 
-    window.login = function() {
+    // Fungsi Login (Kini menggunakan Firebase Auth)
+    function login() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const statusText = document.getElementById('auth-status');
         statusText.textContent = 'Sedang memproses...';
         statusText.style.color = '#ffd700'; // Kuning Emas
 
-        signInWithEmailAndPassword(auth, email, password)
+        auth.signInWithEmailAndPassword(email, password)
             .then(() => {
-                // Login berhasil (onAuthStateChanged akan menangani UI)
+                // Login berhasil (auth.onAuthStateChanged akan menangani UI)
                 statusText.textContent = 'Login Berhasil! Memuat data...';
                 statusText.style.color = 'lime';
             })
@@ -725,10 +712,11 @@
             });
     }
 
-    window.logout = function() {
-        signOut(auth)
+    // Fungsi Logout (Kini menggunakan Firebase Auth)
+    function logout() {
+        auth.signOut()
             .then(() => {
-                // Logout berhasil (onAuthStateChanged akan menangani UI)
+                // Logout berhasil (auth.onAuthStateChanged akan menangani UI)
                 document.getElementById('auth-status').textContent = 'Anda telah logout.';
             })
             .catch((error) => {
@@ -738,7 +726,7 @@
     }
 
     // Monitoring Status Login (Penanganan UI Otomatis)
-    onAuthStateChanged(auth, (user) => {
+    auth.onAuthStateChanged((user) => {
         if (user) {
             // User sudah login
             document.getElementById('login-container').style.display = 'none';
@@ -759,10 +747,10 @@
 
 
     // =========================================================================
-    // 4. FUNGSI CRUD DATA (Create/Read/Delete) - KINI MENGGUNAKAN FIRESTORE MODULAR
+    // 4. FUNGSI CRUD DATA (Create/Read/Delete) - KINI MENGGUNAKAN FIRESTORE
     // =========================================================================
-    
-    window.addTransaction = function() {
+
+    function addTransaction() {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk menambah data.");
             return;
@@ -778,14 +766,13 @@
             return;
         }
         
-        // Menggunakan addDoc dan financeCollectionRef (referensi koleksi)
-        addDoc(collection(db, FINANCE_COLLECTION), {
+        db.collection(FINANCE_COLLECTION).add({
             tanggal: tanggal,
             uraian: uraian,
             danaMasuk: danaMasuk,
             danaKeluar: danaKeluar,
-            // Menggunakan serverTimestamp untuk urutan data (penting saat tanggal sama)
-            timestamp: serverTimestamp_() 
+            // Menggunakan timestamp agar urutan data bisa dipertahankan di Firebase
+            timestamp: firebase.firestore.FieldValue.serverTimestamp() 
         })
         .then(() => {
             // Bersihkan input setelah disimpan
@@ -793,6 +780,7 @@
             document.getElementById('input-uraian').value = '';
             document.getElementById('input-masuk').value = '';
             document.getElementById('input-keluar').value = '';
+            // Data akan otomatis refresh karena onSnapshot di loadData()
             alert("Transaksi berhasil dicatat!");
         })
         .catch((error) => {
@@ -801,23 +789,19 @@
     }
 
 
-    window.loadData = function() {
+    function loadData() {
         const tableBody = document.getElementById('finance-body');
         const tableFooter = document.getElementById('finance-footer');
         
+        // Cek status login
         const isLoggedIn = !!auth.currentUser;
 
+        // Atur header tabel (tambah/hapus kolom Aksi)
         setupTableHeaders(isLoggedIn);
         
-        // Buat Query
-        const financeQuery = query(
-            collection(db, FINANCE_COLLECTION), 
-            orderBy("tanggal", "asc"), 
-            orderBy("timestamp", "asc")
-        );
-
-        // Memuat data dari Firestore menggunakan onSnapshot (realtime listener)
-        onSnapshot(financeQuery, (snapshot) => {
+        // Memuat data dari Firestore
+        db.collection(FINANCE_COLLECTION).orderBy("tanggal", "asc").orderBy("timestamp", "asc")
+            .onSnapshot((snapshot) => {
                 tableBody.innerHTML = '';
                 tableFooter.innerHTML = '';
                 allDataRows = []; 
@@ -829,9 +813,9 @@
                      tableBody.innerHTML = '<tr><td colspan="6">Belum ada data transaksi.</td></tr>';
                 }
 
-                snapshot.forEach((docSnap, index) => {
-                    const data = docSnap.data();
-                    const id = docSnap.id; // ID dokumen
+                snapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    const id = doc.id; // ID dokumen
                     
                     saldo += data.danaMasuk - data.danaKeluar;
                     totalMasuk += data.danaMasuk;
@@ -852,6 +836,7 @@
                     saldoCell.className = saldoClass;
                     saldoCell.style.textAlign = 'right';
 
+                    // Tambahkan Kolom Aksi HANYA jika pengurus login
                     if (isLoggedIn) {
                         const actionCell = row.insertCell(6);
                         actionCell.innerHTML = `
@@ -898,16 +883,16 @@
     }
 
 
-    window.deleteTransaction = function(docId) {
+    function deleteTransaction(docId) {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk menghapus data.");
             return;
         }
         
         if (confirm("Yakin ingin menghapus transaksi ini?")) {
-            // Menggunakan deleteDoc dan doc (referensi dokumen)
-            deleteDoc(doc(db, FINANCE_COLLECTION, docId))
+            db.collection(FINANCE_COLLECTION).doc(docId).delete()
                 .then(() => {
+                    // Karena menggunakan onSnapshot, tabel akan otomatis refresh
                     alert("Transaksi berhasil dihapus!");
                 })
                 .catch((error) => {
@@ -922,7 +907,7 @@
 
     let docIdToEdit = null; 
 
-    window.openEditModal = function(docId) {
+    function openEditModal(docId) {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk mengedit data.");
             return;
@@ -930,11 +915,10 @@
 
         docIdToEdit = docId; 
 
-        // Menggunakan getDoc dan doc (referensi dokumen)
-        getDoc(doc(db, FINANCE_COLLECTION, docId))
-            .then((docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+        db.collection(FINANCE_COLLECTION).doc(docId).get()
+            .then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
                     
                     document.getElementById('edit-doc-id').value = docId;
                     document.getElementById('edit-tanggal').value = data.tanggal;
@@ -952,7 +936,7 @@
             });
     }
 
-    window.updateTransaction = function() {
+    function updateTransaction() {
         if (!auth.currentUser || !docIdToEdit) {
             alert("Sesi login berakhir atau ID transaksi tidak valid.");
             return;
@@ -968,8 +952,7 @@
             return;
         }
         
-        // Menggunakan updateDoc dan doc (referensi dokumen)
-        updateDoc(doc(db, FINANCE_COLLECTION, docIdToEdit), {
+        db.collection(FINANCE_COLLECTION).doc(docIdToEdit).update({
             tanggal: tanggal,
             uraian: uraian,
             danaMasuk: danaMasuk,
@@ -979,6 +962,7 @@
             alert("Transaksi berhasil diperbarui!");
             document.getElementById('editModal').style.display = 'none'; // Tutup modal
             docIdToEdit = null; // Reset ID
+            // Data akan otomatis refresh
         })
         .catch((error) => {
             alert("Error memperbarui data: " + error.message);
@@ -997,23 +981,19 @@
     // 6. FUNGSI LAINNYA
     // =========================================================================
 
-    window.resetData = function() {
+    function resetData() {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk mereset data.");
             return;
         }
 
         if (confirm("ANDA YAKIN INGIN MERESET SEMUA DATA KEUANGAN? Tindakan ini tidak bisa dibatalkan! Ini digunakan untuk ganti periode/bulan.")) {
-            
-            // Logika reset data (Hapus semua dokumen di koleksi menggunakan Batch Write)
-            // Mendapatkan snapshot koleksi
-            getDocs(collection(db, FINANCE_COLLECTION)).then(snapshot => {
-                // Membuat batch untuk menghapus
-                const batch = writeBatch(db);
-                snapshot.docs.forEach(docSnap => {
-                    batch.delete(docSnap.ref); // Tambahkan setiap dokumen ke batch delete
+            // Logika reset data (Hapus semua dokumen di koleksi)
+            db.collection(FINANCE_COLLECTION).get().then(snapshot => {
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
                 });
-                // Commit (eksekusi) batch
                 return batch.commit();
             })
             .then(() => {
@@ -1026,7 +1006,7 @@
     }
 
 
-    window.printPDF = function() {
+    function printPDF() {
         const isPaginationActive = document.getElementById('pagination-controls').children.length > 0;
 
         // 1. Tampilkan semua baris data (nonaktifkan pagination sementara)
@@ -1057,9 +1037,10 @@
             // B. Hapus sel 'Aksi' di baris-baris data (tbody)
             tableToPrint.querySelectorAll('tbody tr').forEach(row => {
                 if (row.cells.length > 5) { // 5 kolom data + 1 kolom aksi = 6. Hapus yang ke-6 (index 5) jika ada.
+                    // Jika kolom aksi adalah kolom terakhir
                     if(row.cells.length === 6) { 
                        row.cells[5].remove();
-                    } else if (row.cells.length > 6) {
+                    } else if (row.cells.length > 6) { // Jika ada kolom lain yang mungkin terlewat
                         row.cells[actionIndex].remove();
                     }
                 }
@@ -1068,6 +1049,7 @@
             // C. Perbaiki Colspan di Footer (tfoot)
             const footerRow = tableToPrint.querySelector('tfoot .total-row');
             if (footerRow && footerRow.cells.length > 3) { 
+                // Sel pertama (Label TOTAL AKHIR) sekarang harus mencakup 3 kolom (No, Tgl, Uraian)
                 footerRow.cells[0].colSpan = 3; 
             }
         }
@@ -1107,8 +1089,9 @@
         });
     }
 
-    // Panggil loadData() pertama kali setelah DOM dimuat, jika tidak ada masalah koneksi
-    document.addEventListener('DOMContentLoaded', loadData);
+    // Panggil loadData() hanya untuk memastikan tabel dimuat segera
+    // Catatan: loadData akan dipanggil juga oleh auth.onAuthStateChanged
+    // document.addEventListener('DOMContentLoaded', loadData);
 
 </script>
 <script>
