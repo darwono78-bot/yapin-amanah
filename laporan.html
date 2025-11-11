@@ -353,42 +353,44 @@
 </nav>
 
 <section class="section">
+    
+    <h2>Laporan Kas Bulanan (Transparansi Publik)</h2>
+
+    <table id="laporan-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">No</th>
+                <th style="width: 15%;">Tanggal</th>
+                <th style="width: 35%;">Uraian</th>
+                <th style="width: 15%;">Dana Masuk</th>
+                <th style="width: 15%;">Dana Keluar</th>
+                <th style="width: 10%;">Saldo</th>
+                </tr>
+        </thead>
+        <tbody id="laporan-body">
+            </tbody>
+        <tfoot id="laporan-footer">
+            </tfoot>
+    </table>
+    
+    <hr style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 30px 0;">
+
     <div id="login-container">
-        <h2>Login Pengurus</h2>
+        <h3>Akses Pengurus (Input Data & Kontrol)</h3>
         <input type="email" id="email" class="login-input" placeholder="Email Pengurus">
         <input type="password" id="password" class="login-input" placeholder="Password">
-        <button onclick="login()" class="login-btn">Login</button>
+        <button onclick="login()" class="login-btn">Login Pengurus</button>
         <p id="auth-status" style="color: red;"></p>
     </div>
 
-    <div id="data-container" style="display: none;">
-
+    <div id="input-control-container" style="display: none;">
+        
         <p style="text-align: right;">Selamat datang, Pengurus! <button onclick="logout()" style="background-color: #6c757d;">Logout</button></p>
-
-        <h3>Laporan Kas Bulanan (Data Realtime)</h3>
 
         <div class="actions" style="text-align: left; margin-bottom: 20px;">
             <button onclick="downloadPDF()">Unduh Laporan PDF</button>
             <button id="reset-btn" onclick="resetData()">Reset Data (Ganti Bulan)</button>
         </div>
-
-        <table id="laporan-table">
-            <thead>
-                <tr>
-                    <th style="width: 5%;">No</th>
-                    <th style="width: 15%;">Tanggal</th>
-                    <th style="width: 35%;">Uraian</th>
-                    <th style="width: 15%;">Dana Masuk</th>
-                    <th style="width: 15%;">Dana Keluar</th>
-                    <th style="width: 10%;">Saldo</th>
-                    <th style="width: 5%;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="laporan-body">
-                </tbody>
-            <tfoot id="laporan-footer">
-                </tfoot>
-        </table>
 
         <div id="input-form">
             <h3>Input Transaksi Baru</h3>
@@ -450,6 +452,10 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    
+    // Variabel untuk melacak apakah kolom aksi sudah ditambahkan (hanya jika admin login)
+    let isActionColumnAdded = false;
+
 
     // -----------------------------------------------------------
     // 1. FUNGSI UTILITY (PENGGUNAAN UMUM)
@@ -475,8 +481,8 @@
             .then(() => {
                 statusText.textContent = 'Login Berhasil!';
                 document.getElementById('login-container').style.display = 'none';
-                document.getElementById('data-container').style.display = 'block';
-                loadData();
+                document.getElementById('input-control-container').style.display = 'block';
+                loadData(); // Memuat ulang data untuk menampilkan kolom Aksi
             })
             .catch((error) => {
                 statusText.textContent = `Login Gagal: ${error.message}`;
@@ -486,22 +492,26 @@
     function logout() {
         auth.signOut().then(() => {
             document.getElementById('login-container').style.display = 'block';
-            document.getElementById('data-container').style.display = 'none';
+            document.getElementById('input-control-container').style.display = 'none';
             document.getElementById('auth-status').textContent = 'Anda telah Logout.';
+            loadData(); // Memuat ulang data untuk menghilangkan kolom Aksi
         });
     }
 
     // Cek Status Login Saat Memuat Halaman
     auth.onAuthStateChanged((user) => {
         if (user) {
+            // Jika login, sembunyikan login form, tampilkan kontrol input
             document.getElementById('login-container').style.display = 'none';
-            document.getElementById('data-container').style.display = 'block';
-            loadData();
+            document.getElementById('input-control-container').style.display = 'block';
         } else {
+            // Jika logout, tampilkan login form, sembunyikan kontrol input
             document.getElementById('login-container').style.display = 'block';
-            document.getElementById('data-container').style.display = 'none';
+            document.getElementById('input-control-container').style.display = 'none';
         }
+        // loadData dipanggil setelah blok ini agar publik bisa melihat data segera
     });
+
 
     // -----------------------------------------------------------
     // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT - SIMPLIFIED)
@@ -540,22 +550,50 @@
         });
     }
 
+    function setupTableHeaders(isLoggedIn) {
+        const table = document.getElementById('laporan-table');
+        const headerRow = table.querySelector('thead tr');
+        
+        // Hapus Kolom Aksi lama jika ada
+        const existingActionHeader = headerRow.querySelector('th:last-child');
+        if (existingActionHeader && existingActionHeader.textContent.trim() === 'Aksi') {
+            existingActionHeader.remove();
+        }
+
+        // Tambahkan Kolom Aksi hanya jika user login
+        if (isLoggedIn) {
+            const actionHeader = document.createElement('th');
+            actionHeader.textContent = 'Aksi';
+            actionHeader.style.width = '5%';
+            headerRow.appendChild(actionHeader);
+            isActionColumnAdded = true;
+        } else {
+            isActionColumnAdded = false;
+        }
+    }
+
 
     function loadData() {
         const tableBody = document.getElementById('laporan-body');
         const tableFooter = document.getElementById('laporan-footer');
+        const user = auth.currentUser;
+        const isLoggedIn = !!user; // Cek apakah user sedang login
+        
+        // Atur header tabel (tambah/hapus kolom Aksi)
+        setupTableHeaders(isLoggedIn);
 
-        // Urutkan berdasarkan waktu paling lama (ASC) agar perhitungan Saldo benar
+
+        // Urutkan berdasarkan waktu paling lama (ASC)
         db.collection("transaksi").orderBy("timestamp", "asc")
         .onSnapshot((snapshot) => {
             tableBody.innerHTML = '';
-            tableFooter.innerHTML = ''; // Clear footer
+            tableFooter.innerHTML = '';
 
             let saldoKumulatif = 0;
             let totalMasuk = 0;
             let totalKeluar = 0;
             let no = 1;
-
+            
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 const id = doc.id;
@@ -573,12 +611,14 @@
                 row.insertCell(4).textContent = formatRupiah(data.danaKeluar);
                 row.insertCell(5).textContent = formatRupiah(saldoKumulatif);
 
-                // Kolom Aksi
-                const actionCell = row.insertCell(6);
-                actionCell.innerHTML = `
-                    <button class="aksi-btn" onclick="alert('Fungsi Edit memerlukan popup/modal tambahan.')">Edit</button>
-                    <button class="aksi-btn" onclick="deleteTransaction('${id}')">Hapus</button>
-                `;
+                // Tambahkan Kolom Aksi HANYA jika pengurus login
+                if (isLoggedIn) {
+                    const actionCell = row.insertCell(6);
+                    actionCell.innerHTML = `
+                        <button class="aksi-btn" onclick="alert('Fungsi Edit memerlukan popup/modal tambahan.')">Edit</button>
+                        <button class="aksi-btn" onclick="deleteTransaction('${id}')">Hapus</button>
+                    `;
+                }
             });
 
             // Tampilkan Saldo Akhir di Footer
@@ -589,7 +629,11 @@
             footerRow.insertCell(1).textContent = formatRupiah(totalMasuk);
             footerRow.insertCell(2).textContent = formatRupiah(totalKeluar);
             footerRow.insertCell(3).textContent = formatRupiah(saldoKumulatif);
-            footerRow.insertCell(4).textContent = ''; // Kolom Aksi
+            
+            // Tambahkan kolom kosong di footer jika kolom Aksi ada
+            if (isLoggedIn) {
+                footerRow.insertCell(4).textContent = ''; 
+            }
         });
     }
 
@@ -635,8 +679,11 @@
     function downloadPDF() {
         const tableToPrint = document.getElementById('laporan-table').cloneNode(true);
 
-        // Hapus kolom Aksi di tabel salinan untuk PDF
-        tableToPrint.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
+        // Hapus kolom Aksi di tabel salinan untuk PDF jika ada
+        const lastHeader = tableToPrint.querySelector('thead tr th:last-child');
+        if (lastHeader && lastHeader.textContent.trim() === 'Aksi') {
+            tableToPrint.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
+        }
 
         // Tambahkan judul laporan di atas tabel
         const header = document.createElement('h2');
@@ -660,6 +707,9 @@
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
         });
     }
+
+    // >>> Panggil loadData() segera saat halaman dimuat untuk transparansi publik <<<
+    document.addEventListener('DOMContentLoaded', loadData);
 
 </script>
 <script>
