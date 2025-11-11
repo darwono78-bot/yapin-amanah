@@ -1082,16 +1082,20 @@ document.addEventListener('DOMContentLoaded', loadData);
         <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
     </div>
 
-    <div id="edit-modal" class="modal-overlay">
+    
+                    <div><div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>Edit Transaksi</h3>
             <span class="close-btn" onclick="closeEditModal()">&times;</span>
             <div id="edit-form-container">
-                <input type="hidden" id="edit-id">
+                <input type="hidden" id="edit-id"> 
+
                 <label for="edit-tanggal">Tanggal:</label>
                 <input type="date" id="edit-tanggal" required>
+                
                 <label for="edit-uraian">Uraian:</label>
                 <input type="text" id="edit-uraian" placeholder="Uraian Transaksi" required>
+                
                 <div class="input-group">
                     <div>
                         <label for="edit-masuk">Dana Masuk:</label>
@@ -1106,5 +1110,17 @@ document.addEventListener('DOMContentLoaded', loadData);
             </div>
         </div>
     </div>
+    ```
+
+Dengan mengoreksi struktur HTML modal ini, semua *field* input akan muncul dan, karena kode JavaScript sudah benar, datanya akan terisi saat Anda mengklik tombol **Edit**.
+                        <label for="edit-keluar">Dana Keluar:</label>
+                        <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
+                    </div>
+                </div>
+                <button onclick="updateTransaction()" class="btn-action">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
     </body>
 </html>
+
