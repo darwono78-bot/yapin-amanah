@@ -28,10 +28,9 @@
       padding: 25px 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
-
    
-    header img {
-      width: 150px@keyframes fadeIn {
+   /* Definisi Animasi Logo yang Benar (Harus di luar header img) */
+    @keyframes fadeIn {
         from {
             opacity: 0;
             transform: scale(0.8);
@@ -40,12 +39,13 @@
             opacity: 1;
             transform: scale(1);
         }
-    };
-      height: auto;
-      animation: fadeIn 1.5s ease-in;
-      filter: drop-shadow(0 0 10px gold);
     }
 
+    header img {
+        width: 150px; /* <--- UKURAN PENTING INI SUDAH DIPISAHKAN */
+        height: auto;
+        animation: fadeIn 1.5s ease-in;
+        filter: drop-shadow(0 0 10px gold);
     header h1 {
       margin-top: 10px;
       font-size: 1.8em;
@@ -369,6 +369,7 @@
   </script>
 </body>
 </html>
+
 
 
 
