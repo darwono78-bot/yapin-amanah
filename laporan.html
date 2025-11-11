@@ -452,6 +452,32 @@
 <section class="section">
     
     <h2>Laporan Pertanggungjawaban Keuangan</h2>
+    
+    <h2>Tabel Laporan Keuangan Dinamis</h2>
+    <div class="actions" style="text-align: center; margin-bottom: 20px;">
+        <button onclick="printPDF()">⬇️ Cetak Laporan Keuangan (PDF)</button>
+    </div>
+    <div id="laporan-tabel-container">
+        <table id="finance-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Uraian</th>
+                    <th style="text-align: right;">Dana Masuk (Rp)</th>
+                    <th style="text-align: right;">Dana Keluar (Rp)</th>
+                    <th style="text-align: right;">Saldo (Rp)</th>
+                    </tr>
+            </thead>
+            <tbody id="finance-body">
+                </tbody>
+            <tfoot id="finance-footer">
+                </tfoot>
+        </table>
+    </div>
+    <div class="pagination-controls" id="pagination-controls">
+        </div>
+
     <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 30px 0;">
         <div id="login-container">
             <h3>Akses Bendahara (Input Data & Kontrol)</h3>
@@ -482,33 +508,7 @@
             </div>
         </div>
     </div>
-    
-    <h2>Tabel Laporan Keuangan Dinamis</h2>
-    <div class="actions" style="text-align: center; margin-bottom: 20px;">
-        <button onclick="printPDF()">⬇️ Cetak Laporan Keuangan (PDF)</button>
-    </div>
-    <div id="laporan-tabel-container">
-        <table id="finance-table">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Uraian</th>
-                    <th style="text-align: right;">Dana Masuk (Rp)</th>
-                    <th style="text-align: right;">Dana Keluar (Rp)</th>
-                    <th style="text-align: right;">Saldo (Rp)</th>
-                    </tr>
-            </thead>
-            <tbody id="finance-body">
-                </tbody>
-            <tfoot id="finance-footer">
-                </tfoot>
-        </table>
-    </div>
-    <div class="pagination-controls" id="pagination-controls">
-        </div>
-
-</section>
+    </section>
 
 <section class="section">
     <h2>Laporan Keuangan Detail</h2>
