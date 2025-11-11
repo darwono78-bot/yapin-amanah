@@ -1,212 +1,318 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Laporan Keuangan | Yayasan Pendidikan Islam Nurul Huda</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-      scroll-behavior: smooth;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laporan Keuangan | Yayasan Pendidikan Islam Nurul Huda</title>
 
-    body {
-      background:
-        linear-gradient(rgba(0, 40, 0, 0.85), rgba(0, 40, 0, 0.85)),
-        url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      overflow-x: hidden;
-    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
-    header {
-      position: relative;
-      background: rgba(0, 60, 0, 0.9);
-      text-align: center;
-      padding: 25px 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    }
+    <style>
+        /* CSS DARI FILE LAMA ANDA */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            scroll-behavior: smooth;
+        }
 
-    header img {
-      width: 150px;
-      height: auto;
-      animation: fadeIn 1.5s ease-in;
-      filter: drop-shadow(0 0 10px gold);
-    }
+        body {
+            background:
+                linear-gradient(rgba(0, 40, 0, 0.85), rgba(0, 40, 0, 0.85)),
+                url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            overflow-x: hidden;
+        }
 
-    header h1 {
-      margin-top: 10px;
-      font-size: 1.8em;
-      color: #f8d77b;
-      text-shadow: 0 0 8px rgba(248, 215, 123, 0.7);
-    }
+        header {
+            position: relative;
+            background: rgba(0, 60, 0, 0.9);
+            text-align: center;
+            padding: 25px 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
 
-    /* ORNAMEN POJOK */
-    header .ornamen {
-      position: absolute;
-      width: 160px;
-      opacity: 0.8;
-      filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));
-      pointer-events: none;
-    }
+        header img {
+            width: 150px;
+            height: auto;
+            animation: fadeIn 1.5s ease-in;
+            filter: drop-shadow(0 0 10px gold);
+        }
 
-    .atas-kiri { top: 5px; left: 5px; transform: rotate(0deg); }
-    .atas-kanan { top: 5px; right: 5px; transform: scaleX(-1); }
-    .bawah-kiri { bottom: 5px; left: 5px; transform: scaleY(-1); }
-    .bawah-kanan { bottom: 5px; right: 5px; transform: rotate(180deg); }    nav {
-      background: rgba(0, 80, 0, 0.9);
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 10px 0;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-    }
+        header h1 {
+            margin-top: 10px;
+            font-size: 1.8em;
+            color: #f8d77b;
+            text-shadow: 0 0 8px rgba(248, 215, 123, 0.7);
+        }
 
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 8px 18px;
-      margin: 5px;
-      border-radius: 25px;
-      transition: all 0.3s ease;
-    }
+        /* ORNAMEN POJOK */
+        header .ornamen {
+            position: absolute;
+            width: 160px;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));
+            pointer-events: none;
+        }
 
-    nav a:hover, nav a.active {
-      background-color: #ffd700;
-      color: #004000;
-      transform: scale(1.05);
-    }
+        .atas-kiri { top: 5px; left: 5px; transform: rotate(0deg); }
+        .atas-kanan { top: 5px; right: 5px; transform: scaleX(-1); }
+        .bawah-kiri { bottom: 5px; left: 5px; transform: scaleY(-1); }
+        .bawah-kanan { bottom: 5px; right: 5px; transform: rotate(180deg); }
 
-    .section {
-      background: rgba(0, 45, 0, 0.93);
-      margin: 50px auto;
-      width: 90%;
-      max-width: 900px;
-      padding: 40px;
-      border-radius: 20px;
-      border: 1.8px solid rgba(255, 215, 0, 0.6);
-      box-shadow:
-        0 0 25px rgba(255, 215, 0, 0.4),
-        0 0 35px rgba(255, 215, 0, 0.2),
-        inset 0 0 25px rgba(255, 215, 0, 0.25);
-      text-align: center;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: all 1s ease;
-    }
-    .section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+        nav {
+            background: rgba(0, 80, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
 
-    h2 {
-      color: #ffd700;
-      margin-bottom: 25px;
-      font-size: 1.8em;
-      text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
-    }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 18px;
+            margin: 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      overflow: hidden;
-    }
+        nav a:hover, nav a.active {
+            background-color: #ffd700;
+            color: #004000;
+            transform: scale(1.05);
+        }
 
-    th, td {
-      padding: 12px 10px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+        .section {
+            background: rgba(0, 45, 0, 0.93);
+            margin: 50px auto;
+            width: 90%;
+            max-width: 900px;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1.8px solid rgba(255, 215, 0, 0.6);
+            box-shadow:
+                0 0 25px rgba(255, 215, 0, 0.4),
+                0 0 35px rgba(255, 215, 0, 0.2),
+                inset 0 0 25px rgba(255, 215, 0, 0.25);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-    th {
-      background: rgba(255, 215, 0, 0.2);
-      color: #ffd700;
-      font-weight: 700;
-    }
+        h2, h3 { /* H3 ditambahkan untuk sub-judul di dalam section */
+            color: #ffd700;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
+        }
 
-    tr:hover {
-      background: rgba(255, 255, 255, 0.08);
-      transition: 0.3s;
-    }
+        /* NEW: CSS untuk Form Input dan Tabel Dinamis */
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #777;
+            background-color: rgba(255, 255, 255, 0.1); /* Latar belakang transparan */
+            color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        ::placeholder {
+            color: #ccc;
+        }
 
-    .btn {
-      display: inline-block;
-      margin-top: 25px;
-      padding: 10px 25px;
-      background: #ffd700;
-      color: #004000;
-      border-radius: 25px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: 0.3s;
-      box-shadow: 0 0 12px rgba(248, 215, 123, 0.4);
-    }
+        button.btn-action {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: #ffd700;
+            color: #004000;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 0 12px rgba(248, 215, 123, 0.4);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
 
-    .btn:hover {
-      background: #fff799;
-      transform: scale(1.05);
-    }
+        button.btn-action:hover {
+            background: #fff799;
+            transform: scale(1.02);
+        }
 
-    footer {
-      background: rgba(0, 60, 0, 0.85);
-      text-align: center;
-      padding: 20px 10px;
-      color: #fff;
-      font-size: 0.9em;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
-      border-top: 1.5px solid rgba(248, 215, 123, 0.3);
-    }
+        #input-form {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
+        /* Kustomisasi Tabel untuk Konten Dinamis */
+        #laporan-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            color: #fff;
+            font-size: 0.9em;
+        }
 
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  /* --- Tombol Melayang WhatsApp & Email --- */
-  .floating-buttons {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 1000;
-  }
+        #laporan-table th, #laporan-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-  .floating-buttons a {
-    background: linear-gradient(135deg, #009900, #00cc00);
-    color: #fff;
-    text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 25px;
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-    font-weight: 600;
-    font-size: 0.95em;
-    transition: all 0.3s ease;
-  }
+        #laporan-table th {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            font-weight: 700;
+        }
 
-  .floating-buttons a.email {
-    background: linear-gradient(135deg, #e6b800, #ffcc00);
-    color: #004000;
-  }
+        #laporan-table tr:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transition: 0.3s;
+        }
 
-  .floating-buttons a:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
-  }
+        .total-row td {
+            font-weight: bold;
+            background-color: rgba(255, 255, 0, 0.2); /* Latar belakang Kuning */
+            color: #ffd700;
+        }
+        .aksi-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            font-size: 0.8em;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 2px;
+        }
+        .aksi-btn:last-child {
+            background-color: #dc3545;
+        }
+        .actions button {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-right: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .actions #reset-btn {
+            background-color: #dc3545;
+        }
+        .login-input {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #ffd700;
+            color: #004000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-  </style>
+
+        /* CSS LAMA LAINNYA */
+        .btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 25px;
+            background: #ffd700;
+            color: #004000;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 0 12px rgba(248, 215, 123, 0.4);
+        }
+
+        .btn:hover {
+            background: #fff799;
+            transform: scale(1.05);
+        }
+
+        footer {
+            background: rgba(0, 60, 0, 0.85);
+            text-align: center;
+            padding: 20px 10px;
+            color: #fff;
+            font-size: 0.9em;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
+            border-top: 1.5px solid rgba(248, 215, 123, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .floating-buttons {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .floating-buttons a {
+            background: linear-gradient(135deg, #009900, #00cc00);
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        .floating-buttons a.email {
+            background: linear-gradient(135deg, #e6b800, #ffcc00);
+            color: #004000;
+        }
+
+        .floating-buttons a:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
+        }
+
+    </style>
 </head>
 <body>
 <header>
@@ -217,34 +323,26 @@
 
     <img src="logo yayasan.png" alt="Logo Yayasan">
     <h1>Yayasan Pendidikan Islam Nurul Huda ( YAPIN )</h1>
-  </header>
+</header>
 <div style="
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle at center, rgba(255,215,0,0.15), transparent 70%);
-  filter: blur(30px);
-  z-index: 0;
-  pointer-events: none;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at center, rgba(255,215,0,0.15), transparent 70%);
+    filter: blur(30px);
+    z-index: 0;
+    pointer-events: none;
 "></div>
 
-      <marquee behavior="alternate" scrollamount="4">
-  <span style="
-    font-size: 20px;
-    color: #00FFCC;
-    text-shadow: 0 0 10px #00FFCC, 0 0 20px #009999;
-    font-weight: bold;
-  ">Yakin - Akuntabel - Profesional - Integritas - Niat Lillah  </span>
+<marquee behavior="alternate" scrollamount="4">
+    <span style="
+        font-size: 20px;
+        color: #00FFCC;
+        text-shadow: 0 0 10px #00FFCC, 0 0 20px #009999;
+        font-weight: bold;
+    ">Yakin - Akuntabel - Profesional - Integritas - Niat Lillah  </span>
 </marquee>
-    </h1>
-    <style>
-      @keyframes glow {
-        from { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
-        to { filter: drop-shadow(0 0 20px rgba(255,215,0,1)); }
-      }
-    </style>
-</header>
 
-  <nav>
+<nav>
     <a href="index.html">Beranda</a>
     <a href="profil.html">Profil</a>
     <a href="kegiatan.html">program & Kegiatan</a>
@@ -252,213 +350,328 @@
     <a href="kontak.html">Kontak & Donasi</a>
     <a href="laporan.html" class="active">Laporan Keuangan</a>
     <a href="donatur-yapin.html">Donatur YAPIN</a>
-  </nav>
+</nav>
 
-  <section class="section">
-    <h2>Laporan Keuangan Yayasan</h2>
+<section class="section">
+    <div id="login-container">
+        <h2>Login Pengurus</h2>
+        <input type="email" id="email" class="login-input" placeholder="Email Pengurus">
+        <input type="password" id="password" class="login-input" placeholder="Password">
+        <button onclick="login()" class="login-btn">Login</button>
+        <p id="auth-status" style="color: red;"></p>
+    </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Tanggal</th>
-          <th>Keterangan</th>
-          <th>Dana Masuk (Rp)</th>
-          <th>Dana Keluar (Rp)</th>
-          <th>Saldo (Rp)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>01/11/2025</td>
-          <td>Saldo bulan Oktober 2025</td>
-          <td>8.150.000</td>
-          <td>-</td>
-          <td>8.150.000</td>
-        </tr>
-        <tr>
-          <td>01/11/2025</td>
-          <td>Takziyah di Orang Tua Siswa Madin</td>
-          <td>-</td>
-          <td>85.000</td>
-          <td>8.065.000</td>
-        </tr>
-        <tr>
-          <td>03/11/2025</td>
-          <td>Takziyah</td>
-          <td>-</td>
-          <td>200.000</td>
-          <td>7.865.000</td>
-        </tr>
-        <tr>
-          <td>03/11/2025</td>
-          <td>Jenguk Orang sakit</td>
-          <td>-</td>
-          <td>200.000</td>
-          <td>7.665.000</td>
-        </tr>
-       <tr>
-          <td>03/11/2025</td>
-          <td>Beli alat Tulis Bendahara</td>
-          <td>-</td>
-          <td>32.000</td>
-          <td>7.633.000</td>
-        </tr>
-       <tr>
-          <td>04/11/2025</td>
-          <td>Bayar Bisyaroh Guru dan TU</td>
-          <td>-</td>
-          <td>1.900.000</td>
-          <td>5.733.000</td>
-        </tr>
-       <tr>
-          <td>04/11/2025</td>
-          <td>Beli Gembok kotak amal</td>
-          <td>-</td>
-          <td>100.000</td>
-          <td>5.633.000</td>
-        </tr>
-       <tr>
-          <td>04/11/2025</td>
-          <td>kurangan beli gula untuk takziyah</td>
-          <td>-</td>
-          <td>20.000</td>
-          <td>5.613.000</td>
-        </tr>
-       <tr>
-          <td>04/11/2025</td>
-          <td>servis laptop</td>
-          <td>-</td>
-          <td>400.000</td>
-          <td>5.213.000</td>
-        </tr>
-       <tr>
-          <td>04/11/2025</td>
-          <td>Bayar Listrik</td>
-          <td>-</td>
-          <td>60.000</td>
-          <td>5.153.000</td>
-        </tr>
-       <tr>
-          <td>04/11/2025</td>
-          <td>Bayar Wifi</td>
-          <td>-</td>
-          <td>100.000</td>
-          <td>5.053.000</td>
-        </tr>
-       <tr>
-          <td>04/11/2025</td>
-          <td>Bayar Pam</td>
-          <td>-</td>
-          <td>10.000</td>
-          <td>5.043.000</td>
-        </tr>
-        <tr>
-          <td>07/11/2025</td>
-          <td>uang sertivikasi</td>
-          <td>3.700.000</td>
-          <td>-</td>
-          <td>8.743.000</td>
-        </tr>
-      	<tr>
-          <td>07/11/2025</td>
-          <td>Beli Bensin</td>
-          <td>-</td>
-          <td>100.000</td>
-          <td>8.643.000</td>
-        </tr>
-        <tr>
-          <td>08/11/2025</td>
-          <td>Beli Lampu</td>
-          <td>-</td>
-          <td>100.000</td>
-          <td>8.543.000</td>
-        </tr>
-        <tr>
-          <td>08/11/2025</td>
-          <td>Beli Baut</td>
-          <td>-</td>
-          <td>10.000</td>
-          <td>8.533.000</td>
-        </tr>
-        <tr>
-          <td>08/11/2025</td>
-          <td>Jenguk Anak SAkit</td>
-          <td>-</td>
-          <td>50.000</td>
-          <td>8.483.000</td>
-        </tr>
-        <tr>
-          <td>08/11/2025</td>
-          <td>Bayar Snack Rapat</td>
-          <td>-</td>
-          <td>400.000</td>
-          <td>8.083.000</td>
-        </tr>
-             <tr>
-          <td>08/11/2025</td>
-          <td>servis dispenser</td>
-          <td>-</td>
-          <td>30.000</td>
-          <td>8.053.000</td>
-        </tr>
-              <tr>
-          <td>09/11/2025</td>
-          <td>Membeli Kitab Madin</td>
-          <td>-</td>
-          <td>60.000</td>
-          <td>7.993.000</td>
-        </tr>
-              <tr>
-          <td>10/11/2025</td>
-          <td>dana proposal cair</td>
-          <td>24.000.000</td>
-          <td>-</td>
-          <td>31.993.000</td>
-        </tr>
-      </tbody>
-    </table>
+    <div id="data-container" style="display: none;">
 
+        <p style="text-align: right;">Selamat datang, Pengurus! <button onclick="logout()" style="background-color: #6c757d;">Logout</button></p>
+
+        <h3>Laporan Kas Bulanan (Data Realtime)</h3>
+
+        <div class="actions" style="text-align: left; margin-bottom: 20px;">
+            <button onclick="downloadPDF()">Unduh Laporan PDF</button>
+            <button id="reset-btn" onclick="resetData()">Reset Data (Ganti Bulan)</button>
+        </div>
+
+        <table id="laporan-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">No</th>
+                    <th style="width: 15%;">Tanggal</th>
+                    <th style="width: 35%;">Uraian</th>
+                    <th style="width: 15%;">Dana Masuk</th>
+                    <th style="width: 15%;">Dana Keluar</th>
+                    <th style="width: 10%;">Saldo</th>
+                    <th style="width: 5%;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="laporan-body">
+                </tbody>
+            <tfoot id="laporan-footer">
+                </tfoot>
+        </table>
+
+        <div id="input-form">
+            <h3>Input Transaksi Baru</h3>
+            <input type="date" id="input-tanggal" required>
+            <input type="text" id="input-uraian" placeholder="Uraian Transaksi" required>
+
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="input-masuk" placeholder="Dana Masuk (0 jika Keluar)">
+                <input type="number" id="input-keluar" placeholder="Dana Keluar (0 jika Masuk)">
+            </div>
+
+            <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <h2>Dokumen Laporan Keuangan Sebelumnya</h2>
+    <p>Lihat laporan pertanggungjawaban keuangan Yayasan untuk bulan-bulan sebelumnya:</p>
     <a href="https://sites.google.com/view/laporankeuangantransparan" target="_blank" class="btn">
-      🔗 Lihat Laporan Lengkap di DI SINI
+        🔗 Lihat Laporan Lengkap di DI SINI
     </a><p>
-  <a href="https://docs.google.com/spreadsheets/d/1DdTczB7j_YhEhSchQEl-1zpi4-QpMYt1/edit?gid=799962566#gid=799962566" target="_blank" class="btn">
-      🔗 Laporan Lengkap Oktober 2025
+    <a href="https://docs.google.com/spreadsheets/d/1DdTczB7j_YhEhSchQEl-1zpi4-QpMYt1/edit?gid=799962566#gid=799962566" target="_blank" class="btn">
+        🔗 Laporan Lengkap Oktober 2025
     </a>
-  </section>
-  <section class="section">
-    <h2>Laporan Keuangan Yayasan</h2>
-    <p>Berikut ini adalah laporan pertanggungjawaban keuangan Yayasan Pendidikan Islam Nurul Huda untuk bulan Oktober 2025.  
-      Laporan ini disusun secara transparan untuk mendukung akuntabilitas pengelolaan dana yayasan.</p>
-  <a href="LPJ_Keuangan_Oktober_2025.pdf" target="_blank" class="btn">
-      🔗 Unduh Laporan PDF
+    <p>
+    <a href="LPJ_Keuangan_Oktober_2025.pdf" target="_blank" class="btn">
+        🔗 Unduh Laporan PDF (Okt 2025)
     </a>
-  </section>
-<p><br>
+</section>
 
-   </section>
 
-    <footer>
+<footer>
     &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
-  </footer>
-  <div class="floating-buttons">
+</footer>
+<div class="floating-buttons">
     <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
-  </div>
-  <script>
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script>
+    // =========================================================================
+    // !!! KUNCI FIREBASE ASLI ANDA SUDAH DIPASANG DI SINI !!!
+    // =========================================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
+        authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
+        projectId: "laporan-keuangan-yayasan",
+        storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
+        messagingSenderId: "616927572689",
+        appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
+    };
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // -----------------------------------------------------------
+    // 1. FUNGSI UTILITY (PENGGUNAAN UMUM)
+    // -----------------------------------------------------------
+
+    function formatRupiah(angka) {
+        if (typeof angka !== 'number') {
+            angka = parseInt(angka) || 0;
+        }
+        return new Intl.NumberFormat('id-ID').format(angka);
+    }
+
+    // -----------------------------------------------------------
+    // 2. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
+    // -----------------------------------------------------------
+
+    function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const statusText = document.getElementById('auth-status');
+
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                statusText.textContent = 'Login Berhasil!';
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('data-container').style.display = 'block';
+                loadData();
+            })
+            .catch((error) => {
+                statusText.textContent = `Login Gagal: ${error.message}`;
+            });
+    }
+
+    function logout() {
+        auth.signOut().then(() => {
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('data-container').style.display = 'none';
+            document.getElementById('auth-status').textContent = 'Anda telah Logout.';
+        });
+    }
+
+    // Cek Status Login Saat Memuat Halaman
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('data-container').style.display = 'block';
+            loadData();
+        } else {
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('data-container').style.display = 'none';
+        }
+    });
+
+    // -----------------------------------------------------------
+    // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT - SIMPLIFIED)
+    // -----------------------------------------------------------
+
+    function addTransaction() {
+        const tanggal = document.getElementById('input-tanggal').value;
+        const uraian = document.getElementById('input-uraian').value;
+        const masuk = parseInt(document.getElementById('input-masuk').value) || 0;
+        const keluar = parseInt(document.getElementById('input-keluar').value) || 0;
+
+        if (!tanggal || !uraian) {
+            alert("Tanggal dan Uraian wajib diisi!");
+            return;
+        }
+        if (masuk > 0 && keluar > 0) {
+             alert("Transaksi harus Dana Masuk saja atau Dana Keluar saja. Tidak bisa keduanya.");
+             return;
+        }
+
+        db.collection("transaksi").add({
+            tanggal: tanggal,
+            uraian: uraian,
+            danaMasuk: masuk,
+            danaKeluar: keluar,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            // Bersihkan input setelah disimpan
+            document.getElementById('input-uraian').value = '';
+            document.getElementById('input-masuk').value = '';
+            document.getElementById('input-keluar').value = '';
+        })
+        .catch((error) => {
+            alert("Error menyimpan data: " + error.message);
+        });
+    }
+
+
+    function loadData() {
+        const tableBody = document.getElementById('laporan-body');
+        const tableFooter = document.getElementById('laporan-footer');
+
+        // Urutkan berdasarkan waktu paling lama (ASC) agar perhitungan Saldo benar
+        db.collection("transaksi").orderBy("timestamp", "asc")
+        .onSnapshot((snapshot) => {
+            tableBody.innerHTML = '';
+            tableFooter.innerHTML = ''; // Clear footer
+
+            let saldoKumulatif = 0;
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+            let no = 1;
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const id = doc.id;
+
+                // Hitung Saldo dan Total
+                saldoKumulatif += data.danaMasuk - data.danaKeluar;
+                totalMasuk += data.danaMasuk;
+                totalKeluar += data.danaKeluar;
+
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = no++;
+                row.insertCell(1).textContent = data.tanggal;
+                row.insertCell(2).textContent = data.uraian;
+                row.insertCell(3).textContent = formatRupiah(data.danaMasuk);
+                row.insertCell(4).textContent = formatRupiah(data.danaKeluar);
+                row.insertCell(5).textContent = formatRupiah(saldoKumulatif);
+
+                // Kolom Aksi
+                const actionCell = row.insertCell(6);
+                actionCell.innerHTML = `
+                    <button class="aksi-btn" onclick="alert('Fungsi Edit memerlukan popup/modal tambahan.')">Edit</button>
+                    <button class="aksi-btn" onclick="deleteTransaction('${id}')">Hapus</button>
+                `;
+            });
+
+            // Tampilkan Saldo Akhir di Footer
+            const footerRow = tableFooter.insertRow();
+            footerRow.className = 'total-row';
+            footerRow.insertCell(0).colSpan = 3;
+            footerRow.insertCell(0).textContent = 'TOTAL AKHIR:';
+            footerRow.insertCell(1).textContent = formatRupiah(totalMasuk);
+            footerRow.insertCell(2).textContent = formatRupiah(totalKeluar);
+            footerRow.insertCell(3).textContent = formatRupiah(saldoKumulatif);
+            footerRow.insertCell(4).textContent = ''; // Kolom Aksi
+        });
+    }
+
+
+    function deleteTransaction(docId) {
+        if (confirm("Yakin ingin menghapus transaksi ini?")) {
+            db.collection("transaksi").doc(docId).delete()
+            .then(() => {
+                console.log("Transaksi berhasil dihapus!");
+            })
+            .catch((error) => {
+                alert("Error menghapus: " + error.message);
+            });
+        }
+    }
+
+    // Fungsi Reset (Riset) Data Bulanan
+    function resetData() {
+        if (!confirm("PERINGATAN! Ini akan menghapus SEMUA data transaksi (Reset Bulanan). Pastikan Anda sudah mengunduh laporannya. Lanjutkan?")) {
+            return;
+        }
+
+        // Menjalankan Batch Delete
+        db.collection("transaksi").get().then((snapshot) => {
+            const batch = db.batch();
+            snapshot.docs.forEach((doc) => {
+                batch.delete(doc.ref);
+            });
+
+            return batch.commit();
+        }).then(() => {
+            alert("Semua data transaksi berhasil direset (dihapus). Saldo kembali 0.");
+        }).catch((error) => {
+            alert("Gagal mereset data: " + error.message);
+        });
+    }
+
+
+    // -----------------------------------------------------------
+    // 4. FUNGSI UNDUH PDF
+    // -----------------------------------------------------------
+
+    function downloadPDF() {
+        const tableToPrint = document.getElementById('laporan-table').cloneNode(true);
+
+        // Hapus kolom Aksi di tabel salinan untuk PDF
+        tableToPrint.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
+
+        // Tambahkan judul laporan di atas tabel
+        const header = document.createElement('h2');
+        header.textContent = 'LAPORAN KEUANGAN YAYASAN';
+        header.style.textAlign = 'center';
+
+        const dateInfo = document.createElement('p');
+        dateInfo.textContent = `Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`;
+        dateInfo.style.textAlign = 'right';
+
+        const element = document.createElement('div');
+        element.appendChild(header);
+        element.appendChild(dateInfo);
+        element.appendChild(tableToPrint);
+
+        html2pdf(element, {
+            margin: 10,
+            filename: 'Laporan_Keuangan_' + new Date().toLocaleDateString('id-ID') + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        });
+    }
+
+</script>
+<script>
+    // Script untuk Animasi Scroll Anda
     const sections = document.querySelectorAll('.section');
     window.addEventListener('scroll', () => {
-      const triggerBottom = window.innerHeight * 0.85;
-      sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        if(sectionTop < triggerBottom) section.classList.add('visible');
-      });
+        const triggerBottom = window.innerHeight * 0.85;
+        sections.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top;
+            if(sectionTop < triggerBottom) section.classList.add('visible');
+        });
     });
-  </script>
+</script>
 </body>
 </html>
-
-
-
-
-
-
