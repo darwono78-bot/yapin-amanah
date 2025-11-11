@@ -588,16 +588,26 @@
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
             
-            // Colspan akan mencakup kolom No, Tanggal, Nama, Alamat. Jika admin login, ada tambahan 1 kolom (Aksi)
+            // Kolom Jumlah Donasi ada di indeks 4 (kolom ke-5). 
+            // Kita ingin teks 'TOTAL DONASI...' menempati kolom 1 sampai 4.
+            let colSpanValue = 4; // Kolom No, Tanggal, Nama, Alamat
+
+            // Kolom 1 (Label TOTAL DONASI)
             const totalLabelCell = footerRow.insertCell(0);
-            totalLabelCell.colSpan = isLoggedIn ? 5 : 4; 
+            totalLabelCell.colSpan = colSpanValue; 
             totalLabelCell.textContent = 'TOTAL DONASI BULAN INI:';
             totalLabelCell.style.textAlign = 'right'; 
 
-            // Kolom Jumlah Donasi
+            // Kolom 2 (Jumlah Donasi Total) - Ini akan diletakkan tepat di bawah kolom Jumlah Donasi
             const totalAmountCell = footerRow.insertCell(1);
             totalAmountCell.textContent = formatRupiah(totalDonasi);
             totalAmountCell.style.textAlign = 'right';
+
+            // Jika admin login, perlu satu sel kosong lagi untuk mengisi kolom Aksi (indeks 5)
+            if (isLoggedIn) {
+                const emptyActionCell = footerRow.insertCell(2);
+                emptyActionCell.textContent = '';
+            }
         });
     }
 
