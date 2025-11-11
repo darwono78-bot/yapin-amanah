@@ -29,17 +29,25 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
    
-   /* Definisi Animasi Logo yang Benar (Harus di luar header img) */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
+  /* 1. DEFINISI ANIMASI (HARUS DI LUAR SELEKTOR APAPUN) */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
     }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 2. SELEKTOR LOGO (MEMANGGIL ANIMASI) */
+header img {
+    width: 150px; /* PROPERTI UKURAN SUDAH BERDIRI SENDIRI */
+    height: auto;
+    animation: fadeIn 1.5s ease-in;
+    filter: drop-shadow(0 0 10px gold);
+}
 
     header img {
         width: 150px; /* <--- UKURAN PENTING INI SUDAH DIPISAHKAN */
@@ -369,6 +377,7 @@
   </script>
 </body>
 </html>
+
 
 
 
