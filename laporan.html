@@ -194,6 +194,7 @@
             font-weight: bold;
             background-color: rgba(255, 255, 0, 0.2); /* Latar belakang Kuning */
             color: #ffd700;
+            /* Pastikan teks total rata kanan untuk label */
         }
         .aksi-btn {
             background-color: #28a745;
@@ -465,7 +466,8 @@
         if (typeof angka !== 'number') {
             angka = parseInt(angka) || 0;
         }
-        return new Intl.NumberFormat('id-ID').format(angka);
+        // Pastikan format ribuan tanpa desimal
+        return new Intl.NumberFormat('id-ID', { style: 'decimal', minimumFractionDigits: 0 }).format(angka);
     }
 
     // -----------------------------------------------------------
@@ -620,16 +622,27 @@
             // Tampilkan Saldo Akhir di Footer
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
-            footerRow.insertCell(0).colSpan = 3;
-            footerRow.insertCell(0).textContent = 'TOTAL AKHIR:';
+
+            // Menentukan Colspan: 3 (jika 6 kolom total) atau 4 (jika 7 kolom total/admin login)
+            let colSpanValue = 3;
+            if (isLoggedIn) {
+                colSpanValue = 4;
+            }
+
+            // Kolom 1 (Label TOTAL AKHIR)
+            const totalLabelCell = footerRow.insertCell(0);
+            totalLabelCell.colSpan = colSpanValue; // 3 atau 4
+            totalLabelCell.textContent = 'TOTAL AKHIR:';
+            totalLabelCell.style.textAlign = 'right'; // Rata kanan
+
+            // Kolom 2 (Dana Masuk Total)
             footerRow.insertCell(1).textContent = formatRupiah(totalMasuk);
+            // Kolom 3 (Dana Keluar Total)
             footerRow.insertCell(2).textContent = formatRupiah(totalKeluar);
+            // Kolom 4 (Saldo Kumulatif Akhir)
             footerRow.insertCell(3).textContent = formatRupiah(saldoKumulatif);
             
-            // Tambahkan kolom kosong di footer jika kolom Aksi ada
-            if (isLoggedIn) {
-                footerRow.insertCell(4).textContent = ''; 
-            }
+            // Tidak perlu kolom tambahan, karena colSpan sudah mengakomodir semua kolom di sebelah kiri Masuk.
         });
     }
 
@@ -675,16 +688,34 @@
     // -----------------------------------------------------------
 
     function downloadPDF() {
-        // Ambil elemen tabel laporan
+        // 1. Clone the table (termasuk body dan footer yang sudah terisi oleh loadData)
         const tableToPrint = document.getElementById('laporan-table').cloneNode(true);
+        const actionIndex = 6; // Kolom Aksi selalu di indeks ke-6 (kolom ke-7) jika ada
 
-        // Hapus kolom Aksi di tabel salinan untuk PDF jika ada
-        const lastHeader = tableToPrint.querySelector('thead tr th:last-child');
-        if (lastHeader && lastHeader.textContent.trim() === 'Aksi') {
-            tableToPrint.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
+        // 2. Cek apakah kolom Aksi ada di tabel yang di-clone
+        const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
+        
+        if (isActionColumnPresent) {
+            // A. Hapus Header 'Aksi'
+            tableToPrint.querySelector('thead tr th:last-child').remove();
+            
+            // B. Hapus sel 'Aksi' di baris-baris data (tbody)
+            tableToPrint.querySelectorAll('tbody tr').forEach(row => {
+                if (row.cells.length > actionIndex) { 
+                    row.cells[actionIndex].remove();
+                }
+            });
+
+            // C. Perbaiki Colspan di Footer (tfoot)
+            const footerRow = tableToPrint.querySelector('tfoot .total-row');
+            if (footerRow) {
+                const totalLabelCell = footerRow.querySelector('td:first-child');
+                // Colspan harus dikurangi dari 4 (saat ada Aksi) menjadi 3 (saat Aksi dihapus)
+                totalLabelCell.colSpan = 3; 
+            }
         }
 
-        // 1. Tambahkan CSS Style untuk Cetak yang Jelas
+        // 3. Tambahkan CSS Style untuk Cetak yang Jelas
         const style = document.createElement('style');
         style.textContent = `
             /* Aturan Umum */
@@ -723,23 +754,27 @@
                 color: black;
                 border-top: 2px solid #333;
             }
+            /* Pastikan Label Total Rata Kanan di PDF */
+            .total-row td:first-child {
+                text-align: right;
+            }
         `;
 
-        // Tambahkan judul dan informasi tanggal
+        // 4. Tambahkan judul dan informasi tanggal
         const header = document.createElement('h2');
         header.textContent = 'LAPORAN KEUANGAN YAYASAN';
 
         const dateInfo = document.createElement('p');
         dateInfo.textContent = `Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`;
 
-        // Masukkan semua elemen (Style, Judul, Tanggal, Tabel) ke dalam satu kontainer
+        // 5. Masukkan semua elemen ke dalam satu kontainer
         const element = document.createElement('div');
         element.appendChild(style);
         element.appendChild(header);
         element.appendChild(dateInfo);
-        element.appendChild(tableToPrint);
+        element.appendChild(tableToPrint); // Menggunakan tabel yang sudah dibersihkan dari kolom Aksi
 
-        // Pengaturan html2pdf
+        // 6. Pengaturan html2pdf
         html2pdf(element, {
             margin: 10,
             filename: 'Laporan_Keuangan_' + new Date().toLocaleDateString('id-ID') + '.pdf',
