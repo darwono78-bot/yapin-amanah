@@ -356,6 +356,10 @@
     
     <h2>Laporan Kas Bulanan (Transparansi Publik)</h2>
 
+    <div class="actions" style="text-align: right; margin-bottom: 20px;">
+        <button onclick="downloadPDF()" style="background-color: #008CBA;">Unduh Laporan PDF</button>
+    </div>
+
     <table id="laporan-table">
         <thead>
             <tr>
@@ -388,8 +392,7 @@
         <p style="text-align: right;">Selamat datang, Pengurus! <button onclick="logout()" style="background-color: #6c757d;">Logout</button></p>
 
         <div class="actions" style="text-align: left; margin-bottom: 20px;">
-            <button onclick="downloadPDF()">Unduh Laporan PDF</button>
-            <button id="reset-btn" onclick="resetData()">Reset Data (Ganti Bulan)</button>
+            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545;">Reset Data (Ganti Bulan)</button>
         </div>
 
         <div id="input-form">
@@ -453,10 +456,6 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
     
-    // Variabel untuk melacak apakah kolom aksi sudah ditambahkan (hanya jika admin login)
-    let isActionColumnAdded = false;
-
-
     // -----------------------------------------------------------
     // 1. FUNGSI UTILITY (PENGGUNAAN UMUM)
     // -----------------------------------------------------------
@@ -509,7 +508,6 @@
             document.getElementById('login-container').style.display = 'block';
             document.getElementById('input-control-container').style.display = 'none';
         }
-        // loadData dipanggil setelah blok ini agar publik bisa melihat data segera
     });
 
 
@@ -566,9 +564,6 @@
             actionHeader.textContent = 'Aksi';
             actionHeader.style.width = '5%';
             headerRow.appendChild(actionHeader);
-            isActionColumnAdded = true;
-        } else {
-            isActionColumnAdded = false;
         }
     }
 
@@ -639,13 +634,15 @@
 
 
     function deleteTransaction(docId) {
-        if (confirm("Yakin ingin menghapus transaksi ini?")) {
+        // Karena aturan Firebase sudah memblokir, kita hanya perlu konfirmasi di sini
+        if (confirm("Yakin ingin menghapus transaksi ini? (Hanya Admin yang sudah login yang bisa menghapus)")) {
             db.collection("transaksi").doc(docId).delete()
             .then(() => {
                 console.log("Transaksi berhasil dihapus!");
             })
             .catch((error) => {
-                alert("Error menghapus: " + error.message);
+                // Pesan error ini mungkin muncul jika admin logout tapi masih mencoba menekan tombol lama
+                alert("Error menghapus: Pastikan Anda masih login. " + error.message);
             });
         }
     }
@@ -673,13 +670,13 @@
 
 
     // -----------------------------------------------------------
-    // 4. FUNGSI UNDUH PDF
+    // 4. FUNGSI UNDUH PDF (BISA DIAKSES PUBLIK)
     // -----------------------------------------------------------
 
     function downloadPDF() {
         const tableToPrint = document.getElementById('laporan-table').cloneNode(true);
 
-        // Hapus kolom Aksi di tabel salinan untuk PDF jika ada
+        // Hapus kolom Aksi di tabel salinan untuk PDF jika ada (saat admin login)
         const lastHeader = tableToPrint.querySelector('thead tr th:last-child');
         if (lastHeader && lastHeader.textContent.trim() === 'Aksi') {
             tableToPrint.querySelectorAll('th:last-child, td:last-child').forEach(el => el.remove());
