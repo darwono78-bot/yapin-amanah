@@ -125,64 +125,72 @@
             text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
         }
 
-        /* CSS untuk Modal Edit BARU */
-        .modal-overlay {
-            display: none; /* Default: Sembunyikan */
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-        }
+        /* --- START: CSS UNTUK EDIT MODAL --- */
+.modal-overlay {
+    display: none; /* WAJIB: Awalnya tersembunyi */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7); 
+    justify-content: center;
+    align-items: center;
+}
 
-        .modal-content {
-            background: rgba(0, 45, 0, 0.95);
-            margin: 5% auto;
-            padding: 30px;
-            border: 1.8px solid rgba(255, 215, 0, 0.6);
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
-            animation: fadeIn 0.5s ease-out;
-        }
+.modal-content {
+    background-color: rgba(0, 50, 0, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    animation: fadeIn 0.4s ease-out;
+    border: 1px solid #ffd700;
+}
 
-        .modal-content label {
-            display: block;
-            margin-top: 10px;
-            color: #ffd700;
-            font-weight: 600;
-            text-align: left;
-        }
+.close-btn {
+    color: #ffd700;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
 
-        .modal-content input[type="date"],
-        .modal-content input[type="text"],
-        .modal-content input[type="number"] {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
+.modal-content h3 {
+    color: #ffd700;
+    margin-bottom: 20px;
+    text-align: center;
+}
 
-        .close-btn {
-            color: #ffd700;
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+/* Penyesuaian agar input group (Masuk/Keluar) sejajar */
+#edit-form-container .input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
 
-        .close-btn:hover,
-        .close-btn:focus {
-            color: #fff;
-        }
-        
+#edit-form-container .input-group > div {
+    flex: 1;
+}
+
+#edit-form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ffd700;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+/* --- END: CSS UNTUK EDIT MODAL --- */
         /* CSS untuk Form Input dan Tabel Dinamis */
         input[type="number"], input[type="text"], input[type="email"], input[type="password"], input[type="date"], select {
             padding: 12px;
@@ -794,10 +802,9 @@ function deleteTransaction(id) {
         });
 }
 
-// =========================================================================
-// 5. FUNGSI EDIT DATA (MODAL POP-UP)
-// =========================================================================
+// --- START: VARIABEL DAN FUNGSI EDIT MODAL ---
 
+// Deklarasi Variabel Modal (WAJIB ADA DI AWAL BLOK <script> ANDA)
 const editModal = document.getElementById('edit-modal');
 const editIdInput = document.getElementById('edit-id');
 const editTanggalInput = document.getElementById('edit-tanggal');
@@ -805,77 +812,75 @@ const editUraianInput = document.getElementById('edit-uraian');
 const editMasukInput = document.getElementById('edit-masuk');
 const editKeluarInput = document.getElementById('edit-keluar');
 
+
+// 1. Fungsi untuk menutup Modal Edit
 function closeEditModal() {
     editModal.style.display = 'none';
 }
 
+// 2. Fungsi untuk membuka Modal Edit dan mengisi data
 function openEditModal(docId) {
-    // 1. Ambil data dari Firestore berdasarkan docId
     db.collection(FINANCE_COLLECTION).doc(docId).get()
         .then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 
-                // 2. Isi hidden ID
+                // Konversi Firestore Timestamp ke format 'YYYY-MM-DD' untuk input type="date"
+                let timestamp = data.tanggal.toDate();
+                let tanggalStr = timestamp.getFullYear() + '-' + 
+                                 String(timestamp.getMonth() + 1).padStart(2, '0') + '-' + 
+                                 String(timestamp.getDate()).padStart(2, '0');
+
+                // Isi data ke dalam field modal
                 editIdInput.value = docId;
-
-                // 3. Isi field input
-                let tanggalStr = data.tanggal || new Date().toISOString().substring(0, 10); 
-                if (data.timestamp && data.timestamp.toDate && !data.tanggal) {
-                    tanggalStr = data.timestamp.toDate().toISOString().substring(0, 10);
-                }
-
-                editTanggalInput.value = tanggalStr;
+                editTanggalInput.value = tanggalStr; 
                 editUraianInput.value = data.uraian || '';
                 editMasukInput.value = data.danaMasuk || 0; 
                 editKeluarInput.value = data.danaKeluar || 0; 
 
-                // 4. Tampilkan modal
+                // Tampilkan modal
                 editModal.style.display = 'flex';
-                // Tutup modal jika user klik di luar area modal
-                editModal.onclick = (e) => {
-                    if (e.target.id === 'edit-modal') {
-                        closeEditModal();
-                    }
-                };
-
             } else {
                 alert("Dokumen tidak ditemukan!");
             }
         })
         .catch((error) => {
-            alert("Error mengambil data untuk edit: " + error.message);
+            console.error("Error fetching document:", error);
+            alert("Terjadi kesalahan saat mengambil data.");
         });
 }
 
+// 3. Fungsi untuk menyimpan perubahan
 function updateTransaction() {
     const docId = editIdInput.value;
-    const tanggal = editTanggalInput.value;
-    const uraian = editUraianInput.value;
+    const tanggal = editTanggalInput.value ? new Date(editTanggalInput.value) : null;
+    const uraian = editUraianInput.value.trim();
     const danaMasuk = parseInt(editMasukInput.value) || 0;
     const danaKeluar = parseInt(editKeluarInput.value) || 0;
 
-    if (!tanggal || !uraian || (danaMasuk === 0 && danaKeluar === 0)) {
-        alert("Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!");
+    if (!tanggal || uraian === '' || (danaMasuk === 0 && danaKeluar === 0)) {
+        alert("Tanggal, Uraian wajib diisi, dan salah satu Dana (Masuk/Keluar) harus diisi!");
         return;
     }
 
     db.collection(FINANCE_COLLECTION).doc(docId).update({
-        tanggal: tanggal,
+        tanggal: firebase.firestore.Timestamp.fromDate(tanggal),
         uraian: uraian,
         danaMasuk: danaMasuk,
         danaKeluar: danaKeluar,
-        // timestamp tidak perlu diupdate
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
         alert("Transaksi berhasil diperbarui!");
         closeEditModal();
-        loadData(); // Muat ulang data untuk menampilkan perubahan
+        loadData(); // Muat ulang data tabel
     })
     .catch((error) => {
-        alert("Error memperbarui data: Pastikan Anda login. " + error.message);
+        console.error("Error updating document: ", error);
+        alert("Error menyimpan perubahan.");
     });
 }
+// --- END: VARIABEL DAN FUNGSI EDIT MODAL ---
 
 // =========================================================================
 // 6. FUNGSI PRINT/PDF
@@ -975,6 +980,53 @@ document.addEventListener('DOMContentLoaded', loadData);
             }
         });
     });
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Edit Transaksi</h3>
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <div id="edit-form-container">
+                <input type="hidden" id="edit-id"> 
+
+                <label for="edit-tanggal">Tanggal:</label>
+                <input type="date" id="edit-tanggal" required>
+                
+                <label for="edit-uraian">Uraian:</label>
+                <input type="text" id="edit-uraian" placeholder="Uraian Transaksi" required>
+                
+                <div class="input-group">
+                    <div>
+                        <label for="edit-masuk">Dana Masuk:</label>
+                        <input type="number" id="edit-masuk" placeholder="Jumlah Dana Masuk">
+                    </div>
+                    <div>
+                        <label for="edit-keluar">Dana Keluar:</label>
+                        <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
+                    </div>
+                </div>
+                <button onclick="updateTransaction()" class="btn-action">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+    ```
+
+## 4. Perubahan Tombol Edit di Tabel
+
+Terakhir, pastikan tombol Edit di tabel Anda memanggil fungsi yang baru.
+
+**Ubah kode di dalam fungsi `renderFinanceTable(docs)` (sekitar baris yang membuat tombol aksi) menjadi seperti ini:**
+
+```javascript
+// Di dalam fungsi renderFinanceTable(docs) ...
+// ...
+if (isLoggedIn) {
+    const actionCell = row.insertCell(6);
+    // PASTIKAN TOMBOL EDIT MEMANGGIL openEditModal DENGAN ID DOKUMEN:
+    actionCell.innerHTML = `
+        <button class="aksi-btn" onclick="openEditModal('${id}')">Edit</button>
+        <button class="aksi-btn" onclick="deleteTransaction('${id}')">Hapus</button>
+    `;
+}
+// ...
 
 </script>
 </head>
@@ -1123,4 +1175,5 @@ Dengan mengoreksi struktur HTML modal ini, semua *field* input akan muncul dan, 
     </div>
     </body>
 </html>
+
 
