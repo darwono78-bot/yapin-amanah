@@ -13,34 +13,38 @@
 
     <style>
         :root {
-            --green-primary: #27ae60; 
-            --yellow-secondary: #f1c40f; 
-            --dark-bg: #1e3d2a; 
-            --container-bg: #2c3e50; 
+            --green-primary: #27ae60;         /* Hijau Tombol/Aksen */
+            --yellow-secondary: #f1c40f;      /* Kuning Tombol */
+            --dark-green-bg: #1e3d2a;         /* Background Badan & Nav Bar */
+            --container-bg: #2c3e50;          /* Background Kontainer Utama (Login/Tabel) */
+            --table-header-bg: #1a242c;       /* Header Tabel */
+            --header-bar-bg: #2ecc71;         /* Bar Paling Atas (Yakin - Akuntabel...) */
             --text-light: #ecf0f1;
             --text-dark: #333;
-            --table-header-bg: #1a242c;
-            --menu-bar-bg: #1abc9c;
         }
 
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--dark-bg); 
+            background-color: var(--dark-green-bg); 
             color: var(--text-light);
             text-align: center;
         }
         
-        /* Header Menu Bar */
+        /* Bar Paling Atas (Bright Green) */
         .header-top {
-            background-color: var(--menu-bar-bg);
+            background-color: var(--header-bar-bg);
             padding: 10px 0;
             text-align: center;
             font-size: 14px;
+            color: white;
+            font-weight: bold;
         }
+
+        /* Navigasi Bar (Dark Green) */
         nav {
-            background-color: var(--dark-bg);
+            background-color: var(--dark-green-bg);
             padding: 10px 0;
             text-align: center;
         }
@@ -50,6 +54,12 @@
             padding: 10px 15px;
             margin: 0 5px;
             display: inline-block;
+            transition: background-color 0.2s;
+        }
+        nav a:last-child {
+            /* Menyesuaikan menu Laporan Keuangan yang terpilih */
+            background-color: var(--green-primary); 
+            border-radius: 3px;
         }
 
         .container {
@@ -105,10 +115,6 @@
             transition: background-color 0.3s;
         }
 
-        button:hover {
-            background-color: #2ecc71;
-        }
-        
         /* --- Tombol Kuning/Emas (Simpan, Login) --- */
         .btn-action, button[onclick*="login"], #save-edit-btn {
             background-color: var(--yellow-secondary) !important;
@@ -187,7 +193,8 @@
         }
 
         .modal-content {
-            background-color: var(--dark-bg); /* Warna Modal Hijau Gelap */
+            /* Warna dan border Modal sesuai screenshot */
+            background-color: var(--dark-green-bg); 
             margin: 10% auto;
             padding: 25px;
             border: 3px solid var(--yellow-secondary);
@@ -195,7 +202,7 @@
             max-width: 450px;
             border-radius: 10px;
             position: relative;
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.5); /* Bayangan Emas */
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.5); 
             text-align: left;
         }
         
@@ -223,7 +230,7 @@
         <div style="max-width: 1200px; margin: auto; text-align: left;">
             <a href="#">Beranda</a>
             <a href="#">Profil</a>
-            <a href="#" style="background-color: var(--green-primary); padding: 5px 10px; border-radius: 3px;">Laporan Keuangan</a>
+            <a href="#">Laporan Keuangan</a>
         </div>
     </nav>
 
