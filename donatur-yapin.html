@@ -447,13 +447,19 @@
         </div>
     <hr style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 30px 0;">
 
-    <div id="login-container">
-        <h3>Akses Bendahara (Input Data & Kontrol)</h3>
-        <input type="email" id="email" class="login-input" placeholder="Email Bendahara">
-        <input type="password" id="password" class="login-input" placeholder="Password">
-        <button onclick="login()" class="login-btn">Login Bendahara</button>
-        <p id="auth-status" style="color: red;"></p>
-    </div>
+    <button onclick="toggleLoginInputs()" id="login-toggle-btn" class="btn-action">Tampilkan Login Bendahara</button>
+<div id="login-inputs-area" style="display: none;">
+    <h3>Akses Bendahara</h3>
+    <label for="email">Email Bendahara:</label>
+    <input type="email" id="email" placeholder="Email Bendahara" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Password" required>
+    
+    <button onclick="login()" class="btn-action">Login Sekarang</button>
+    <p id="login-error-status" style="color: #e74c3c;"></p>
+</div>
+
+<p id="auth-status" style="text-align: center;"></p>
 
     <div id="input-control-container" style="display: none;">
 
@@ -648,7 +654,23 @@
             document.getElementById('auth-status').style.color = 'red';
         });
     }
+// =========================================================================
+// FUNGSI BARU: TOGGLE TAMPILAN LOGIN
+// =========================================================================
+window.toggleLoginInputs = function() {
+    const loginArea = document.getElementById('login-inputs-area');
+    const toggleBtn = document.getElementById('login-toggle-btn');
 
+    if (loginArea.style.display === 'none' || loginArea.style.display === '') {
+        // Tampilkan input dan ubah teks tombol
+        loginArea.style.display = 'block';
+        toggleBtn.textContent = 'Sembunyikan Login';
+    } else {
+        // Sembunyikan input dan kembalikan teks tombol
+        loginArea.style.display = 'none';
+        toggleBtn.textContent = 'Tampilkan Login Bendahara';
+    }
+}
     // Cek Status Login Saat Memuat Halaman & Perubahan Status
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -1045,4 +1067,5 @@
 </script>
 </body>
 </html>
+
 
