@@ -362,68 +362,6 @@
             border: 1px solid #ffd700;
         }
         /* END CSS Tambahan */
-
-        /* CSS untuk Modal Edit */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 2000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0, 0, 0, 0.8); 
-            padding-top: 50px;
-        }
-
-        .modal-content {
-            background-color: rgba(0, 40, 0, 0.95);
-            margin: 5% auto; 
-            padding: 30px;
-            border: 2px solid #ffd700;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
-            position: relative;
-            animation: fadeIn 0.4s;
-            text-align: center;
-        }
-
-        .close-btn {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 1; 
-            transition: 0.3s;
-        }
-
-        .close-btn:hover,
-        .close-btn:focus {
-            color: #fff;
-            text-decoration: none;
-            transform: scale(1.1);
-        }
-
-        .modal-content input[type="text"],
-        .modal-content input[type="number"] {
-            background-color: rgba(255, 255, 255, 0.15);
-            border: 1px solid #777;
-            margin-bottom: 15px;
-        }
-        .modal-content label {
-            text-align: left; 
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9em;
-            color: #ffd700;
-        }
-        .modal-content .btn-action {
-            width: 100%;
-        }
     </style>
 </head>
 <body>
@@ -481,7 +419,7 @@
                 <th style="width: 15%;">Dana Masuk</th>
                 <th style="width: 15%;">Dana Keluar</th>
                 <th style="width: 15%;">Saldo</th>
-            </tr>
+                </tr>
         </thead>
         <tbody id="finance-body">
             
@@ -531,10 +469,10 @@
      <section class="section">
     <h2>Laporan Keuangan Detail</h2>
      <a href="https://sites.google.com/view/laporankeuangantransparan" target="_blank" class="btn">
-      <span style="font-family: 'Wingdings 3';"></span> Lihat Laporan Lengkap di DI SINI
+      迫 Lihat Laporan Lengkap di DI SINI
     </a><p>
   <a href="https://docs.google.com/spreadsheets/d/1DdTczB7j_YhEhSchQEl-1zpi4-QpMYt1/edit?gid=799962566#gid=799962566" target="_blank" class="btn">
-      <span style="font-family: 'Wingdings 3';"></span> Laporan Lengkap Oktober 2025
+      迫 Laporan Lengkap Oktober 2025
     </a>
   </section>
        <section class="section">
@@ -542,41 +480,15 @@
     <p>Berikut ini adalah laporan pertanggungjawaban keuangan Yayasan Pendidikan Islam Nurul Huda untuk bulan Oktober 2025.  
       Laporan ini disusun secara transparan untuk mendukung akuntabilitas pengelolaan dana yayasan.</p>
   <a href="LPJ_Keuangan_Oktober_2025.pdf" target="_blank" class="btn">
-      <span style="font-family: 'Wingdings 3';"></span> Unduh Laporan PDF
+      迫 Unduh Laporan PDF
     </a>
   </section>
-
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h3>Edit Transaksi Laporan</h3>
-        <p id="modal-id" style="font-size: 0.8em; color: #aaa; text-align: left;">ID:</p>
-
-        <label for="edit-uraian">Uraian Transaksi</label>
-        <input type="text" id="edit-uraian" required>
-        
-        <div class="input-group">
-            <div>
-                 <label for="edit-masuk">Dana Masuk</label>
-                <input type="number" id="edit-masuk" placeholder="Jumlah Dana Masuk">
-            </div>
-            <div>
-                 <label for="edit-keluar">Dana Keluar</label>
-                <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
-            </div>
-        </div>
-
-        <button id="save-edit-btn" class="btn-action">Simpan Perubahan</button>
-        <p id="modal-status" style="color: red; margin-top: 10px;"></p>
-    </div>
-</div>
-
 <footer>
     &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
 </footer>
 <div class="floating-buttons">
-    <a href="https://wa.me/6282324153933" target="_blank"><span style="font-family: 'Wingdings 3';"></span> Chat via WA</a>
-    <a href="mailto:info@yayasannurulhuda.or.id" class="email"><span style="font-family: 'Wingdings 3';">笨</span> Kirim Email</a>
+    <a href="https://wa.me/6282324153933" target="_blank">町 Chat via WA</a>
+    <a href="mailto:info@yayasannurulhuda.or.id" class="email">笨会ｸKirim Email</a>
 </div>
 
 
@@ -589,7 +501,6 @@
     // FIREBASE CONFIG & INISIALISASI
     // =========================================================================
     const firebaseConfig = {
-        // PASTIKAN KEY INI SAMA DENGAN KEY FIREBASE ANDA ASLI
         apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
         authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
         projectId: "laporan-keuangan-yayasan",
@@ -694,14 +605,7 @@
                 statusText.style.color = 'lime';
             })
             .catch((error) => {
-                // Pesan error dari Firebase yang lebih mudah dibaca
-                let errorMessage = error.code === 'auth/wrong-password' ? 
-                                   'Password salah.' : 
-                                   error.code === 'auth/user-not-found' ?
-                                   'Email tidak terdaftar.' :
-                                   `Login Gagal: ${error.message}`;
-                                   
-                statusText.textContent = errorMessage;
+                statusText.textContent = `Login Gagal: ${error.message}`;
                 statusText.style.color = 'red';
             });
     }
@@ -734,17 +638,14 @@
         const uraian = document.getElementById('input-uraian').value;
         const danaMasuk = parseInt(document.getElementById('input-masuk').value) || 0;
         const danaKeluar = parseInt(document.getElementById('input-keluar').value) || 0;
-        const statusText = document.getElementById('auth-status');
 
         if (!tanggal || !uraian || (danaMasuk === 0 && danaKeluar === 0)) {
-            statusText.textContent = "Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!";
-            statusText.style.color = 'red';
+            alert("Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!");
             return;
         }
         // Tambahan validasi: tidak boleh mengisi keduanya
         if (danaMasuk > 0 && danaKeluar > 0) {
-             statusText.textContent = "Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya!";
-             statusText.style.color = 'red';
+             alert("Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya!");
             return;
         }
 
@@ -761,12 +662,12 @@
             document.getElementById('input-uraian').value = '';
             document.getElementById('input-masuk').value = '';
             document.getElementById('input-keluar').value = '';
-            statusText.textContent = "Transaksi berhasil dicatat!";
-            statusText.style.color = 'lime';
+            document.getElementById('auth-status').textContent = "Transaksi berhasil dicatat!";
+            document.getElementById('auth-status').style.color = 'lime';
         })
         .catch((error) => {
-            statusText.textContent = "Error menyimpan data: Pastikan Anda login. " + error.message;
-            statusText.style.color = 'red';
+            document.getElementById('auth-status').textContent = "Error menyimpan data: Pastikan Anda login. " + error.message;
+            document.getElementById('auth-status').style.color = 'red';
         });
     }
 
@@ -924,56 +825,36 @@
         }
     }
 
-    // Variabel Global untuk menyimpan ID yang sedang diedit
-    let currentEditingId = null; 
-
-    // Fungsi untuk menampilkan modal dan mengisi data (PENGGANTI PROMPT)
+    // Fungsi EDIT (Menggunakan prompt sederhana untuk update data)
     window.editTransactionPrompt = function(id, tanggal, uraian, masuk, keluar) {
         if (!auth.currentUser) {
              alert("Anda harus login sebagai admin untuk mengedit data.");
              return;
         }
         
-        currentEditingId = id; // Simpan ID transaksi yang sedang diedit
+        const newUraian = prompt(`Edit Uraian (Tanggal: ${tanggal}):`, uraian);
+        if (newUraian === null) return;
         
-        document.getElementById('modal-id').textContent = `ID Transaksi: ${id}`;
-        document.getElementById('edit-uraian').value = uraian;
-        // Isi input dengan nilai, jika 0 tampilkan kosong agar user mudah input baru
-        document.getElementById('edit-masuk').value = masuk > 0 ? masuk : ''; 
-        document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
-        document.getElementById('modal-status').textContent = ''; // Bersihkan pesan status
-
-        document.getElementById('editModal').style.display = 'block';
-    }
-    
-    // Fungsi untuk menyimpan perubahan dari modal
-    function saveEditChanges() {
-        if (!currentEditingId) return;
-
-        const newUraian = document.getElementById('edit-uraian').value.trim();
-        const newMasukValue = document.getElementById('edit-masuk').value.trim();
-        const newKeluarValue = document.getElementById('edit-keluar').value.trim();
+        const newMasuk = prompt(`Edit Dana Masuk: (Saat ini: ${formatRupiah(masuk)})`, masuk);
+        if (newMasuk === null) return;
         
-        const finalMasuk = parseInt(newMasukValue) || 0;
-        const finalKeluar = parseInt(newKeluarValue) || 0;
-        const modalStatus = document.getElementById('modal-status');
+        const newKeluar = prompt(`Edit Dana Keluar: (Saat ini: ${formatRupiah(keluar)})`, keluar);
+        if (newKeluar === null) return;
 
-        if (!newUraian) {
-            modalStatus.textContent = "Uraian tidak boleh kosong!";
-            return;
-        }
-
+        // Cek jika input nominal valid
+        const finalMasuk = parseInt(newMasuk) || 0;
+        const finalKeluar = parseInt(newKeluar) || 0;
+        
         if (finalMasuk < 0 || finalKeluar < 0) {
-            modalStatus.textContent = "Dana Masuk/Keluar tidak boleh negatif.";
+            alert("Dana Masuk dan Dana Keluar tidak boleh bernilai negatif.");
             return;
         }
         if (finalMasuk > 0 && finalKeluar > 0) {
-            modalStatus.textContent = "Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya.";
+            alert("Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya.");
             return;
         }
 
-        modalStatus.textContent = 'Menyimpan...';
-        updateTransaction(currentEditingId, newUraian, finalMasuk, finalKeluar);
+        updateTransaction(id, newUraian, finalMasuk, finalKeluar);
     }
     
     async function updateTransaction(id, uraian, danaMasuk, danaKeluar) {
@@ -983,24 +864,16 @@
                 danaMasuk: danaMasuk,
                 danaKeluar: danaKeluar
             });
-            document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
-            document.getElementById('modal-status').style.color = 'lime';
-            // Tutup modal setelah jeda sebentar
-            setTimeout(() => {
-                document.getElementById('editModal').style.display = 'none';
-            }, 1000); 
-            
-            // Perbarui status di bagian utama
             document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
             document.getElementById('auth-status').style.color = 'lime';
         } catch (error) {
-            document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
-            document.getElementById('modal-status').style.color = 'red';
+            document.getElementById('auth-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
+            document.getElementById('auth-status').style.color = 'red';
             console.error("Error updating document: ", error);
         }
     }
 
-
+    // Fungsi Reset (Riset) Data Bulanan
     window.resetData = function() {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk mereset data.");
@@ -1038,22 +911,25 @@
              return;
         }
         
+        // Cek apakah pagination aktif (jumlah baris > baris per halaman)
         const isPaginationActive = allDataRows.length > rowsPerPage;
-        const originalCurrentPage = currentPage; 
+        const originalCurrentPage = currentPage; // Simpan halaman sebelum dipaksa tampil semua
         
         // --- Langkah 1: Paksa Semua Baris Tampil untuk PDF ---
         if (isPaginationActive) {
-            allDataRows.forEach(row => row.style.display = ''); 
+            allDataRows.forEach(row => row.style.display = ''); // Tampilkan semua baris
         }
         
+        // 2. Clone the table (kini dengan semua baris terlihat)
         const tableToPrint = document.getElementById('finance-table').cloneNode(true);
 
         // --- Langkah 3: Kembalikan Tampilan Pagination ke halaman sebelumnya ---
         if (isPaginationActive) {
-            displayTablePage(originalCurrentPage); 
+            displayTablePage(originalCurrentPage); // Kembali ke halaman yang terakhir dilihat
         }
         
         // 4. Proses pembersihan kolom Aksi pada tabel clone
+        // Indeks kolom Aksi adalah 6 (0-indexed)
         const actionIndex = 6; 
         const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
         
@@ -1155,40 +1031,8 @@
         });
     }
 
-    // Fungsi untuk menginisialisasi event listener pada modal
-    function setupModalListeners() {
-        const modal = document.getElementById('editModal');
-        const closeBtn = document.querySelector('.close-btn');
-        const saveBtn = document.getElementById('save-edit-btn');
-        
-        // Tutup saat klik tombol X
-        closeBtn.onclick = function() {
-            modal.style.display = 'none';
-        }
-        
-        // Tutup saat klik di luar modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-        
-        // Simpan saat klik tombol Simpan
-        saveBtn.onclick = saveEditChanges;
-    }
-
-
-    // Panggil fungsi setupModalListeners dan loadData saat dokumen siap
-    document.addEventListener('DOMContentLoaded', setupModalListeners);
+    // Panggil loadData() hanya untuk memastikan tabel dimuat segera
     document.addEventListener('DOMContentLoaded', loadData);
-
-
-    // Expose fungsi ke window agar dapat dipanggil dari HTML (penting untuk tombol di HTML)
-    window.login = login;
-    window.logout = logout;
-    window.addTransaction = addTransaction;
-    window.resetData = resetData;
-    window.deleteTransaction = deleteTransaction; 
 
 </script>
 <script>
@@ -1199,9 +1043,10 @@
         sections.forEach(section => {
             const sectionTop = section.getBoundingClientRect().top;
             if(sectionTop < triggerBottom) section.classList.add('visible');
-            else section.classList.remove('visible'); 
+            else section.classList.remove('visible'); // Opsional: hilangkan kelas saat scroll ke atas
         });
     });
 </script>
 </body>
 </html>
+
