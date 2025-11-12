@@ -430,8 +430,9 @@
 
 .dropdown {
     position: relative; 
-    /* display: inline-block; <-- Dihapus karena nav menggunakan flex */
-    margin: 5px; /* Sesuaikan dengan margin: 5px pada a nav */
+    /* Penting: Set display ke inline-block agar berbaris horizontal dengan menu lain */
+    display: inline-block; 
+    vertical-align: top; /* Pastikan rata atas dengan menu lain */
 }
 
 /* Gaya Tombol Pemicu Dropdown (Dropbtn) */
@@ -526,10 +527,17 @@
 </marquee>
 
 <nav>
-    <a href="index.html">Beranda</a>
+<a href="index.html">Beranda</a>
     <a href="profil.html">Profil</a>
+    <a href="kegiatan.html">program & Kegiatan</a>
+    <a href="galeri.html">Galeri</a>
+    <a href="kontak.html">Kontak & Donasi</a>
     <div class="dropdown">
         <button class="dropbtn">Laporan Keuangan ▼</button>
+        </div>
+        <div class="dropdown">
+        <button class="dropbtn active">Donatur YAPIN ▼</button> 
+        </div>
         <div class="dropdown-content">
             <a href="laporan.html">Laporan Kas Masuk/Keluar</a>
             <a onclick="/* Panggil fungsi laporan keuangan PDF */">Unduh Laporan Kas PDF</a>
@@ -1297,6 +1305,7 @@
 </script>
 </body>
 </html>
+
 
 
 
