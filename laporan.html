@@ -24,17 +24,17 @@
             color: #fff;
             overflow-x: hidden;
         }
-@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-        
+            
         header {
             position: relative;
             background: rgba(0, 60, 0, 0.9);
@@ -168,7 +168,8 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             background: rgba(0, 0, 0, 0.2);
-            text-align: left; /* Teks di form rata kiri */
+            text-align: left;
+            /* Teks di form rata kiri */
         }
         
         .input-group {
@@ -338,7 +339,8 @@
         }
 
         .pagination-controls button {
-            background-color: rgba(255, 215, 0, 0.2); /* Kuning Emas Transparan */
+            background-color: rgba(255, 215, 0, 0.2);
+            /* Kuning Emas Transparan */
             color: #ffd700;
             border: 1px solid #ffd700;
             padding: 8px 15px;
@@ -354,7 +356,8 @@
         }
 
         .pagination-controls button.active-page {
-            background-color: #ffd700; /* Warna tombol aktif */
+            background-color: #ffd700;
+            /* Warna tombol aktif */
             color: #004000;
             border: 1px solid #ffd700;
         }
@@ -419,7 +422,8 @@
                 </tr>
         </thead>
         <tbody id="finance-body">
-            </tbody>
+            
+        </tbody>
         <tfoot id="finance-footer">
             </tfoot>
     </table>
@@ -465,10 +469,10 @@
      <section class="section">
     <h2>Laporan Keuangan Detail</h2>
      <a href="https://sites.google.com/view/laporankeuangantransparan" target="_blank" class="btn">
-      🔗 Lihat Laporan Lengkap di DI SINI
+      迫 Lihat Laporan Lengkap di DI SINI
     </a><p>
   <a href="https://docs.google.com/spreadsheets/d/1DdTczB7j_YhEhSchQEl-1zpi4-QpMYt1/edit?gid=799962566#gid=799962566" target="_blank" class="btn">
-      🔗 Laporan Lengkap Oktober 2025
+      迫 Laporan Lengkap Oktober 2025
     </a>
   </section>
        <section class="section">
@@ -476,15 +480,15 @@
     <p>Berikut ini adalah laporan pertanggungjawaban keuangan Yayasan Pendidikan Islam Nurul Huda untuk bulan Oktober 2025.  
       Laporan ini disusun secara transparan untuk mendukung akuntabilitas pengelolaan dana yayasan.</p>
   <a href="LPJ_Keuangan_Oktober_2025.pdf" target="_blank" class="btn">
-      🔗 Unduh Laporan PDF
+      迫 Unduh Laporan PDF
     </a>
   </section>
 <footer>
     &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
 </footer>
 <div class="floating-buttons">
-    <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
-    <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
+    <a href="https://wa.me/6282324153933" target="_blank">町 Chat via WA</a>
+    <a href="mailto:info@yayasannurulhuda.or.id" class="email">笨会ｸKirim Email</a>
 </div>
 
 
@@ -494,7 +498,7 @@
 
 <script>
     // =========================================================================
-    // !!! KUNCI FIREBASE ASLI ANDA SUDAH DIPASANG DI SINI !!!
+    // FIREBASE CONFIG & INISIALISASI
     // =========================================================================
     const firebaseConfig = {
         apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
@@ -505,35 +509,38 @@
         appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
     };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
     
-    // --- Nama Koleksi untuk Laporan Keuangan ---
+    // --- Nama Koleksi ---
     const FINANCE_COLLECTION = "laporan"; 
-    // ---------------------------------------
     
     // =========================================================================
-    // 1. LOGIKA PAGINATION (Pembatasan Baris)
+    // 1. LOGIKA PAGINATION & GLOBAL VARIABLES
     // =========================================================================
-    const rowsPerPage = 10; // <<< BATASAN BARIS SUDAH DIUBAH MENJADI 10
-    let allDataRows = []; // Array untuk menyimpan semua baris data DOM (<tr>)
-    let currentPage = 1; // <<< Tambahan untuk melacak halaman saat ini
+    const rowsPerPage = 10; // Batasan baris per halaman
+    let allDataRows = [];   // Menyimpan semua elemen <tr> untuk pagination
+    let currentPage = 1;    // Halaman yang sedang aktif
+    
+    // FUNGSI UTILITY
+    function formatRupiah(angka) {
+        if (typeof angka !== 'number') {
+            angka = parseInt(angka) || 0;
+        }
+        // Pastikan angka ditampilkan tanpa simbol mata uang
+        return new Intl.NumberFormat('id-ID', { style: 'decimal', minimumFractionDigits: 0 }).format(angka);
+    }
     
     // Fungsi untuk menampilkan halaman
     function displayTablePage(page) {
-        currentPage = page; // Simpan halaman yang sedang dilihat
+        currentPage = page; 
         const start = (page - 1) * rowsPerPage;
         const end = start + rowsPerPage;
 
-        // Sembunyikan semua baris yang dikelola oleh pagination
         allDataRows.forEach(row => row.style.display = 'none');
-
-        // Tampilkan hanya baris pada halaman yang dipilih
         allDataRows.slice(start, end).forEach(row => row.style.display = '');
 
-        // Update status tombol aktif
         const paginationDiv = document.getElementById('pagination-controls');
         if(paginationDiv){
             const buttons = paginationDiv.querySelectorAll('button');
@@ -550,10 +557,19 @@
         const totalRows = allDataRows.length;
         const totalPages = Math.ceil(totalRows / rowsPerPage);
         const paginationDiv = document.getElementById('pagination-controls');
-        paginationDiv.innerHTML = ''; // Bersihkan kontrol yang lama
+        paginationDiv.innerHTML = ''; 
 
-        if (totalPages <= 1) return; // Tidak perlu pagination jika hanya 1 halaman
+        if (totalRows === 0 || totalPages <= 1) return; 
 
+        // Tombol Previous (<<)
+        const prevButton = document.createElement('button');
+        prevButton.innerText = '<<';
+        prevButton.addEventListener('click', () => {
+            if (currentPage > 1) displayTablePage(currentPage - 1);
+        });
+        paginationDiv.appendChild(prevButton);
+
+        // Tombol Halaman
         for (let i = 1; i <= totalPages; i++) {
             const button = document.createElement('button');
             button.innerText = i;
@@ -562,28 +578,23 @@
             paginationDiv.appendChild(button);
         }
 
-        // Tampilkan halaman pertama secara default
-        displayTablePage(1);
+        // Tombol Next (>>)
+        const nextButton = document.createElement('button');
+        nextButton.innerText = '>>';
+        nextButton.addEventListener('click', () => {
+            if (currentPage < totalPages) displayTablePage(currentPage + 1);
+        });
+        paginationDiv.appendChild(nextButton);
+
+        // Tampilkan halaman pertama secara default atau halaman terakhir yang dilihat
+        displayTablePage(currentPage > totalPages ? 1 : currentPage);
     }
+
+    // =========================================================================
+    // 2. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
     // =========================================================================
 
-
-    // -----------------------------------------------------------
-    // 2. FUNGSI UTILITY (PENGGUNAAN UMUM)
-    // -----------------------------------------------------------
-
-    function formatRupiah(angka) {
-        if (typeof angka !== 'number') {
-            angka = parseInt(angka) || 0;
-        }
-        return new Intl.NumberFormat('id-ID', { style: 'decimal', minimumFractionDigits: 0 }).format(angka);
-    }
-
-    // -----------------------------------------------------------
-    // 3. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
-    // -----------------------------------------------------------
-
-    function login() {
+    window.login = function() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const statusText = document.getElementById('auth-status');
@@ -592,7 +603,6 @@
             .then(() => {
                 statusText.textContent = 'Login Berhasil!';
                 statusText.style.color = 'lime';
-                // Tampilan diperbarui oleh auth.onAuthStateChanged
             })
             .catch((error) => {
                 statusText.textContent = `Login Gagal: ${error.message}`;
@@ -600,9 +610,8 @@
             });
     }
 
-    function logout() {
+    window.logout = function() {
         auth.signOut().then(() => {
-            // Tampilan diperbarui oleh auth.onAuthStateChanged
             document.getElementById('auth-status').textContent = 'Anda telah Logout.';
             document.getElementById('auth-status').style.color = 'red';
         });
@@ -617,24 +626,26 @@
             document.getElementById('login-container').style.display = 'block';
             document.getElementById('input-control-container').style.display = 'none';
         }
-        loadData(); // Selalu muat ulang data untuk menyesuaikan kolom Aksi dan Pagination
+        loadData(); // Selalu muat ulang data saat status auth berubah
     });
 
-
-    // -----------------------------------------------------------
-    // 4. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
-    // -----------------------------------------------------------
-
-    function addTransaction() {
-        // HANYA MENGAMBIL NILAI DARI MASUK DAN KELUAR
+    // =========================================================================
+    // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
+    // =========================================================================
+    
+    window.addTransaction = function() {
         const tanggal = document.getElementById('input-tanggal').value;
         const uraian = document.getElementById('input-uraian').value;
         const danaMasuk = parseInt(document.getElementById('input-masuk').value) || 0;
         const danaKeluar = parseInt(document.getElementById('input-keluar').value) || 0;
 
-        // VALIDASI: Minimal tanggal dan uraian harus diisi, dan salah satu dana harus > 0
         if (!tanggal || !uraian || (danaMasuk === 0 && danaKeluar === 0)) {
             alert("Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!");
+            return;
+        }
+        // Tambahan validasi: tidak boleh mengisi keduanya
+        if (danaMasuk > 0 && danaKeluar > 0) {
+             alert("Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya!");
             return;
         }
 
@@ -651,10 +662,12 @@
             document.getElementById('input-uraian').value = '';
             document.getElementById('input-masuk').value = '';
             document.getElementById('input-keluar').value = '';
-            alert("Transaksi berhasil dicatat!");
+            document.getElementById('auth-status').textContent = "Transaksi berhasil dicatat!";
+            document.getElementById('auth-status').style.color = 'lime';
         })
         .catch((error) => {
-            alert("Error menyimpan data: Pastikan Anda login. " + error.message);
+            document.getElementById('auth-status').textContent = "Error menyimpan data: Pastikan Anda login. " + error.message;
+            document.getElementById('auth-status').style.color = 'red';
         });
     }
 
@@ -681,15 +694,14 @@
     }
 
 
-    function loadData() {
+    window.loadData = function() {
         const tableBody = document.getElementById('finance-body');
         const tableFooter = document.getElementById('finance-footer');
         const user = auth.currentUser;
-        const isLoggedIn = !!user; // Cek apakah user sedang login
+        const isLoggedIn = !!user; 
         
         // Atur header tabel (tambah/hapus kolom Aksi)
         setupTableHeaders(isLoggedIn);
-
 
         // Urutkan berdasarkan waktu paling lama (ASC)
         db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc")
@@ -697,9 +709,7 @@
             tableBody.innerHTML = '';
             tableFooter.innerHTML = '';
             
-            // --- Reset array data rows sebelum diisi ulang ---
             allDataRows = []; 
-            // --------------------------------------------------
 
             let saldo = 0;
             let totalMasuk = 0;
@@ -745,20 +755,17 @@
                 if (isLoggedIn) {
                     const actionCell = row.insertCell(6);
                     actionCell.innerHTML = `
-                        <button class="aksi-btn" onclick="alert('Fungsi Edit memerlukan popup/modal tambahan.')">Edit</button>
-                        <button class="aksi-btn" onclick="deleteTransaction('${id}')">Hapus</button>
+                        <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', ${danaMasuk}, ${danaKeluar})">Edit</button>
+                        <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
                     `;
                 }
                 
                 // --- Simpan referensi baris ke array untuk Pagination ---
                 allDataRows.push(row);
-                // -------------------------------------------------------
             });
             
             // --- Panggil setupPagination setelah semua data ter-render ---
             setupPagination();
-            // -----------------------------------------------------------
-
 
             // Tampilkan Total Laporan di Footer
             const footerRow = tableFooter.insertRow();
@@ -799,7 +806,7 @@
     }
 
 
-    function deleteTransaction(docId) {
+    window.deleteTransaction = function(docId) {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk menghapus data.");
             return;
@@ -808,16 +815,66 @@
         if (confirm("Yakin ingin menghapus transaksi ini?")) {
             db.collection(FINANCE_COLLECTION).doc(docId).delete()
             .then(() => {
-                console.log("Transaksi berhasil dihapus!");
+                document.getElementById('auth-status').textContent = "Transaksi berhasil dihapus!";
+                document.getElementById('auth-status').style.color = 'lime';
             })
             .catch((error) => {
-                alert("Error menghapus: Pastikan Anda masih login. " + error.message);
+                document.getElementById('auth-status').textContent = "Error menghapus: Pastikan Anda masih login. " + error.message;
+                document.getElementById('auth-status').style.color = 'red';
             });
         }
     }
 
+    // Fungsi EDIT (Menggunakan prompt sederhana untuk update data)
+    window.editTransactionPrompt = function(id, tanggal, uraian, masuk, keluar) {
+        if (!auth.currentUser) {
+             alert("Anda harus login sebagai admin untuk mengedit data.");
+             return;
+        }
+        
+        const newUraian = prompt(`Edit Uraian (Tanggal: ${tanggal}):`, uraian);
+        if (newUraian === null) return;
+        
+        const newMasuk = prompt(`Edit Dana Masuk: (Saat ini: ${formatRupiah(masuk)})`, masuk);
+        if (newMasuk === null) return;
+        
+        const newKeluar = prompt(`Edit Dana Keluar: (Saat ini: ${formatRupiah(keluar)})`, keluar);
+        if (newKeluar === null) return;
+
+        // Cek jika input nominal valid
+        const finalMasuk = parseInt(newMasuk) || 0;
+        const finalKeluar = parseInt(newKeluar) || 0;
+        
+        if (finalMasuk < 0 || finalKeluar < 0) {
+            alert("Dana Masuk dan Dana Keluar tidak boleh bernilai negatif.");
+            return;
+        }
+        if (finalMasuk > 0 && finalKeluar > 0) {
+            alert("Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya.");
+            return;
+        }
+
+        updateTransaction(id, newUraian, finalMasuk, finalKeluar);
+    }
+    
+    async function updateTransaction(id, uraian, danaMasuk, danaKeluar) {
+        try {
+            await db.collection(FINANCE_COLLECTION).doc(id).update({
+                uraian: uraian,
+                danaMasuk: danaMasuk,
+                danaKeluar: danaKeluar
+            });
+            document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
+            document.getElementById('auth-status').style.color = 'lime';
+        } catch (error) {
+            document.getElementById('auth-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
+            document.getElementById('auth-status').style.color = 'red';
+            console.error("Error updating document: ", error);
+        }
+    }
+
     // Fungsi Reset (Riset) Data Bulanan
-    function resetData() {
+    window.resetData = function() {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk mereset data.");
             return;
@@ -836,20 +893,27 @@
 
             return batch.commit();
         }).then(() => {
-            alert("Semua data laporan berhasil direset (dihapus).");
+            document.getElementById('auth-status').textContent = "Semua data laporan berhasil direset (dihapus).";
+            document.getElementById('auth-status').style.color = 'lime';
         }).catch((error) => {
-            alert("Gagal mereset data: " + error.message);
+            document.getElementById('auth-status').textContent = "Gagal mereset data: " + error.message;
+            document.getElementById('auth-status').style.color = 'red';
         });
     }
 
+    // =========================================================================
+    // 4. FUNGSI UNDUH PDF
+    // =========================================================================
 
-    // -----------------------------------------------------------
-    // 5. FUNGSI UNDUH PDF (SUDAH DIKOREKSI AGAR MENCETAK SEMUA DATA)
-    // -----------------------------------------------------------
-
-    function downloadPDF() {
+    window.downloadPDF = function() {
+        if(allDataRows.length === 0){
+             alert("Tidak ada data untuk dibuat laporan PDF.");
+             return;
+        }
+        
         // Cek apakah pagination aktif (jumlah baris > baris per halaman)
         const isPaginationActive = allDataRows.length > rowsPerPage;
+        const originalCurrentPage = currentPage; // Simpan halaman sebelum dipaksa tampil semua
         
         // --- Langkah 1: Paksa Semua Baris Tampil untuk PDF ---
         if (isPaginationActive) {
@@ -861,10 +925,11 @@
 
         // --- Langkah 3: Kembalikan Tampilan Pagination ke halaman sebelumnya ---
         if (isPaginationActive) {
-            displayTablePage(currentPage); // Kembali ke halaman yang terakhir dilihat
+            displayTablePage(originalCurrentPage); // Kembali ke halaman yang terakhir dilihat
         }
         
         // 4. Proses pembersihan kolom Aksi pada tabel clone
+        // Indeks kolom Aksi adalah 6 (0-indexed)
         const actionIndex = 6; 
         const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
         
@@ -879,12 +944,13 @@
                 }
             });
 
-            // C. Perbaiki Colspan di Footer (tfoot)
+            // C. Hapus sel kosong di footer (sel terakhir)
             const footerRow = tableToPrint.querySelector('tfoot .total-row');
             if (footerRow) {
-                const totalLabelCell = footerRow.querySelector('td:first-child');
-                // Colspan harus dikurangi dari 3 menjadi 2
-                totalLabelCell.colSpan = 2; 
+                const emptyActionCell = footerRow.querySelector('td:last-child');
+                if(emptyActionCell && emptyActionCell.textContent.trim() === ''){
+                    emptyActionCell.remove();
+                }
             }
         }
         
@@ -894,8 +960,8 @@
             /* Aturan Umum */
             body, html { margin: 0; padding: 0; }
             h2, p { color: black; font-family: sans-serif; }
-            h2 { text-align: center; margin-bottom: 5px; }
-            p { text-align: right; font-size: 12px; }
+            h2 { text-align: center; margin-bottom: 5px; font-size: 16px; }
+            p { text-align: right; font-size: 12px; margin: 3px 0; }
 
             /* Aturan Tabel */
             #finance-table {
@@ -977,9 +1043,9 @@
         sections.forEach(section => {
             const sectionTop = section.getBoundingClientRect().top;
             if(sectionTop < triggerBottom) section.classList.add('visible');
+            else section.classList.remove('visible'); // Opsional: hilangkan kelas saat scroll ke atas
         });
     });
 </script>
 </body>
 </html>
-
