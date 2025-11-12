@@ -363,7 +363,7 @@
         }
         /* END CSS Tambahan */
 
-        /* CSS untuk Modal Edit (BARU/PERBAIKAN) */
+        /* CSS untuk Modal Edit */
         .modal {
             display: none; 
             position: fixed; 
@@ -481,7 +481,7 @@
                 <th style="width: 15%;">Dana Masuk</th>
                 <th style="width: 15%;">Dana Keluar</th>
                 <th style="width: 15%;">Saldo</th>
-                </tr>
+            </tr>
         </thead>
         <tbody id="finance-body">
             
@@ -589,6 +589,7 @@
     // FIREBASE CONFIG & INISIALISASI
     // =========================================================================
     const firebaseConfig = {
+        // PASTIKAN KEY INI SAMA DENGAN KEY FIREBASE ANDA ASLI
         apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
         authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
         projectId: "laporan-keuangan-yayasan",
@@ -693,7 +694,14 @@
                 statusText.style.color = 'lime';
             })
             .catch((error) => {
-                statusText.textContent = `Login Gagal: ${error.message}`;
+                // Pesan error dari Firebase yang lebih mudah dibaca
+                let errorMessage = error.code === 'auth/wrong-password' ? 
+                                   'Password salah.' : 
+                                   error.code === 'auth/user-not-found' ?
+                                   'Email tidak terdaftar.' :
+                                   `Login Gagal: ${error.message}`;
+                                   
+                statusText.textContent = errorMessage;
                 statusText.style.color = 'red';
             });
     }
@@ -726,14 +734,17 @@
         const uraian = document.getElementById('input-uraian').value;
         const danaMasuk = parseInt(document.getElementById('input-masuk').value) || 0;
         const danaKeluar = parseInt(document.getElementById('input-keluar').value) || 0;
+        const statusText = document.getElementById('auth-status');
 
         if (!tanggal || !uraian || (danaMasuk === 0 && danaKeluar === 0)) {
-            alert("Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!");
+            statusText.textContent = "Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!";
+            statusText.style.color = 'red';
             return;
         }
         // Tambahan validasi: tidak boleh mengisi keduanya
         if (danaMasuk > 0 && danaKeluar > 0) {
-             alert("Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya!");
+             statusText.textContent = "Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya!";
+             statusText.style.color = 'red';
             return;
         }
 
@@ -750,12 +761,12 @@
             document.getElementById('input-uraian').value = '';
             document.getElementById('input-masuk').value = '';
             document.getElementById('input-keluar').value = '';
-            document.getElementById('auth-status').textContent = "Transaksi berhasil dicatat!";
-            document.getElementById('auth-status').style.color = 'lime';
+            statusText.textContent = "Transaksi berhasil dicatat!";
+            statusText.style.color = 'lime';
         })
         .catch((error) => {
-            document.getElementById('auth-status').textContent = "Error menyimpan data: Pastikan Anda login. " + error.message;
-            document.getElementById('auth-status').style.color = 'red';
+            statusText.textContent = "Error menyimpan data: Pastikan Anda login. " + error.message;
+            statusText.style.color = 'red';
         });
     }
 
@@ -1027,25 +1038,22 @@
              return;
         }
         
-        // Cek apakah pagination aktif (jumlah baris > baris per halaman)
         const isPaginationActive = allDataRows.length > rowsPerPage;
-        const originalCurrentPage = currentPage; // Simpan halaman sebelum dipaksa tampil semua
+        const originalCurrentPage = currentPage; 
         
         // --- Langkah 1: Paksa Semua Baris Tampil untuk PDF ---
         if (isPaginationActive) {
-            allDataRows.forEach(row => row.style.display = ''); // Tampilkan semua baris
+            allDataRows.forEach(row => row.style.display = ''); 
         }
         
-        // 2. Clone the table (kini dengan semua baris terlihat)
         const tableToPrint = document.getElementById('finance-table').cloneNode(true);
 
         // --- Langkah 3: Kembalikan Tampilan Pagination ke halaman sebelumnya ---
         if (isPaginationActive) {
-            displayTablePage(originalCurrentPage); // Kembali ke halaman yang terakhir dilihat
+            displayTablePage(originalCurrentPage); 
         }
         
         // 4. Proses pembersihan kolom Aksi pada tabel clone
-        // Indeks kolom Aksi adalah 6 (0-indexed)
         const actionIndex = 6; 
         const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
         
@@ -1174,6 +1182,13 @@
     document.addEventListener('DOMContentLoaded', setupModalListeners);
     document.addEventListener('DOMContentLoaded', loadData);
 
+
+    // Expose fungsi ke window agar dapat dipanggil dari HTML (penting untuk tombol di HTML)
+    window.login = login;
+    window.logout = logout;
+    window.addTransaction = addTransaction;
+    window.resetData = resetData;
+    window.deleteTransaction = deleteTransaction; 
 
 </script>
 <script>
