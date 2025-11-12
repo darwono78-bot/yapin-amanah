@@ -679,17 +679,93 @@ window.toggleLoginInputs = function() {
         toggleBtn.textContent = 'Tampilkan Login Bendahara';
     }
 }
-    // Cek Status Login Saat Memuat Halaman & Perubahan Status
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('input-control-container').style.display = 'block';
-        } else {
-            document.getElementById('login-container').style.display = 'block';
-            document.getElementById('input-control-container').style.display = 'none';
-        }
-        loadData(); // Selalu muat ulang data untuk menyesuaikan kolom Aksi dan Pagination
+    <div id="login-container" style="text-align: center; margin-bottom: 25px;">
+    <button onclick="toggleLoginInputs()" id="login-toggle-btn" class="btn-action" style="width: auto;">
+        Tampilkan Login Bendahara
+    </button>
+</div>
+
+<div id="login-inputs-area" style="display: none; padding: 15px; border: 2px solid #27ae60; border-radius: 5px; background-color: #21303e; text-align: left;">
+    <h3>Akses Bendahara</h3>
+    <label for="email">Email Bendahara:</label>
+    <input type="email" id="email" placeholder="Email Bendahara" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Password" required>
+    
+    <button onclick="login()" class="btn-action">Login Sekarang</button>
+    <p id="login-error-status" style="color: #e74c3c;"></p>
+</div>
+
+<div id="input-control-container" style="display: none;">
+    ```
+
+---
+
+## 🛠️ Perbaikan 2: Mengganti Logika Javascript Autentikasi
+
+Buka *tag* `<script>` Anda (biasanya di bagian paling bawah) dan cari fungsi `window.logout`, `window.login`, dan `auth.onAuthStateChanged`.
+
+Ganti seluruh fungsi **`window.logout`**, **fungsi baru `window.toggleLoginInputs`**, dan **`auth.onAuthStateChanged`** dengan kode di bawah ini. Ini memastikan semua elemen baru (tombol *toggle* dan area input) disembunyikan dan ditampilkan dengan benar.
+
+```javascript
+window.logout = function() {
+    auth.signOut().then(() => {
+        document.getElementById('auth-status').textContent = 'Anda telah Logout.';
+        document.getElementById('auth-status').style.color = '#e74c3c';
     });
+}
+
+// Fungsi BARU: Toggle tampilan input Email/Password
+window.toggleLoginInputs = function() {
+    const loginArea = document.getElementById('login-inputs-area');
+    const toggleBtn = document.getElementById('login-toggle-btn');
+
+    if (loginArea.style.display === 'none' || loginArea.style.display === '') {
+        // Tampilkan input dan ubah teks tombol
+        loginArea.style.display = 'block';
+        toggleBtn.textContent = 'Sembunyikan Login Bendahara';
+    } else {
+        // Sembunyikan input dan kembalikan teks tombol
+        loginArea.style.display = 'none';
+        toggleBtn.textContent = 'Tampilkan Login Bendahara';
+    }
+}
+
+auth.onAuthStateChanged((user) => {
+    // Ambil elemen-elemen baru
+    const loginToggleBtn = document.getElementById('login-toggle-btn');
+    const loginInputsArea = document.getElementById('login-inputs-area');
+    const adminContainer = document.getElementById('input-control-container');
+    
+    // Pastikan adminContainer selalu ada karena dia yang mengatur input transaksi
+    if (!adminContainer) return; 
+
+    if (user) {
+        // JIKA SUDAH LOGIN
+        
+        // Sembunyikan semua yang berhubungan dengan login/toggle
+        if (loginToggleBtn) loginToggleBtn.style.display = 'none';
+        if (loginInputsArea) loginInputsArea.style.display = 'none';
+        
+        // Tampilkan input kontrol admin
+        adminContainer.style.display = 'block';
+        
+        document.getElementById('auth-status').textContent = 'Selamat datang, Bendahara!';
+        document.getElementById('auth-status').style.color = '#27ae60';
+    } else {
+        // JIKA BELUM LOGIN
+        
+        // Tampilkan tombol toggle (pemicu login)
+        if (loginToggleBtn) loginToggleBtn.style.display = 'block';
+        
+        // Pastikan area input disembunyikan
+        if (loginInputsArea) loginInputsArea.style.display = 'none';
+
+        // Sembunyikan input kontrol admin
+        adminContainer.style.display = 'none';
+    }
+    loadData();
+});
 
 
     // -----------------------------------------------------------
@@ -1075,6 +1151,7 @@ window.toggleLoginInputs = function() {
 </script>
 </body>
 </html>
+
 
 
 
