@@ -13,13 +13,14 @@
 
     <style>
         :root {
-            --primary-color: #2ecc71; /* Hijau Utama */
-            --secondary-color: #f1c40f; /* Kuning/Emas */
-            --dark-bg: #1e3d2a; /* Latar Belakang Gelap */
-            --medium-bg: #27ae60; /* Latar Hijau Medium */
+            --green-primary: #27ae60; 
+            --yellow-secondary: #f1c40f; 
+            --dark-bg: #1e3d2a; 
+            --container-bg: #2c3e50; 
             --text-light: #ecf0f1;
             --text-dark: #333;
-            --container-bg: #21303e; /* Latar kontainer utama */
+            --table-header-bg: #1a242c;
+            --menu-bar-bg: #1abc9c;
         }
 
         body {
@@ -31,16 +32,23 @@
             text-align: center;
         }
         
-        /* Simulasikan area navigasi/header utama */
-        nav {
-            background-color: #1abc9c; /* Hijau agak terang */
+        /* Header Menu Bar */
+        .header-top {
+            background-color: var(--menu-bar-bg);
             padding: 10px 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-size: 14px;
+        }
+        nav {
+            background-color: var(--dark-bg);
+            padding: 10px 0;
+            text-align: center;
         }
         nav a {
             color: white;
             text-decoration: none;
             padding: 10px 15px;
+            margin: 0 5px;
             display: inline-block;
         }
 
@@ -55,7 +63,7 @@
 
         h2 {
             text-align: center;
-            color: var(--secondary-color);
+            color: var(--yellow-secondary);
             margin-bottom: 25px;
         }
 
@@ -63,9 +71,9 @@
         #login-container, #input-control-container {
             margin-bottom: 25px;
             padding: 15px;
-            border: 2px solid var(--primary-color);
+            border: 2px solid var(--green-primary);
             border-radius: 5px;
-            background-color: #1a242c; /* Lebih gelap untuk kontras */
+            background-color: #21303e; 
             text-align: left;
         }
         
@@ -74,7 +82,7 @@
             padding: 10px;
             margin: 8px 0 15px 0;
             display: inline-block;
-            border: 1px solid var(--primary-color);
+            border: 1px solid var(--green-primary);
             border-radius: 4px;
             box-sizing: border-box;
             background-color: #3f556d; 
@@ -92,7 +100,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            background-color: var(--primary-color);
+            background-color: var(--green-primary);
             color: var(--text-light);
             transition: background-color 0.3s;
         }
@@ -102,12 +110,12 @@
         }
         
         /* --- Tombol Kuning/Emas (Simpan, Login) --- */
-        .btn-action, button[onclick*="login"] {
-            background-color: var(--secondary-color) !important;
+        .btn-action, button[onclick*="login"], #save-edit-btn {
+            background-color: var(--yellow-secondary) !important;
             color: var(--text-dark) !important;
             font-weight: bold;
         }
-        .btn-action:hover, button[onclick*="login"]:hover {
+        .btn-action:hover, button[onclick*="login"]:hover, #save-edit-btn:hover {
              background-color: #f39c12 !important;
         }
 
@@ -116,20 +124,10 @@
             padding: 5px 10px;
             font-size: 12px;
             margin: 2px;
-            background-color: var(--primary-color);
+            background-color: var(--green-primary);
         }
-        .aksi-btn:hover {
-            background-color: #2ecc71;
-        }
-        .aksi-btn[onclick*="deleteTransaction"] { /* Hapus */
+        .aksi-btn[onclick*="deleteTransaction"] { 
             background-color: #e74c3c !important;
-        }
-
-        /* --- Status & Pesan --- */
-        #auth-status, #modal-status {
-            margin-top: 10px;
-            font-weight: bold;
-            text-align: center;
         }
 
         /* --- Tabel Laporan --- */
@@ -146,21 +144,21 @@
         }
 
         #finance-table th {
-            background-color: #1a242c; /* Header Tabel Gelap */
-            color: var(--secondary-color);
+            background-color: var(--table-header-bg); 
+            color: var(--yellow-secondary);
         }
 
         #finance-table tbody tr:nth-child(even) {
-            background-color: #34506c; /* Baris genap */
+            background-color: #34506c; 
         }
          #finance-table tbody tr:nth-child(odd) {
-            background-color: var(--container-bg); /* Baris ganjil */
+            background-color: var(--container-bg); 
         }
 
         /* --- Saldo & Total --- */
         .saldo-plus {
             font-weight: bold;
-            color: var(--primary-color); 
+            color: var(--green-primary); 
         }
 
         .saldo-minus {
@@ -171,31 +169,15 @@
         .total-row td {
             background-color: #1b2633 !important; 
             font-weight: bold;
-            color: var(--secondary-color);
-            border-top: 2px solid var(--secondary-color);
-        }
-
-        /* --- Pagination --- */
-        #pagination-controls {
-            text-align: center;
-            margin-top: 15px;
-        }
-        #pagination-controls button {
-            background-color: #45627e;
-            color: white;
-            margin: 0 3px;
-            min-width: 30px;
-        }
-        #pagination-controls button.active-page {
-            background-color: var(--primary-color);
-            font-weight: bold;
+            color: var(--yellow-secondary);
+            border-top: 2px solid var(--yellow-secondary);
         }
 
         /* --- Modal Styling --- */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000; /* Pastikan di atas segalanya */
+            z-index: 1000; 
             left: 0;
             top: 0;
             width: 100%;
@@ -205,10 +187,10 @@
         }
 
         .modal-content {
-            background-color: #1e3d2a; /* Warna Modal Hijau Gelap */
+            background-color: var(--dark-bg); /* Warna Modal Hijau Gelap */
             margin: 10% auto;
             padding: 25px;
-            border: 3px solid var(--secondary-color);
+            border: 3px solid var(--yellow-secondary);
             width: 90%;
             max-width: 450px;
             border-radius: 10px;
@@ -218,30 +200,30 @@
         }
         
         .modal-content h3 {
-            color: var(--secondary-color);
+            color: var(--yellow-secondary);
             text-align: center;
             margin-top: 0;
         }
 
         .close-btn {
-            color: var(--secondary-color);
+            color: var(--yellow-secondary);
             float: right;
             font-size: 28px;
             font-weight: bold;
             background: none;
             line-height: 1;
         }
-        .close-btn:hover {
-            color: white;
-        }
     </style>
 </head>
 <body>
+    <div class="header-top">
+        Yakin - Akuntabel - Profesional - Integritas - Niat Lillah
+    </div>
     <nav>
         <div style="max-width: 1200px; margin: auto; text-align: left;">
             <a href="#">Beranda</a>
             <a href="#">Profil</a>
-            <a href="#">Laporan Keuangan</a>
+            <a href="#" style="background-color: var(--green-primary); padding: 5px 10px; border-radius: 3px;">Laporan Keuangan</a>
         </div>
     </nav>
 
@@ -277,9 +259,9 @@
                         <input type="number" id="input-keluar" placeholder="0">
                     </div>
                 </div>
-                <button type="button" onclick="addTransaction()" style="background-color: var(--primary-color);">Tambah Transaksi</button>
+                <button type="button" onclick="addTransaction()" style="background-color: var(--green-primary);">Tambah Transaksi</button>
                 <button type="button" onclick="resetData()" style="background-color: #e74c3c;">Reset Laporan</button>
-                <button onclick="logout()" style="background-color: var(--secondary-color); float: right; color: var(--text-dark);">Logout</button>
+                <button onclick="logout()" style="background-color: var(--yellow-secondary); float: right; color: var(--text-dark);">Logout</button>
             </form>
         </div>
 
@@ -436,7 +418,7 @@
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
                     statusText.textContent = 'Login Berhasil!';
-                    statusText.style.color = 'var(--primary-color)';
+                    statusText.style.color = 'var(--green-primary)';
                 })
                 .catch((error) => {
                     let errorMessage = `Login Gagal: ${error.message}`;
@@ -444,7 +426,7 @@
                         errorMessage = 'Email atau Password salah. Mohon coba lagi.';
                     }
                     statusText.textContent = errorMessage;
-                    statusText.style.color = '#e74c3c'; // Merah
+                    statusText.style.color = '#e74c3c'; 
                 });
         }
 
@@ -463,12 +445,11 @@
                 if(loginContainer) loginContainer.style.display = 'none';
                 if(adminContainer) adminContainer.style.display = 'block';
                 document.getElementById('auth-status').textContent = 'Selamat datang, Bendahara!';
-                document.getElementById('auth-status').style.color = 'var(--primary-color)';
+                document.getElementById('auth-status').style.color = 'var(--green-primary)';
             } else {
                 if(loginContainer) loginContainer.style.display = 'block';
                 if(adminContainer) adminContainer.style.display = 'none';
             }
-            // Panggil loadData agar tampilan tabel menyesuaikan status login
             loadData();
         });
 
@@ -501,7 +482,7 @@
             .then(() => {
                 document.getElementById('transaction-form').reset();
                 document.getElementById('auth-status').textContent = "Transaksi berhasil dicatat!";
-                document.getElementById('auth-status').style.color = 'var(--primary-color)';
+                document.getElementById('auth-status').style.color = 'var(--green-primary)';
             })
             .catch((error) => {
                 document.getElementById('auth-status').textContent = "Error menyimpan data: " + error.message;
@@ -517,11 +498,9 @@
             const hasActionHeader = existingActionHeader && existingActionHeader.textContent.trim() === 'Aksi';
             
             if (hasActionHeader && !isLoggedIn) {
-                // Hapus kolom Aksi jika tidak login
                 existingActionHeader.remove();
             } 
             else if (!hasActionHeader && isLoggedIn) {
-                // Tambahkan kolom Aksi jika sudah login
                 const actionHeader = document.createElement('th');
                 actionHeader.textContent = 'Aksi';
                 actionHeader.style.width = '10%';
@@ -585,10 +564,8 @@
 
                     if (isLoggedIn) {
                         const actionCell = row.insertCell(6);
-                        // Escape single quote di uraian agar tidak merusak string JS
                         const safeUraian = (data.uraian || '').replace(/'/g, "\\'"); 
                         
-                        // Menambahkan tombol Edit dan Hapus
                         actionCell.innerHTML = `
                             <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${safeUraian}', ${danaMasuk}, ${danaKeluar})">Edit</button>
                             <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
@@ -626,7 +603,6 @@
                 }
 
                 if (isLoggedIn) {
-                    // Tambahkan sel kosong untuk kolom Aksi di footer jika login
                     const emptyActionCell = footerRow.insertCell(4);
                     emptyActionCell.textContent = '';
                 }
@@ -646,7 +622,7 @@
                 db.collection(FINANCE_COLLECTION).doc(docId).delete()
                 .then(() => {
                     document.getElementById('auth-status').textContent = "Transaksi berhasil dihapus!";
-                    document.getElementById('auth-status').style.color = 'var(--primary-color)';
+                    document.getElementById('auth-status').style.color = 'var(--green-primary)';
                 })
                 .catch((error) => {
                     document.getElementById('auth-status').textContent = "Error menghapus: Pastikan Anda masih login. " + error.message;
@@ -661,7 +637,6 @@
 
         let currentEditingId = null; 
 
-        // Fungsi yang dipanggil saat tombol Edit ditekan
         window.editTransactionPrompt = function(id, tanggal, uraian, masuk, keluar) {
             if (!auth.currentUser) {
                 alert("Anda harus login sebagai admin untuk mengedit data.");
@@ -727,13 +702,13 @@
                     danaKeluar: danaKeluar
                 });
                 document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
-                document.getElementById('modal-status').style.color = 'var(--primary-color)';
+                document.getElementById('modal-status').style.color = 'var(--green-primary)';
                 setTimeout(() => {
                     document.getElementById('editModal').style.display = 'none';
                 }, 1000); 
                 
                 document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
-                document.getElementById('auth-status').style.color = 'var(--primary-color)';
+                document.getElementById('auth-status').style.color = 'var(--green-primary)';
             } catch (error) {
                 document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
                 document.getElementById('modal-status').style.color = '#e74c3c';
@@ -764,7 +739,7 @@
                 return batch.commit();
             }).then(() => {
                 document.getElementById('auth-status').textContent = "Semua data laporan berhasil direset (dihapus).";
-                document.getElementById('auth-status').style.color = 'var(--primary-color)';
+                document.getElementById('auth-status').style.color = 'var(--green-primary)';
             }).catch((error) => {
                 document.getElementById('auth-status').textContent = "Gagal mereset data: " + error.message;
                 document.getElementById('auth-status').style.color = '#e74c3c';
@@ -791,7 +766,6 @@
                 displayTablePage(originalCurrentPage); 
             }
             
-            // Hapus Kolom Aksi dari tabel untuk cetak
             const actionIndex = 6; 
             const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
             
