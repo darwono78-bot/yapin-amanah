@@ -492,10 +492,10 @@
 .dropdown:hover .dropdown-content {
     display: block;
 }
-        /* TAMBAHKAN ATAU UBAH INI: */
-    padding-top: 5px; /* Memberi jarak aman antara tombol dan kotak sub-menu */
-    top: 100%; /* Pastikan dropdown mulai tepat di bawah tombol */
-}
+
+/* GANTI/TAMBAHKAN PROPERTI INI: */
+    top: 95%; /* Pastikan kotak muncul di bawah link utama */
+    padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
     </style>
 </head>
 <body>
@@ -532,20 +532,21 @@
     <a href="kegiatan.html">program & Kegiatan</a>
     <a href="galeri.html">Galeri</a>
     <a href="kontak.html">Kontak & Donasi</a>
-    
     <div class="dropdown">
-        <button class="dropbtn">Laporan Keuangan ▼</button>
-        <div class="dropdown-content">
-            <a href="laporan.html">Laporan Kas Masuk/Keluar</a> <a onclick="/* Panggil fungsi laporan keuangan PDF */">Unduh Laporan Kas PDF</a>
-        </div>
+    <a href="laporan.html" class="dropbtn">Laporan Keuangan ▼</a> 
+    <div class="dropdown-content">
+        <a href="laporan.html">Laporan Kas Masuk/Keluar</a>
+        <a onclick="/* Panggil fungsi laporan keuangan PDF */">Unduh Laporan Kas PDF</a>
     </div>
-    
-    <div class="dropdown">
-        <button class="dropbtn active">Donatur YAPIN ▼</button> <div class="dropdown-content">
-            <a href="#table-section">Lihat Daftar Donatur</a>
-            <a onclick="downloadPDF()">Unduh Daftar Donatur PDF</a>
-        </div>
+</div>
+
+<div class="dropdown">
+    <a href="donatur-yapin.html" class="dropbtn active">Donatur YAPIN ▼</a> 
+    <div class="dropdown-content">
+        <a href="#table-section">Lihat Daftar Donatur</a>
+        <a onclick="downloadPDF()">Unduh Daftar Donatur PDF</a>
     </div>
+</div>
 </nav>
 <section class="section">
     
@@ -1291,6 +1292,7 @@
 </script>
 </body>
 </html>
+
 
 
 
