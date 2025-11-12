@@ -410,13 +410,29 @@
 </marquee>
 
 <nav>
-    <a href="index.html">Beranda</a>
-    <a href="profil.html">Profil</a>
-    <a href="kegiatan.html">program & Kegiatan</a>
-    <a href="galeri.html">Galeri</a>
-    <a href="kontak.html">Kontak & Donasi</a>
-    <a href="laporan.html">Laporan Keuangan</a>
-    <a href="donatur-yapin.html" class="active">Donatur YAPIN</a>
+    <div class="nav-links">
+        <a href="index.html">Beranda</a>
+        <a href="profil.html">Profil</a>
+        <a href="kegiatan.html">Program & Kegiatan</a>
+        <a href="galeri.html">Galeri</a>
+        <a href="kontak.html">Kontak & Donasi</a>
+        
+        <div class="dropdown">
+            <a href="laporan.html" class="dropbtn">Laporan Keuangan ▼</a> 
+            <div class="dropdown-content">
+                <a href="laporan.html">Laporan Kas Masuk/Keluar</a>
+                <a onclick="/* Tambahkan fungsi cetak PDF laporan kas di sini */">Unduh Laporan Kas PDF</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="donatur-yapin.html" class="dropbtn">Donatur YAPIN ▼</a> 
+            <div class="dropdown-content">
+                <a href="donatur-yapin.html#table-section">Lihat Daftar Donatur</a>
+                <a onclick="downloadPDF()">Unduh Daftar Donatur PDF</a>
+            </div>
+        </div>
+        
+    </div>
 </nav>
 
 <section class="section">
@@ -1134,6 +1150,7 @@
 </script>
 </body>
 </html>
+
 
 
 
