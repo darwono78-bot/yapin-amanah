@@ -491,6 +491,10 @@
 .dropdown:hover .dropdown-content {
     display: block;
 }
+        /* TAMBAHKAN ATAU UBAH INI: */
+    padding-top: 5px; /* Memberi jarak aman antara tombol dan kotak sub-menu */
+    top: 100%; /* Pastikan dropdown mulai tepat di bawah tombol */
+}
     </style>
 </head>
 <body>
@@ -524,16 +528,22 @@
 <nav>
     <a href="index.html">Beranda</a>
     <a href="profil.html">Profil</a>
-    <a href="kegiatan.html">program & Kegiatan</a>
-    <a href="galeri.html">Galeri</a>
-    <a href="kontak.html">Kontak & Donasi</a>
-    
     <div class="dropdown">
         <button class="dropbtn">Laporan Keuangan ▼</button>
         <div class="dropdown-content">
-            <a href="laporan.html">Laporan Kas Masuk/Keluar</a> <a onclick="/* Panggil fungsi laporan keuangan PDF */">Unduh Laporan Kas PDF</a>
+            <a href="laporan.html">Laporan Kas Masuk/Keluar</a>
+            <a onclick="/* Panggil fungsi laporan keuangan PDF */">Unduh Laporan Kas PDF</a>
         </div>
     </div>
+    
+    <div class="dropdown">
+        <button class="dropbtn active">Donatur YAPIN ▼</button> 
+        <div class="dropdown-content">
+            <a href="#table-section">Lihat Daftar Donatur</a>
+            <a onclick="downloadPDF()">Unduh Daftar Donatur PDF</a>
+        </div>
+    </div>
+</nav>
     
     <div class="dropdown">
         <button class="dropbtn active">Donatur YAPIN ▼</button> <div class="dropdown-content">
@@ -1287,6 +1297,7 @@
 </script>
 </body>
 </html>
+
 
 
 
