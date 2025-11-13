@@ -161,21 +161,33 @@
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
 /* ========================================================================= */
-/* STYLING KHUSUS UNTUK LINK DOWNLOAD (action-link) */
+/* STYLING KHUSUS UNTUK TOMBOL UTAMA (.btn) */
 /* ========================================================================= */
 
-.dropdown-content a.action-link {
+.btn {
+    /* Pastikan link berfungsi seperti tombol blok */
+    display: inline-block; 
+    
+    /* Ukuran dan Warna Blok */
+    padding: 15px 30px; /* Jarak di dalam tombol (Memperbesar ukuran) */
     background-color: #ffd700; /* Warna kuning/emas solid */
     color: #004000; /* Warna hijau gelap untuk teks */
+    
+    /* Teks dan Bentuk */
+    text-decoration: none; /* Hilangkan garis bawah */
+    border-radius: 8px; /* Sudut membulat (opsional) */
+    font-size: 18px; /* Ukuran teks */
     font-weight: bold;
-    border-top: 1px solid #ffc400; /* Opsional: Garis pemisah atas */
-    border-bottom: 1px solid #ffc400; /* Opsional: Garis pemisah bawah */
+    
+    /* Animasi (opsional) */
+    transition: background-color 0.3s ease; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Efek bayangan */
 }
 
-/* Pastikan efek hover pada link aksi tetap terlihat bagus */
-.dropdown-content a.action-link:hover {
+.btn:hover {
     background-color: #ffc400; /* Sedikit lebih gelap saat di-hover */
     color: #000;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
 }
   </style>
 </head>
@@ -330,6 +342,7 @@
   </script>
 </body>
 </html>
+
 
 
 
