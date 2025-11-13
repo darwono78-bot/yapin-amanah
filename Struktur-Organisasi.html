@@ -259,47 +259,83 @@
     top: 95%; /* Pastikan kotak muncul di bawah link utama */
     padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
 /* ========================================================================= */
-/* KOREKSI FINAL: Menggunakan FLEXBOX untuk Perataan Sempurna */
+/* STYLING KHUSUS UNTUK STRUKTUR ORGANISASI */
 /* ========================================================================= */
 
+/* Gaya untuk Daftar Pengurus */
 .organization-list {
     margin-top: 20px;
     padding-left: 0;
-    /* Hapus display: block/dl/etc jika ada */
-}
-
-/* KUNCI KOREKSI: Atur setiap baris untuk menggunakan flexbox */
-.org-row {
-    display: flex; /* Aktifkan flexbox */
-    align-items: center; /* ALIGNMENT: Sejajarkan item di tengah vertikal */
-    margin-bottom: 5px; /* Jarak antar baris */
 }
 
 /* Gaya untuk Posisi (dt: description title) */
 .organization-list dt {
     font-weight: bold;
-    color: #00FFCC; 
+    color: #00FFCC; /* Warna hijau muda */
+    margin-top: 10px;
     padding-left: 0;
-    
-    /* Atur lebar DT */
-    width: 300px; 
-    min-width: 300px;
-    
-    /* Hapus semua properti float/margin/padding lama */
-    margin: 0; 
-    padding: 5px 0; 
+    width: 200px; /* Lebar kolom posisi */
+    float: left; /* Biar dt dan dd bisa sejajar */
+    clear: left; /* Memaksa dt berikutnya ke baris baru */
 }
 
 /* Gaya untuk Nama Pengurus (dd: description data) */
 .organization-list dd {
+    margin-left: 210px; /* Jarak dari kolom posisi */
     color: #fff;
-    
-    /* Biarkan DD mengisi sisa ruang */
-    flex-grow: 1; 
-    
-    /* Hapus semua properti float/margin/padding lama */
-    margin: 0; 
-    padding: 5px 0;
+    margin-top: 10px;
+}
+
+/* Gaya untuk Container Tugas (Layout Kolom) */
+.tasks-container {
+    display: flex;
+    flex-wrap: wrap; /* Memastikan tugas bisa pindah ke baris baru di layar kecil */
+    gap: 20px; /* Jarak antar card tugas */
+    margin-top: 30px;
+}
+
+/* Gaya untuk Setiap Kartu Tugas */
+.task-card {
+    flex: 1 1 45%; /* Ambil 45% lebar, buat 2 kolom di layar besar */
+    background-color: rgba(0, 40, 0, 0.6); /* Latar belakang semi-transparan */
+    border: 1px solid rgba(255, 215, 0, 0.5); /* Border emas */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Gaya untuk Judul Tugas */
+.task-card h4 {
+    color: #ffd700; /* Warna kuning/emas */
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+/* Gaya untuk Poin-poin Tugas */
+.task-card ul {
+    list-style-type: none; /* Hilangkan bullet default */
+    padding-left: 0;
+}
+
+.task-card ul li {
+    padding-left: 1.5em; 
+    text-indent: -1.5em; /* Membuat poin melayang di luar teks */
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.task-card ul li::before {
+    content: "✅"; /* Menggunakan emoji centang sebagai bullet */
+    margin-right: 0.5em;
+    color: #00FFCC; /* Warna hijau muda untuk centang */
+}
+
+/* Penyesuaian untuk Layar Kecil (Mobile) */
+@media (max-width: 768px) {
+    .task-card {
+        flex: 1 1 100%; /* Jadikan 1 kolom penuh */
+    }
 }
     </style>
 </head>
@@ -665,6 +701,7 @@
   </script>
 </body>
 </html>
+
 
 
 
