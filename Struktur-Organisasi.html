@@ -259,53 +259,32 @@
     top: 95%; /* Pastikan kotak muncul di bawah link utama */
     padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
 /* ========================================================================= */
-/* KOREKSI CSS FINAL UNTUK STRUKTUR ORGANISASI */
+/* KOREKSI FINAL UNTUK PERATAAN DT dan DD */
 /* ========================================================================= */
 
-/* Gaya untuk Daftar Pengurus */
-.organization-list {
-    margin-top: 20px;
-    padding-left: 0;
-}
-
-/* KUNCI KOREKSI 1: Perluas lebar DT dan atur margin DD */
+/* Gaya untuk Posisi (dt: description title) */
 .organization-list dt {
     font-weight: bold;
     color: #00FFCC; 
-    margin-top: 10px;
     padding-left: 0;
-    width: 300px; /* Diperluas menjadi 300px agar sejajar */
+    width: 300px; 
     float: left; 
     clear: left; 
+    
+    /* KUNCI KOREKSI: Set padding dan hapus margin vertikal */
+    margin: 0; /* Hapus margin vertikal default */
+    padding-top: 10px; /* Tambahkan padding agar sejajar dengan dd */
 }
 
-/* KUNCI KOREKSI 2: Sesuaikan jarak margin DD agar tidak terlalu rapat */
+/* Gaya untuk Nama Pengurus (dd: description data) */
 .organization-list dd {
-    margin-left: 310px; /* Diatur 10px lebih besar dari lebar dt */
+    /* KUNCI KOREKSI: Atur margin vertikalnya agar sama */
+    margin: 0; /* Hapus margin vertikal default */
+    margin-left: 310px; /* Jarak dari kolom posisi */
+    padding-top: 10px; /* Samakan padding top dengan dt */
+    
     color: #fff;
-    margin-top: 10px;
-    padding-bottom: 5px; /* Tambahan jarak antar baris di daftar pengurus */
-}
-
-
-/* Gaya untuk Setiap Kartu Tugas */
-.task-card {
-    /* ... (Biarkan kode ini sama, tidak perlu diubah) ... */
-    flex: 1 1 45%; 
-    background-color: rgba(0, 40, 0, 0.6); 
-    border: 1px solid rgba(255, 215, 0, 0.5); 
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* KUNCI KOREKSI 3: Tambah jarak antar poin di daftar tugas */
-.task-card ul li {
-    padding-left: 1.5em; 
-    text-indent: -1.5em; 
-    margin-bottom: 12px; /* DITINGKATKAN: Tambah jarak antar poin tugas */
-    color: #fff;
-    line-height: 1.4; /* Tambahkan line height agar tidak terlalu rapat */
+    padding-bottom: 5px; 
 }
     </style>
 </head>
@@ -667,6 +646,7 @@
   </script>
 </body>
 </html>
+
 
 
 
