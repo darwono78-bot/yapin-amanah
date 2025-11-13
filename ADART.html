@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil | Yayasan Pendidikan Islam Nurul Huda</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(rgba(0, 40, 0, 0.9), rgba(0, 70, 0, 0.9)),
+                  url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+       header {
+      position: relative;
+      background: rgba(0, 60, 0, 0.9);
+      text-align: center;
+      padding: 25px 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    header img {
+      width: 150px;
+      height: auto;
+      animation: fadeIn 1.5s ease-in;
+      filter: drop-shadow(0 0 10px gold);
+    }
+
+    header h1 {
+      margin-top: 10px;
+      font-size: 1.8em;
+      color: #f8d77b;
+      text-shadow: 0 0 8px rgba(248, 215, 123, 0.7);
+    }
+
+    /* ORNAMEN POJOK */
+    header .ornamen {
+      position: absolute;
+      width: 160px;
+      opacity: 0.8;
+      filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));
+      pointer-events: none;
+    }
+
+    .atas-kiri { top: 5px; left: 5px; transform: rotate(0deg); }
+    .atas-kanan { top: 5px; right: 5px; transform: scaleX(-1); }
+    .bawah-kiri { bottom: 5px; left: 5px; transform: scaleY(-1); }
+    .bawah-kanan { bottom: 5px; right: 5px; transform: rotate(180deg); }
+    nav {
+      background: rgba(0, 70, 0, 0.95);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 20px;
+      margin: 4px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover, nav a.active {
+      background-color: #ffd700;
+      color: #004000;
+      transform: scale(1.05);
+    }
+
+      .section {
+      background: rgba(0, 45, 0, 0.93);
+      margin: 50px auto;
+      width: 90%;
+      max-width: 900px;
+      padding: 40px;
+      border-radius: 20px;
+      border: 1.8px solid rgba(255, 215, 0, 0.6);
+      box-shadow:
+        0 0 25px rgba(255, 215, 0, 0.4),
+        0 0 35px rgba(255, 215, 0, 0.2),
+        inset 0 0 25px rgba(255, 215, 0, 0.25);
+      text-align: left;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s ease;
+    }
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      color: #ffd700;
+      margin-bottom: 15px;
+      font-size: 1.6em;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(248, 215, 123, 0.6);
+    }
+
+    p {
+      font-size: 1.05em;
+      line-height: 1.8em;
+      color: #fffdee;
+      text-align: justify;
+      margin-bottom: 15px;
+    }
+
+    ul {
+      margin-left: 25px;
+      line-height: 1.8;
+    }
+
+    ul li {
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      background: rgba(0, 70, 0, 0.9);
+      text-align: center;
+      padding: 20px 10px;
+      color: #fff;
+      font-size: 0.9em;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
+      border-top: 1.5px solid rgba(248, 215, 123, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 1.4em; }
+      nav a { padding: 6px 14px; font-size: 0.95em; }
+      .section { padding: 25px; margin: 30px auto; }
+    }
+  /* --- Tombol Melayang WhatsApp & Email --- */
+  .floating-buttons {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+
+  .floating-buttons a {
+    background: linear-gradient(135deg, #009900, #00cc00);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 25px;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    font-weight: 600;
+    font-size: 0.95em;
+    transition: all 0.3s ease;
+  }
+
+  .floating-buttons a.email {
+    background: linear-gradient(135deg, #e6b800, #ffcc00);
+    color: #004000;
+  }
+
+  .floating-buttons a:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
+  }
+        /* ========================================================================= */
+/* STYLING DROPDOWN NAVIGASI (KOREKSI UNTUK FLEX LAYOUT) */
+/* ========================================================================= */
+
+.dropdown {
+    position: relative; 
+    /* Penting: Set display ke inline-block agar berbaris horizontal dengan menu lain */
+    display: inline-block; 
+    vertical-align: top; /* Pastikan rata atas dengan menu lain */
+}
+
+/* Gaya Tombol Pemicu Dropdown (Dropbtn) */
+.dropbtn {
+    background-color: transparent;
+    color: #fff;
+    font-size: 1em; /* Mengikuti font-size dari nav a */
+    font-weight: 600;
+    padding: 8px 18px; /* Mengikuti padding dari nav a */
+    border: none;
+    cursor: pointer;
+    border-radius: 25px; /* Mengikuti border-radius dari nav a */
+    transition: all 0.3s ease;
+}
+
+/* Tombol Dropdown Aktif/Hover */
+.dropbtn:hover, .dropbtn.active {
+    background-color: #ffd700;
+    color: #004000;
+    transform: scale(1.05);
+}
+
+/* Gaya Konten Dropdown (Kotak yang muncul) */
+.dropdown-content {
+    display: none; 
+    position: absolute;
+    background-color: rgba(0, 45, 0, 0.95); /* Warna lebih gelap */
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 100; /* Z-index tinggi agar pasti muncul di atas */
+    border-radius: 8px;
+    margin-top: 0px; 
+    left: 0; 
+    border: 1px solid rgba(255, 215, 0, 0.5); /* Border emas */
+    text-align: left;
+    overflow: hidden; /* Agar border-radius terlihat rapi */
+}
+
+/* Gaya Link di dalam Dropdown */
+.dropdown-content a {
+    color: #fff;
+    padding: 12px 18px;
+    text-decoration: none;
+    display: block;
+    margin: 0; /* Penting: Hapus margin */
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 0; /* Hapus border radius */
+}
+
+.dropdown-content a:hover {
+    background-color: #ffd700; 
+    color: #004000;
+    transform: none; /* Hilangkan scale 1.05 agar menu tidak bergerak */
+}
+
+/* Tampilkan konten dropdown saat mouse berada di atas .dropdown */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* GANTI/TAMBAHKAN PROPERTI INI: */
+    top: 95%; /* Pastikan kotak muncul di bawah link utama */
+    padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
+    </style>
+  </style>
+</head>
+<body>
+<header>
+    <img src="Ornamen Header.png" class="ornamen atas-kiri">
+    <img src="Ornamen Header.png" class="ornamen atas-kanan">
+    <img src="Ornamen Header.png" class="ornamen bawah-kiri">
+    <img src="Ornamen Header.png" class="ornamen bawah-kanan">
+
+    <img src="logo yayasan.png" alt="Logo Yayasan">
+    <h1>Yayasan Pendidikan Islam Nurul Huda ( YAPIN )</h1>
+  </header>
+<div style="
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,215,0,0.15), transparent 70%);
+  filter: blur(30px);
+  z-index: 0;
+  pointer-events: none;
+"></div>
+<marquee behavior="alternate" scrollamount="4">
+  <span style="
+    font-size: 20px;
+    color: #00FFCC;
+    text-shadow: 0 0 10px #00FFCC, 0 0 20px #009999;
+    font-weight: bold;
+  ">Yakin - Akuntabel - Profesional - Integritas - Niat Lillah  </span>
+</marquee>
+
+    <style>
+      @keyframes glow {
+        from { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
+        to { filter: drop-shadow(0 0 20px rgba(255,215,0,1)); }
+      }
+    </style>
+</header>
+ <nav>
+    <div class="nav-links">
+        <a href="index.html">Beranda</a>
+        <div class="dropdown">
+           <a href="" class="dropbtn">Profil ▼</a>
+           <div class="dropdown-content">
+        <a href="profil.html">Visi & Misi</a>
+                <a href="Struktur-Organisasi.html">Struktur Organisasi</a>
+		<a href="ADART.html">ADART</a>
+            </div>
+        </div>
+        <a href="kegiatan.html">Program & Kegiatan</a>
+        <a href="galeri.html">Galeri</a>
+        <a href="kontak.html">Kontak & Donasi</a>
+        
+        <div class="dropdown">
+            <a href="" class="dropbtn">Laporan Keuangan ▼</a> 
+            <div class="dropdown-content">
+                <a href="laporan.html">Laporan Kas Masuk/Keluar</a>
+                <a href="Laporan-keuangan-detail.html">Laporan Keuangan & LPJ OKtober 2025</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="" class="dropbtn">Donatur YAPIN ▼</a> 
+            <div class="dropdown-content">
+                <a href="donatur-yapin.html">Lihat Daftar Donatur</a>
+                <a href="list-donatur-excel.html">List Donatur Excel</a>
+                <a href="Doa-Untuk-Donatur.html">Doa-Untuk-Donatur</a>
+            </div>
+        </div>
+     </div>
+</nav>
+
+ <section class="section">
+    <h2 style="text-align: center;">AD/ART YAYASAN</h2>
+    <p style="text-align: center;">Klik gambar bingkai di bawah ini untuk membaca AD / ART secara langsung (akan terbuka di tab baru).</p>
+    
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="https://drive.google.com/file/d/1SOLzAKng8E2cEBXJswcSVQtfoTEus94G/view?usp=sharing" target="_blank" style="text-decoration: none;">
+            
+            <div style="
+                display: inline-block;
+                border: 4px solid #ffd700; 
+                border-radius: 10px;
+                padding: 10px;
+                background: rgba(0, 50, 0, 0.8);
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+                transition: transform 0.3s ease;
+                cursor: pointer;
+            " onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                
+                <img src="thumbnail adart.png" alt="Thumbnail adart" style="width: 100%; max-width: 400px; height: auto; border-radius: 10px;">
+                
+                <p style="margin-top: 15px; color: #ffd700; font-weight: bold; font-size: 1.1em; text-align: center;">
+                    MONGGO BACA AD/ART NYA (KLIK)
+                </p>
+            </div>
+        </a>
+    </div>
+</section>
+
+  <footer>
+    &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
+  </footer>
+
+  <div class="floating-buttons">
+    <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
+    <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
+  </div>
+
+  <script>
+    const sections = document.querySelectorAll('.section');
+    window.addEventListener('scroll', () => {
+      const triggerBottom = window.innerHeight * 0.85;
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if(sectionTop < triggerBottom) section.classList.add('visible');
+      });
+    });
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
