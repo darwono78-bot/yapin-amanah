@@ -259,7 +259,7 @@
     top: 95%; /* Pastikan kotak muncul di bawah link utama */
     padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
 /* ========================================================================= */
-/* STYLING KHUSUS UNTUK STRUKTUR ORGANISASI */
+/* KOREKSI CSS FINAL UNTUK STRUKTUR ORGANISASI */
 /* ========================================================================= */
 
 /* Gaya untuk Daftar Pengurus */
@@ -268,74 +268,44 @@
     padding-left: 0;
 }
 
-/* Gaya untuk Posisi (dt: description title) */
+/* KUNCI KOREKSI 1: Perluas lebar DT dan atur margin DD */
 .organization-list dt {
     font-weight: bold;
-    color: #00FFCC; /* Warna hijau muda */
+    color: #00FFCC; 
     margin-top: 10px;
     padding-left: 0;
-    width: 200px; /* Lebar kolom posisi */
-    float: left; /* Biar dt dan dd bisa sejajar */
-    clear: left; /* Memaksa dt berikutnya ke baris baru */
+    width: 300px; /* Diperluas menjadi 300px agar sejajar */
+    float: left; 
+    clear: left; 
 }
 
-/* Gaya untuk Nama Pengurus (dd: description data) */
+/* KUNCI KOREKSI 2: Sesuaikan jarak margin DD agar tidak terlalu rapat */
 .organization-list dd {
-    margin-left: 210px; /* Jarak dari kolom posisi */
+    margin-left: 310px; /* Diatur 10px lebih besar dari lebar dt */
     color: #fff;
     margin-top: 10px;
+    padding-bottom: 5px; /* Tambahan jarak antar baris di daftar pengurus */
 }
 
-/* Gaya untuk Container Tugas (Layout Kolom) */
-.tasks-container {
-    display: flex;
-    flex-wrap: wrap; /* Memastikan tugas bisa pindah ke baris baru di layar kecil */
-    gap: 20px; /* Jarak antar card tugas */
-    margin-top: 30px;
-}
 
 /* Gaya untuk Setiap Kartu Tugas */
 .task-card {
-    flex: 1 1 45%; /* Ambil 45% lebar, buat 2 kolom di layar besar */
-    background-color: rgba(0, 40, 0, 0.6); /* Latar belakang semi-transparan */
-    border: 1px solid rgba(255, 215, 0, 0.5); /* Border emas */
+    /* ... (Biarkan kode ini sama, tidak perlu diubah) ... */
+    flex: 1 1 45%; 
+    background-color: rgba(0, 40, 0, 0.6); 
+    border: 1px solid rgba(255, 215, 0, 0.5); 
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Gaya untuk Judul Tugas */
-.task-card h4 {
-    color: #ffd700; /* Warna kuning/emas */
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-}
-
-/* Gaya untuk Poin-poin Tugas */
-.task-card ul {
-    list-style-type: none; /* Hilangkan bullet default */
-    padding-left: 0;
-}
-
+/* KUNCI KOREKSI 3: Tambah jarak antar poin di daftar tugas */
 .task-card ul li {
     padding-left: 1.5em; 
-    text-indent: -1.5em; /* Membuat poin melayang di luar teks */
-    margin-bottom: 8px;
+    text-indent: -1.5em; 
+    margin-bottom: 12px; /* DITINGKATKAN: Tambah jarak antar poin tugas */
     color: #fff;
-}
-
-.task-card ul li::before {
-    content: "✅"; /* Menggunakan emoji centang sebagai bullet */
-    margin-right: 0.5em;
-    color: #00FFCC; /* Warna hijau muda untuk centang */
-}
-
-/* Penyesuaian untuk Layar Kecil (Mobile) */
-@media (max-width: 768px) {
-    .task-card {
-        flex: 1 1 100%; /* Jadikan 1 kolom penuh */
-    }
+    line-height: 1.4; /* Tambahkan line height agar tidak terlalu rapat */
 }
     </style>
 </head>
@@ -464,9 +434,9 @@
         <dd>Rajin</dd>
     </dl>
     
-    <h2 style="color: #00FFCC; margin-top: 60px;">
-        Tugas dan Wewenang Setiap Unsur Kepengurusan
-    </h2>
+    <h2 style="color: #ffd700; margin-top: 60px; margin-bottom: 30px;">
+    Tugas dan Wewenang Setiap Unsur Kepengurusan
+</h2>
     
     <div class="tasks-container">
         <div class="task-card">
@@ -697,6 +667,7 @@
   </script>
 </body>
 </html>
+
 
 
 
