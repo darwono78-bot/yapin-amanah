@@ -259,82 +259,97 @@
     top: 95%; /* Pastikan kotak muncul di bawah link utama */
     padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
 /* ========================================================================= */
-/* STYLING KHUSUS UNTUK STRUKTUR ORGANISASI */
+/* KOREKSI FINAL CSS FLEXBOX untuk Perataan Daftar Kepengurusan */
 /* ========================================================================= */
 
-/* Gaya untuk Daftar Pengurus */
 .organization-list {
     margin-top: 20px;
     padding-left: 0;
+    /* Ini adalah container untuk semua baris jabatan/nama */
+}
+
+/* KUNCI PERATAAN: Membuat setiap baris sejajar tengah (vertikal) */
+.org-row {
+    display: flex; /* Aktifkan flexbox */
+    align-items: center; /* Sejajarkan item di tengah vertikal */
+    margin-bottom: 5px; /* Jarak antar baris */
 }
 
 /* Gaya untuk Posisi (dt: description title) */
-.organization-list dt {
+.org-row dt {
     font-weight: bold;
-    color: #00FFCC; /* Warna hijau muda */
-    margin-top: 10px;
-    padding-left: 0;
-    width: 200px; /* Lebar kolom posisi */
-    float: left; /* Biar dt dan dd bisa sejajar */
-    clear: left; /* Memaksa dt berikutnya ke baris baru */
+    color: #00FFCC; 
+    padding: 5px 0;
+    
+    /* Atur lebar Jabatan agar rapi */
+    width: 300px; 
+    min-width: 300px; /* Memastikan lebar minimum */
+    
+    /* Hapus semua margin/float yang mengganggu */
+    margin: 0; 
 }
 
 /* Gaya untuk Nama Pengurus (dd: description data) */
-.organization-list dd {
-    margin-left: 210px; /* Jarak dari kolom posisi */
+.org-row dd {
     color: #fff;
-    margin-top: 10px;
+    
+    /* Biarkan DD mengisi sisa ruang */
+    flex-grow: 1; 
+    
+    /* Hapus semua margin/float yang mengganggu */
+    margin: 0; 
+    padding: 5px 0;
 }
 
-/* Gaya untuk Container Tugas (Layout Kolom) */
+/* ========================================================================= */
+/* STYLING TUGAS DAN WEWENANG (tasks-container) */
+/* ========================================================================= */
 .tasks-container {
     display: flex;
-    flex-wrap: wrap; /* Memastikan tugas bisa pindah ke baris baru di layar kecil */
-    gap: 20px; /* Jarak antar card tugas */
+    flex-wrap: wrap; 
+    gap: 20px; 
     margin-top: 30px;
 }
 
-/* Gaya untuk Setiap Kartu Tugas */
 .task-card {
-    flex: 1 1 45%; /* Ambil 45% lebar, buat 2 kolom di layar besar */
-    background-color: rgba(0, 40, 0, 0.6); /* Latar belakang semi-transparan */
-    border: 1px solid rgba(255, 215, 0, 0.5); /* Border emas */
+    flex: 1 1 45%; 
+    background-color: rgba(0, 40, 0, 0.6); 
+    border: 1px solid rgba(255, 215, 0, 0.5); 
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Gaya untuk Judul Tugas */
 .task-card h4 {
-    color: #ffd700; /* Warna kuning/emas */
+    color: #ffd700; 
     margin-bottom: 15px;
     padding-bottom: 5px;
     border-bottom: 1px solid rgba(255, 215, 0, 0.3);
 }
 
-/* Gaya untuk Poin-poin Tugas */
 .task-card ul {
-    list-style-type: none; /* Hilangkan bullet default */
+    list-style-type: none; 
     padding-left: 0;
 }
 
 .task-card ul li {
     padding-left: 1.5em; 
-    text-indent: -1.5em; /* Membuat poin melayang di luar teks */
-    margin-bottom: 8px;
+    text-indent: -1.5em; 
+    margin-bottom: 12px; 
     color: #fff;
+    line-height: 1.4; 
 }
 
 .task-card ul li::before {
-    content: "✅"; /* Menggunakan emoji centang sebagai bullet */
+    content: "✅"; 
     margin-right: 0.5em;
-    color: #00FFCC; /* Warna hijau muda untuk centang */
+    color: #00FFCC; 
 }
 
 /* Penyesuaian untuk Layar Kecil (Mobile) */
 @media (max-width: 768px) {
     .task-card {
-        flex: 1 1 100%; /* Jadikan 1 kolom penuh */
+        flex: 1 1 100%; 
     }
 }
     </style>
@@ -404,74 +419,55 @@
         </div>
      </div>
 </nav>
-<section class="section" id="struktur-organisasi">
-    <h2>Struktur Organisasi Yayasan Pendidikan Islam Nurul Huda (YAPIN)</h2>
+<section class="section" id="struktur-kepengurusan">
+    <h2 style="color: #00FFCC; margin-bottom: 30px;">
+        <span style="border-bottom: 3px solid #ffd700; padding-bottom: 5px;">
+            Struktur Kepengurusan Yayasan YAPIN
+        </span>
+    </h2>
 
     <h3 style="color: #ffd700; margin-top: 30px; border-bottom: 2px solid #ffd700; padding-bottom: 5px;">
-        1. Susunan Kepengurusan
+        Pengurus Utama dan Penasehat
     </h3>
+    
     <div class="organization-list">
-    <div class="org-row"> 
-        <dt>Pelindung</dt>
-        <dd>Kepala Desa Ngablak</dd>
-    </div>
-        <div class="org-row">
-        <dt>Dewan Penasehat</dt>
-        <dd>[Isi Nama Penasehat]</dd>
-    </div>
-        <div class="org-row">
-        <dt>Dewan Ulama</dt>
-        <dd>[Isi Nama Ulama]</dd>
-    </div>
-        <div class="org-row">
-        <dt>Dewan Kehormatan Pendiri dan Pewakif</dt>
-        <dd>[Isi Nama Pendiri/Wakif]</dd>
+        <div class="org-row"><dt>Pelindung</dt><dd>Kepala Desa Ngablak</dd></div>
+        <div class="org-row"><dt>Dewan Penasehat</dt><dd>[Isi Nama Penasehat]</dd></div>
+        <div class="org-row"><dt>Dewan Ulama</dt><dd>[Isi Nama Ulama]</dd></div>
+        <div class="org-row"><dt>Dewan Kehormatan Pendiri & Pewakif</dt><dd>[Isi Nama Pendiri/Wakif]</dd></div>
     </div>
     
-    <h3 style="color: #ffd700; margin-top: 30px; border-bottom: 2px solid #ffd700; padding-bottom: 5px;">
-        2. Pengurus Harian Yayasan
+    <h3 style="color: #ffd700; margin-top: 40px; border-bottom: 2px solid #ffd700; padding-bottom: 5px;">
+        Pengurus Harian Yayasan
     </h3>
 
     <div class="organization-list">
-    <div class="org-row"> 
-        <dt>Ketua Umum</dt>
-        <dd>Midi, S.Pd.I</dd>
-     </div>
-        <dt>Wakil Ketua</dt>
-        <dd>Diyono</dd>
+        <div class="org-row"><dt>Ketua Umum</dt><dd>Midi, S.Pd.I</dd></div>
+        <div class="org-row"><dt>Wakil Ketua</dt><dd>Diyono</dd></div>
+        <div class="org-row"><dt>Sekretaris</dt><dd>Darwono, S.H (Darul)</dd></div>
+        <div class="org-row"><dt>Bendahara</dt><dd>Imam Baihaqi (Jazim)</dd></div>
+    </div>
 
-        <dt>Sekretaris</dt>
-        <dd>Darwono, S.H (Darul)</dd>
-
-        <dt>Bendahara</dt>
-        <dd>Imam Baihaqi (Jazim)</dd>
-    </dl>
-
-    <h3 style="color: #ffd700; margin-top: 30px; border-bottom: 2px solid #ffd700; padding-bottom: 5px;">
-        3. Kepala Bidang
+    <h3 style="color: #ffd700; margin-top: 40px; border-bottom: 2px solid #ffd700; padding-bottom: 5px;">
+        Kepala Bidang
     </h3>
 
-    <dl class="organization-list sub-list">
-        <dt>Bidang Pendidikan dan Pembinaan Santri</dt>
-        <dd>Redi, M.Pd.I</dd>
+    <div class="organization-list">
+        <div class="org-row"><dt>Bidang Pendidikan dan Pembinaan Santri</dt><dd>Redi, M.Pd.I</dd></div>
+        <div class="org-row"><dt>Bidang Sosial, Dakwah, dan Kemanusiaan</dt><dd>Drs. Achmad Subaghy</dd></div>
+        <div class="org-row"><dt>Bidang Usaha dan Penggalangan Dana</dt><dd>Jamhari</dd></div>
+        <div class="org-row"><dt>Bidang Humas</dt><dd>Willy (Sekdes Desa Ngablak)</dd></div>
+        <div class="org-row"><dt>Bidang Sarana dan Prasarana (Sarpras)</dt><dd>Rajin</dd></div>
+    </div>
+</section>
 
-        <dt>Bidang Sosial, Dakwah, dan Kemanusiaan</dt>
-        <dd>Drs. Achmad Subaghy</dd>
 
-        <dt>Bidang Usaha dan Penggalangan Dana</dt>
-        <dd>Jamhari</dd>
-        
-        <dt>Bidang Humas</dt>
-        <dd>Willy (Sekdes Desa Ngablak)</dd>
-        
-        <dt>Bidang Sarana dan Prasarana (Sarpras)</dt>
-        <dd>Rajin</dd>
-    </dl>
-    </section>
-      <section>
-      <h2 style="color: #ffd700; margin-top: 60px; margin-bottom: 30px;">
-    Tugas dan Wewenang Setiap Unsur Kepengurusan
-</h2>
+<section class="section" id="tugas-wewenang" style="margin-top: 50px;">
+    <h2 style="color: #00FFCC; margin-bottom: 30px;">
+        <span style="border-bottom: 3px solid #ffd700; padding-bottom: 5px;">
+            Tugas dan Wewenang Setiap Unsur Kepengurusan
+        </span>
+    </h2>
     
     <div class="tasks-container">
         <div class="task-card">
@@ -702,6 +698,7 @@
   </script>
 </body>
 </html>
+
 
 
 
