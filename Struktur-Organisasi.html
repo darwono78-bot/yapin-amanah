@@ -259,7 +259,7 @@
     top: 95%; /* Pastikan kotak muncul di bawah link utama */
     padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
 /* ========================================================================= */
-/* KOREKSI FINAL UNTUK PERATAAN DT dan DD */
+/* KOREKSI FINAL: Mengatur Perataan Vertikal DT dan DD */
 /* ========================================================================= */
 
 /* Gaya untuk Posisi (dt: description title) */
@@ -271,19 +271,27 @@
     float: left; 
     clear: left; 
     
-    /* KUNCI KOREKSI: Set padding dan hapus margin vertikal */
-    margin: 0; /* Hapus margin vertikal default */
-    padding-top: 10px; /* Tambahkan padding agar sejajar dengan dd */
+    /* KUNCI KOREKSI 1: Atur perataan vertikal ke atas */
+    vertical-align: top; 
+    
+    /* Atur margin/padding yang minimal */
+    margin: 0; 
+    padding-top: 5px; /* Sedikit padding agar tidak menempel */
 }
 
 /* Gaya untuk Nama Pengurus (dd: description data) */
 .organization-list dd {
-    /* KUNCI KOREKSI: Atur margin vertikalnya agar sama */
-    margin: 0; /* Hapus margin vertikal default */
-    margin-left: 310px; /* Jarak dari kolom posisi */
-    padding-top: 10px; /* Samakan padding top dengan dt */
-    
     color: #fff;
+    
+    /* KUNCI KOREKSI 2: Atur perataan vertikal dan margin/padding yang sama */
+    vertical-align: top; 
+    
+    /* Sesuaikan jarak horizontal */
+    margin-left: 310px; 
+    
+    /* Samakan margin dan padding vertikal */
+    margin-top: 0; 
+    padding-top: 5px; /* Samakan dengan dt agar sejajar */
     padding-bottom: 5px; 
 }
     </style>
@@ -646,6 +654,7 @@
   </script>
 </body>
 </html>
+
 
 
 
