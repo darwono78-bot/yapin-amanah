@@ -259,40 +259,47 @@
     top: 95%; /* Pastikan kotak muncul di bawah link utama */
     padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
 /* ========================================================================= */
-/* KOREKSI FINAL: Mengatur Perataan Vertikal DT dan DD */
+/* KOREKSI FINAL: Menggunakan FLEXBOX untuk Perataan Sempurna */
 /* ========================================================================= */
+
+.organization-list {
+    margin-top: 20px;
+    padding-left: 0;
+    /* Hapus display: block/dl/etc jika ada */
+}
+
+/* KUNCI KOREKSI: Atur setiap baris untuk menggunakan flexbox */
+.org-row {
+    display: flex; /* Aktifkan flexbox */
+    align-items: center; /* ALIGNMENT: Sejajarkan item di tengah vertikal */
+    margin-bottom: 5px; /* Jarak antar baris */
+}
 
 /* Gaya untuk Posisi (dt: description title) */
 .organization-list dt {
     font-weight: bold;
     color: #00FFCC; 
     padding-left: 0;
+    
+    /* Atur lebar DT */
     width: 300px; 
-    float: left; 
-    clear: left; 
+    min-width: 300px;
     
-    /* KUNCI KOREKSI 1: Atur perataan vertikal ke atas */
-    vertical-align: top; 
-    
-    /* Atur margin/padding yang minimal */
+    /* Hapus semua properti float/margin/padding lama */
     margin: 0; 
-    padding-top: 5px; /* Sedikit padding agar tidak menempel */
+    padding: 5px 0; 
 }
 
 /* Gaya untuk Nama Pengurus (dd: description data) */
 .organization-list dd {
     color: #fff;
     
-    /* KUNCI KOREKSI 2: Atur perataan vertikal dan margin/padding yang sama */
-    vertical-align: top; 
+    /* Biarkan DD mengisi sisa ruang */
+    flex-grow: 1; 
     
-    /* Sesuaikan jarak horizontal */
-    margin-left: 310px; 
-    
-    /* Samakan margin dan padding vertikal */
-    margin-top: 0; 
-    padding-top: 5px; /* Samakan dengan dt agar sejajar */
-    padding-bottom: 5px; 
+    /* Hapus semua properti float/margin/padding lama */
+    margin: 0; 
+    padding: 5px 0;
 }
     </style>
 </head>
@@ -368,12 +375,17 @@
         1. Susunan Kepengurusan
     </h3>
     
-    <dl class="organization-list">
+    <div class="organization-list">
+    <div class="org-row"> 
         <dt>Pelindung</dt>
         <dd>Kepala Desa Ngablak</dd>
-
+    </div>
+    
+    <div class="org-row">
         <dt>Dewan Penasehat</dt>
         <dd>[Isi Nama Penasehat]</dd>
+    </div>
+    </div>
 
         <dt>Dewan Ulama</dt>
         <dd>[Isi Nama Ulama]</dd>
@@ -654,6 +666,7 @@
   </script>
 </body>
 </html>
+
 
 
 
