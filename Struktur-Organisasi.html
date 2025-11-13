@@ -367,6 +367,32 @@
     margin-bottom: 3px; /* Jarak antar nama anggota */
     line-height: 1.2;
 }
+    /* ========================================================================= */
+/* KOREKSI FINAL ULAMA: Mengatur Perataan ke Atas (Start) */
+/* ========================================================================= */
+
+.org-row {
+    display: flex; 
+    /* KUNCI KOREKSI: GANTI 'center' menjadi 'flex-start' */
+    align-items: flex-start; /* Memaksa DT dan DD sejajar di baris pertama (atas) */
+    margin-bottom: 5px; 
+}
+
+/* Biarkan styling DT, DD, dan anggota-list tetap sama */
+
+/* Gaya untuk Posisi (dt: description title) */
+.org-row dt {
+    /* ... (biarkan properti lainnya sama) ... */
+    margin: 0; 
+    padding: 5px 0; 
+}
+
+/* Gaya untuk Nama Pengurus (dd: description data) */
+.org-row dd {
+    /* ... (biarkan properti lainnya sama) ... */
+    margin: 0; 
+    padding: 5px 0;
+}
     </style>
 </head>
 <body>
@@ -658,6 +684,7 @@
   </script>
 </body>
 </html>
+
 
 
 
