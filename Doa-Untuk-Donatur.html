@@ -224,14 +224,15 @@
         from { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
         to { filter: drop-shadow(0 0 20px rgba(255,215,0,1)); }
       }
-    /* ========================================================================= */
+       /* ========================================================================= */
 /* STYLING DROPDOWN NAVIGASI (KOREKSI UNTUK FLEX LAYOUT) */
 /* ========================================================================= */
 
 .dropdown {
     position: relative; 
-    /* display: inline-block; <-- Dihapus karena nav menggunakan flex */
-    margin: 5px; /* Sesuaikan dengan margin: 5px pada a nav */
+    /* Penting: Set display ke inline-block agar berbaris horizontal dengan menu lain */
+    display: inline-block; 
+    vertical-align: top; /* Pastikan rata atas dengan menu lain */
 }
 
 /* Gaya Tombol Pemicu Dropdown (Dropbtn) */
@@ -291,6 +292,11 @@
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+/* GANTI/TAMBAHKAN PROPERTI INI: */
+    top: 95%; /* Pastikan kotak muncul di bawah link utama */
+    padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
+    </style>
     </style>
 </header>
 <nav>
@@ -404,6 +410,7 @@
   </script>
 </body>
 </html>
+
 
 
 
