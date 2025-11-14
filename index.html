@@ -259,46 +259,10 @@
         if(sectionTop < triggerBottom) section.classList.add('visible');
       });
     });
-    <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2> 
-        <p class="date" id="currentDate"></p> ```
-
-#### 2. Tambahkan Kode JavaScript
-
-Tambahkan kode JavaScript berikut di dalam tag `<script>` yang sudah ada di bagian paling bawah file HTML Anda (sebelum `</body>`).
-
-**Kode JavaScript yang harus ditambahkan:**
-
-```javascript
-    // Fungsi untuk mendapatkan nama hari dalam Bahasa Indonesia
-    function getDayName(dayIndex) {
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        return days[dayIndex];
-    }
-    
-    // Fungsi untuk mendapatkan nama bulan dalam Bahasa Indonesia
-    function getMonthName(monthIndex) {
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-        return months[monthIndex];
-    }
-
-    // Ambil tanggal hari ini
-    const today = new Date();
-    const dayName = getDayName(today.getDay());
-    const day = today.getDate();
-    const monthName = getMonthName(today.getMonth());
-    const year = today.getFullYear();
-
-    // Format tanggal yang diinginkan
-    const formattedDate = `${dayName}, ${day} ${monthName} ${year}`;
-
-    // Tampilkan di elemen HTML
-    document.getElementById('currentDate').textContent = formattedDate;</script>
   </script>
   </body>
 </html>
+
 
 
 
