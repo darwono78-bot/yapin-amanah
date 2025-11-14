@@ -317,14 +317,15 @@
   </section>
   
   <footer>
-    &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
-  </footer>
+    &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
+  </footer>
 
-  <div class="floating-buttons">
-    <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
-    <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
-  </div>
-<script>
+  <div class="floating-buttons">
+    <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
+    <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
+  </div>
+
+  <script>
     // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
     const updateDate = () => {
         const dateElement = document.getElementById('currentDate');
@@ -352,6 +353,19 @@
       });
     });
 </script>
+  <script>
+    const sections = document.querySelectorAll('.section');
+    window.addEventListener('scroll', () => {
+      const triggerBottom = window.innerHeight * 0.85;
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if(sectionTop < triggerBottom) section.classList.add('visible');
+      });
+    });
+  </script>
+  </body>
+</html>
   </body>
 </html>
+
 
