@@ -202,42 +202,40 @@ h1 {
 }
 
 /* Styling Dasar Tombol (Button Base) */
-/* --- PENYEMPURNAAN AKHIR UNTUK TOMBOL --- */
+/* --- PENYEMPURNAAN AKHIR: TINGGI & JARAK RAPAT --- */
 .btn {
-    text-decoration: none; /* KRUSIAL: Menghilangkan garis bawah! */
-    padding: 0px 0px; /* Mengurangi tinggi tombol (lebih ramping) */
-    border-radius: 10px; /* Tetap membulat */
+    text-decoration: none; /* Menghilangkan garis bawah */
+    padding: 10px 20px; /* Membuat tombol lebih ramping (tinggi berkurang) */
+    border-radius: 10px; 
     font-weight: bold;
-    font-size: 16px; /* Ukuran font sedikit dikecilkan */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transisi halus */
-    display: block; /* Memastikan tombol mengambil lebar penuh */
-    flex-grow: 1; 
-    max-width: 300px; /* Batasi lebar maksimum tombol agar tidak terlalu lebar di Desktop */
+    font-size: 16px; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: block; 
     text-align: center;
-    margin: 0 auto; /* Memastikan tombol terpusat secara individual */
+    /* Hilangkan margin vertikal antar kata dalam tombol jika ada */
+    line-height: 1.2; 
 }
 
-/* Penyesuaian Grup Tombol agar ada jarak antar tombol */
-.button-group {
-    display: flex;
-    flex-direction: column; /* Tombol bertumpuk vertikal */
-    align-items: center; /* Pusatkan tombol secara horizontal */
-    gap: 1px; /* Jarak antar tombol */
-    margin-top: 5x;
-    margin-bottom: 10px; /* Tambah margin bawah jika perlu */
-}
-
-/* Tampilkan tombol berdampingan di Desktop (jika diinginkan) */
-@media (min-width: 200px) {
+/* --- KRUSIAL: MEMBUAT LEBAR SAMA DI DESKTOP --- */
+@media (min-width: 768px) {
     .button-group {
         flex-direction: row;
-        justify-content: center; /* Pusatkan grup tombol */
-        max-width: 600px; /* Batasi lebar grup tombol agar tidak terlalu menyebar */
-        margin-left: auto;
-        margin-right: auto;
+        justify-content: center;
+        gap: 20px;
     }
+    
+    /* Tombol akan memiliki lebar yang sama persis */
     .btn {
-        max-width: none; /* Hapus batasan lebar di desktop agar tombol bisa menyesuaikan isi */
+        width: 300px; /* SET LEBAR FIX: Sesuaikan angka ini jika kurang panjang */
+        max-width: 300px; 
+        flex-grow: 0; /* Nonaktifkan pertumbuhan agar width fix berlaku */
+    }
+}
+    /* Tombol akan memiliki lebar yang sama persis */
+    .btn {
+        width: 300px; /* SET LEBAR FIX: Sesuaikan angka ini jika kurang panjang */
+        max-width: 300px; 
+        flex-grow: 0; /* Nonaktifkan pertumbuhan agar width fix berlaku */
     }
 }
 /* --- TOMBOL UTAMA (KLIK DISINI UNTUK DONASI) --- */
@@ -369,3 +367,4 @@ Mari bergabung dalam perjalanan ini — perjalanan menuju Nurul Huda yang baru: 
   </script>
 </body>
 </html>
+
