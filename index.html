@@ -96,33 +96,13 @@
       transform: scale(1.05);
     }
 
-    /* SECTION UMUM (Box Hijau dengan Glowing) */
+    /* SECTION UTAMA (Box Hijau dengan Glowing - Digunakan untuk semua) */
     .section {
       background: rgba(0, 45, 0, 0.93);
       margin: 50px auto;
       width: 90%;
       max-width: 900px;
-      padding: 40px;
-      border-radius: 20px;
-      border: 1.8px solid rgba(255, 215, 0, 0.6);
-      box-shadow:
-        0 0 25px rgba(255, 215, 0, 0.4),
-        0 0 35px rgba(255, 215, 0, 0.2),
-        inset 0 0 25px rgba(255, 215, 0, 0.25);
-      text-align: center;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: all 1s ease;
-    }
-    
-    /* FIX: SECTION KHUSUS FORMULIR (UNTUK MERAPATKAN JUDUL KE ATAS) */
-    .section-formulir {
-      background: rgba(0, 45, 0, 0.93);
-      margin: 50px auto;
-      width: 90%;
-      max-width: 900px;
-      /* PADDING ATAS DIKURANGI HINGGA JUDUL MEPET */
-      padding: 15px 40px 40px 40px; 
+      padding: 40px; /* Padding standar untuk Selamat Datang */
       border-radius: 20px;
       border: 1.8px solid rgba(255, 215, 0, 0.6);
       box-shadow:
@@ -135,7 +115,7 @@
       transition: all 1s ease;
     }
 
-    .section.visible, .section-formulir.visible {
+    .section.visible {
       opacity: 1;
       transform: translateY(0);
     }
@@ -147,14 +127,19 @@
       text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
     }
     
-    /* FIX: H2 di dalam formulir agar rapat */
-    .section-formulir h2 {
-        color: #ffd700;
+    /* Mengatasi margin H2 di dalam section yang dirapatkan, jika perlu */
+    .section h2 {
         margin-top: 0; 
-        margin-bottom: 5px; 
-        font-size: 1.7em;
-        text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
+        margin-bottom: 20px; 
     }
+    
+    /* Penyesuaian margin H2 saat di dalam section yang dirapatkan padding-nya */
+    /* Ini akan mengatasi judul "FORMULIR" agar mepet ke atas */
+    .section[style*="padding-top: 15px;"] h2 {
+        margin-top: 0; 
+        margin-bottom: 5px; /* Sedikit jarak di bawah judul Formulir */
+    }
+
 
     p {
       font-size: 1.05em;
@@ -213,7 +198,7 @@
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
 
-/* FIX: BUTTON GROUP (UNTUK MERAPIKAN TOMBOL) */
+/* BUTTON GROUP (UNTUK MERAPIKAN TOMBOL) */
 .button-group {
     display: flex;
     flex-direction: row; 
@@ -260,19 +245,11 @@
     }
 }
 
-/* FIX: Judul h1 dalam header */
-header h1 {
-    margin-top: 10px;
-    font-size: 1.8em;
-    color: #f8d77b;
-    text-shadow: 0 0 8px rgba(248, 215, 123, 0.7);
-}
-
-/* FIX: Style container (agar tidak mengganggu div glowing) */
+/* Style container (agar tidak mengganggu div glowing) */
 .container {
-    max-width: 800px; /* Lebar container yang cukup */
-    margin: 0 auto; /* Tengah */
-    padding: 0; /* Hapus padding agar tidak menabrak padding section */
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 0; 
     background-color: transparent; 
     border-radius: 10px;
     text-align: center;
@@ -307,12 +284,6 @@ header h1 {
   ">Yakin - Akuntabel - Profesional - Integritas - Niat Lillah  </span>
 </marquee>
     </h1>
-    <style>
-      @keyframes glow {
-        from { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); }
-        to { filter: drop-shadow(0 0 20px rgba(255,215,0,1)); }
-      }
-    </style>
 </header>
 
   <nav>
@@ -331,15 +302,15 @@ header h1 {
     Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
   </section>
   
-  <section class="section-formulir"> 
+  <section class="section" style="padding-top: 15px;"> 
    <div class="main-wrapper">
     
     <div class="container">
-                <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2> 
+        <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2> 
         <p class="date">Senin, 10 November 2025</p> 
 
         <div class="button-group">
-            <a href="https://bit.ly/jariyahyapin" target="_blank" class="btn btn-primary">
+            <a href="https://bit.ly/jariyahyapin" target="_blank" class: "btn btn-primary">
                 KLIK DISINI UNTUK DONASI SEKARANG
             </a>
             
@@ -366,7 +337,7 @@ header h1 {
   </div>
 
   <script>
-    const sections = document.querySelectorAll('.section, .section-formulir'); 
+    const sections = document.querySelectorAll('.section'); 
     window.addEventListener('scroll', () => {
       const triggerBottom = window.innerHeight * 0.85;
       sections.forEach(section => {
