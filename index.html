@@ -170,54 +170,44 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
-/* --- FIX: STYLING UMUM CONTAINER (SANGAT RAPAT) --- */
+/* --- FIX: STYLING UMUM --- */
 .container {
     max-width: 600px;
-    margin: 10px auto; /* Margin atas/bawah container SANGAT dirapatkan */
-    padding: 10px; /* Padding internal container SANGAT dirapatkan */
+    margin: 40px auto;
+    padding: 30px;
+    /* Hilangkan background putih agar menyatu dengan web Anda */
     background-color: transparent; 
     border-radius: 10px;
     text-align: center;
 }
 
-/* FIX: JUDUL UTAMA (MERAPATKAN) */
 h1 {
-    color: #DAA520; /* Warna Emas kembali */
+    color: #DAA520; /* Emas */
     font-size: 32px;
     font-family: 'Segoe UI', sans-serif;
-    margin-top: 5px;
-    margin-bottom: 5px; /* Jarak di bawah judul utama SANGAT rapat */
+    margin-bottom: 15px;
 }
 
-/* FIX: TEKS TAMBAHAN (Mari Berdonasi) */
-.container p:not(.date) { 
-    color: #DAA520; /* Warna Emas kembali */
-    margin: 3px 0 3px 0; /* Margin atas/bawah SANGAT tipis */
-    font-size: 16px;
-}
-
-/* FIX: TANGGAL (MERAPATKAN) */
 .date {
-    color: #DAA520; /* Warna Emas kembali */
+    color: #DAA520; /* Emas */
     font-size: 15px;
     font-family: 'Segoe UI', sans-serif;
-    margin-top: 5px;
-    margin-bottom: 10px; /* Jarak di bawah tanggal SANGAT rapat */
+    margin-bottom: 30px;
 }
 
-/* --- FIX: BUTTON GROUP (SANGAT RAPAT) --- */
+/* --- FIX: BUTTON GROUP DAN KERAPIAN JARAK --- */
 .button-group {
     display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    gap: 8px; /* Jarak antar tombol (SANGAT RAPAT) */
-    margin: 10px auto; /* Margin atas/bawah button group SANGAT dirapatkan */
+    flex-direction: column; /* Tombol bertumpuk vertikal (Mobile/Desktop) */
+    align-items: center; /* Pusatkan tombol secara horizontal */
+    gap: 12px; /* Jarak antar tombol (lebih rapat) */
+    margin: 30px auto; 
 }
 
-/* --- TOMBOL BIRU PRIMARY & EMAS SECONDARY (TETAP SAMA) --- */
+/* --- FIX: DASAR TOMBOL, HILANGKAN GARIS & TINGGI RAMPING --- */
 .btn {
-    text-decoration: none !important; 
-    padding: 10px 20px; 
+    text-decoration: none !important; /* MENGHILANGKAN GARIS BAWAH */
+    padding: 12px 20px; /* Membuat tombol lebih ramping */
     border-radius: 8px; 
     font-weight: bold;
     font-size: 16px; 
@@ -225,31 +215,31 @@ h1 {
     display: block; 
     text-align: center;
     line-height: 1.2; 
-    width: 350px; 
-    max-width: 90%;
+    width: 350px; /* Lebar Dibuat Sama untuk Desktop dan Mobile */
+    max-width: 90%; /* Pastikan responsif di HP */
 }
+
+/* --- FIX: WARNA BIRU PRIMARY KEMBALI --- */
 .btn-primary {
-    background-color: #0047AB; 
-    color: #ffffff; /* Pastikan teks tombol biru tetap putih */
+    background-color: #0047AB; /* Royal Blue */
+    color: #ffffff;
     border: 2px solid #0047AB;
 }
+
+.btn-primary:hover {
+    background-color: #003380;
+}
+
+/* --- FIX: WARNA EMAS SECONDARY KEMBALI --- */
 .btn-secondary {
     background-color: transparent;
-    color: #DAA520; 
-    border: 2px solid #DAA520; 
+    color: #DAA520; /* Teks Emas */
+    border: 2px solid #DAA520; /* Border Emas */
 }
-@media (min-width: 768px) {
-    .button-group {
-        flex-direction: row;
-        justify-content: center;
-        gap: 20px;
-    }
-    .btn {
-        width: 320px; 
-        max-width: 320px; 
-    }
+
+.btn-secondary:hover {
+    background-color: rgba(218, 165, 32, 0.1); 
 }
-   
   </style>
 </head>
 <body>
@@ -304,10 +294,10 @@ h1 {
     Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
   </section>
   <section class="section" style="padding-top: 15px;"> 
-   <div class="main-wrapper">
+<div class="main-wrapper">
     
     <div class="container">
-        <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2> 
+        <h1>FORMULIR UNTUK KONFIRMASI DONATUR</h1>
         <p class="date">Senin, 10 November 2025</p> 
 
         <div class="button-group">
@@ -319,11 +309,6 @@ h1 {
                 LIHAT DAFTAR NAMA DONATUR KAMI
             </a>
         </div>
-        
-        <a href="index.html" style="color: #DAA520; display: block; margin-top: 20px; font-weight: 600; font-size: 1.1em;">
-            GAIS KEMBALI
-        </a>
-
     </div>
 </div>
   </section>
@@ -348,6 +333,7 @@ h1 {
   </script>
 </body>
 </html>
+
 
 
 
