@@ -53,7 +53,7 @@
       text-shadow: 0 0 8px rgba(248, 215, 123, 0.7);
     }
 
-   /* ORNAMEN POJOK */
+    /* ORNAMEN POJOK */
     header .ornamen {
       position: absolute;
       width: 160px;
@@ -127,27 +127,18 @@
       line-height: 1.8em;
       color: #fdfdfd;
     }
-      
-    /* Gaya Tanggal */
-    .date {
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #00FFCC; /* Warna cerah untuk tanggal */
-        margin-bottom: 30px;
-        text-shadow: 0 0 8px #00FFCC;
-    }
 
-    footer {
-      background: rgba(0, 60, 0, 0.85);
-      text-align: center;
-      padding: 20px 10px;
-      color: #fff;
-      font-size: 0.9em;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
-      border-top: 1.5px solid rgba(248, 215, 123, 0.3);
-    }
+    footer {
+      background: rgba(0, 60, 0, 0.85);
+      text-align: center;
+      padding: 20px 10px;
+      color: #fff;
+      font-size: 0.9em;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
+      border-top: 1.5px solid rgba(248, 215, 123, 0.3);
+    }
 
-    /* --- Tombol Melayang WhatsApp & Email --- */
+    /* --- Tombol Melayang WhatsApp & Email --- */
   .floating-buttons {
     position: fixed;
     bottom: 25px;
@@ -179,76 +170,8 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
- 
-    /* --- Gaya Tombol Donasi Timbul --- */
-    .button-group {
-        margin-top: 25px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px; /* Jarak antar tombol */
-    }
 
-    .btn {
-        display: block;
-        width: 80%; /* Lebar tombol */
-        max-width: 400px;
-        text-align: center;
-        padding: 15px 25px;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 1.1em;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-        position: relative;
-    }
-
-    /* Tombol Utama (KLIK DISINI UNTUK DONASI SEKARANG) */
-    .btn-primary {
-        color: #fff;
-        background: #ffcc00; /* Warna utama kuning/emas */
-        border-bottom: 5px solid #ccaa00; /* Efek "timbul" gelap */
-        box-shadow: 0 5px 0 0 #ccaa00, 0 8px 15px rgba(0, 0, 0, 0.4);
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-        /* Teks menjadi hijau tua untuk kontras */
-        color: #004000; 
-    }
-
-    .btn-primary:hover {
-        background: #ffd700;
-        transform: translateY(1px); /* Sedikit naik saat di-hover */
-        border-bottom: 4px solid #ccaa00;
-        box-shadow: 0 4px 0 0 #ccaa00, 0 7px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    .btn-primary:active {
-        transform: translateY(5px); /* Efek tombol tertekan */
-        border-bottom: 0px solid #ccaa00;
-        box-shadow: 0 0px 0 0 #ccaa00, 0 4px 8px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Tombol Sekunder (LIHAT DAFTAR NAMA DONATUR KAMI) */
-    .btn-secondary {
-        color: #fff;
-        background: #007700; /* Warna hijau gelap */
-        border-bottom: 5px solid #005500; /* Efek "timbul" gelap */
-        box-shadow: 0 5px 0 0 #005500, 0 8px 15px rgba(0, 0, 0, 0.4);
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-secondary:hover {
-        background: #009900;
-        transform: translateY(1px);
-        border-bottom: 4px solid #005500;
-        box-shadow: 0 4px 0 0 #005500, 0 7px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    .btn-secondary:active {
-        transform: translateY(5px);
-        border-bottom: 0px solid #005500;
-        box-shadow: 0 0px 0 0 #005500, 0 4px 8px rgba(0, 0, 0, 0.4);
-    }
-  </style>
+  </style>
 </head>
 <body>
  <header>
@@ -285,7 +208,8 @@
       }
     </style>
 </header>
-<nav>
+
+  <nav>
     <a href="index.html" class="active">Beranda</a>
     <a href="profil.html">Profil</a>
     <a href="kegiatan.html">Program & Kegiatan</a>
@@ -300,23 +224,23 @@
     <p>Assalamu’alaikum warahmatullahi wabarakatuh.<br>
     Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
   </section>
- 
-  <section class="section" id="Formulir">
-    <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2>
-        <p class="date" id="currentDate"></p> 
+ 
+  <section class="section" id="Formulir">
+    <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2>
+    <p class="date" id="currentDate">Senin, 10 November 2025</p> 
 
         <div class="button-group">
             <a href="https://bit.ly/jariyahyapin" target="_blank" class="btn btn-primary">
                 KLIK DISINI UNTUK DONASI SEKARANG
             </a>
-            <br>
+            <br>
             <a href="https://docs.google.com/spreadsheets/d/1SGz8E72Ped3bLUe0TCqO91wsKA_t4v5P_VCaAxOU4I8/edit?usp=sharing" target="_blank" class="btn btn-secondary">
                 LIHAT DAFTAR NAMA DONATUR KAMI
             </a>
         </div>
-  </section>
-  
-  <footer>
+  </section>
+  
+  <footer>
     &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
   </footer>
 
@@ -324,7 +248,6 @@
     <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
-
   <script>
     // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
     const updateDate = () => {
