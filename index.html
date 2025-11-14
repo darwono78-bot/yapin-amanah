@@ -192,31 +192,31 @@ h1 {
 }
 
 /* Styling untuk Grup Tombol */
+/* --- FIX: MENGATUR JARAK ANTAR TOMBOL (VERTIKAL) --- */
 .button-group {
-    display: flex; /* Memastikan tombol berjajar */
-    justify-content: center; /* Pusatkan tombol di tengah */
-    gap: 5px; /* Jarak antar tombol */
-    margin: 5px auto; /* Memberi jarak dan memusatkan grup */
-    max-width: 100%; /* Memastikan tidak ada luapan */
-    flex-wrap: wrap; /* Tombol pindah ke bawah jika layar kecil */
+    display: flex;
+    flex-direction: column; /* Tombol bertumpuk vertikal */
+    align-items: center; /* Pusatkan tombol secara horizontal */
+    gap: 12px; /* Jarak antar tombol (lebih rapat) */
+    margin: 30px auto; 
 }
 
 /* Styling Dasar Tombol (Button Base) */
-/* --- PENYEMPURNAAN AKHIR: TINGGI & JARAK RAPAT --- */
+/* --- FIX: MENGHILANGKAN GARIS BAWAH DAN MENGATUR TINGGI --- */
 .btn {
-    text-decoration: none; /* Menghilangkan garis bawah */
+    text-decoration: none !important; /* MENGHILANGKAN GARIS BAWAH */
     padding: 10px 20px; /* Membuat tombol lebih ramping (tinggi berkurang) */
-    border-radius: 10px; 
+    border-radius: 8px; /* Sudut sedikit lebih tegas */
     font-weight: bold;
     font-size: 16px; 
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     display: block; 
     text-align: center;
-    /* Hilangkan margin vertikal antar kata dalam tombol jika ada */
     line-height: 1.2; 
+    white-space: normal; /* Memastikan teks bisa melipat jika diperlukan */
 }
 
-/* --- KRUSIAL: MEMBUAT LEBAR SAMA DI DESKTOP --- */
+/* --- FIX KRUSIAL: MEMBUAT LEBAR SAMA DI DESKTOP (@media) --- */
 @media (min-width: 768px) {
     .button-group {
         flex-direction: row;
@@ -224,11 +224,11 @@ h1 {
         gap: 20px;
     }
     
-    /* Tombol akan memiliki lebar yang sama persis */
+    /* Tombol akan memiliki lebar yang sama persis dan tidak tumpang tindih */
     .btn {
-        width: 300px; /* SET LEBAR FIX: Sesuaikan angka ini jika kurang panjang */
-        max-width: 300px; 
-        flex-grow: 0; /* Nonaktifkan pertumbuhan agar width fix berlaku */
+        width: 320px; /* SET LEBAR FIX: Disesuaikan agar teks terpanjang muat (320px) */
+        max-width: 320px; 
+        flex-grow: 0;
     }
 }
     /* Tombol akan memiliki lebar yang sama persis */
@@ -314,32 +314,16 @@ h1 {
     <p>Assalamu’alaikum warahmatullahi wabarakatuh.<br>
     Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
   </section>
- <section class="section" id="Kebangkitan">
-    <h2>💖 Menyalakan Kembali Cahaya Nurul Huda</h2>
-    <p>🌿Dari sunyi menuju cahaya.<br>
-<div style="text-align: justify; line-height: 1.6;"><p>Yayasan Nurul Huda kini menapaki langkah baru — langkah perubahan yang lahir dari semangat kebersamaan, keikhlasan, dan cinta pada ilmu. Kami percaya, setiap perubahan besar dimulai dari hati yang tulus untuk melayani. Mari bersama menata kembali Nurul Huda menjadi pusat pendidikan Islam yang transparan, tangguh, dan penuh keberkahan.
-Pernah ada masa ketika langkah Yayasan Nurul Huda terasa berat. Administrasi tak terarah, kegiatan berjalan seadanya, dan semangat perlahan memudar. Namun di balik semua itu, ada satu hal yang tak pernah padam — harapan. Harapan bahwa Nurul Huda bisa kembali menjadi rumah ilmu, tempat tumbuhnya generasi berakhlak dan berilmu.
-Kini, harapan itu mulai berwujud. Dari tangan-tangan tulus yang percaya bahwa perubahan besar dimulai dari langkah kecil, Yayasan Nurul Huda menata diri — dengan niat suci untuk membangun lembaga yang transparan, mandiri, dan bermanfaat bagi umat.
-Kami tidak sedang membangun kejayaan untuk dipuji, tapi menyalakan kembali ruh pengabdian yang sempat redup. Di sini, setiap donasi, setiap doa, dan setiap langkah kecil berarti besar bagi kebangkitan bersama.
-Mari bergabung dalam perjalanan ini — perjalanan menuju Nurul Huda yang baru: tempat ilmu dan ketulusan berpadu, demi cahaya masa depan umat.<br>
-</p></div>
-  </section>
-
   <section class="section">
-    <div class="container">
-        <h1>FORMULIR UNTUK KONFIRMASI DONATUR</h1>
-        <p class="date" id="current-date">Senin, 10 November 2025</p> 
-        <div class="button-group">
-            <a href="https://bit.ly/jariyahyapin" target="_blank" class="btn btn-primary">
-                KLIK DISINI UNTUK MENJADI DONATUR KAMI
-            </a>
-            <a href="https://docs.google.com/spreadsheets/d/1SGz8E72Ped3bLUe0TCqO91wsKA_t4v5P_VCaAxOU4I8/edit?usp=sharing" target="_blank" class="btn btn-secondary">
-                JIKA SUDAH ISI FORMULIR, CEK NAMA ANDA DI SINI
-            </a>
-        </div>
-    </div>
+   <div class="button-group">
+    <a href="https://bit.ly/jariyahyapin" target="_blank" class="btn btn-primary">
+        KLIK DISINI UNTUK MENJADI DONATUR KAMI
+    </a>
+    
+    <a href="https://docs.google.com/spreadsheets/d/1SGz8E72Ped3bLUe0TCqO91wsKA_t4v5P_VCaAxOU4I8/edit?usp=sharing" target="_blank" class="btn btn-secondary">
+        JIKA SUDAH ISI FORMULIR, CEK NAMA ANDA DI SINI
+    </a>
 </div>
-
   </section>
 
   <footer>
@@ -363,5 +347,6 @@ Mari bergabung dalam perjalanan ini — perjalanan menuju Nurul Huda yang baru: 
   </script>
 </body>
 </html>
+
 
 
