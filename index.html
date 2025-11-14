@@ -127,7 +127,14 @@
       line-height: 1.8em;
       color: #fdfdfd;
     }
-
+/* Gaya Tanggal */
+    .date {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #00FFCC; /* Warna cerah untuk tanggal */
+        margin-bottom: 30px;
+        text-shadow: 0 0 8px #00FFCC;
+    }
     footer {
       background: rgba(0, 60, 0, 0.85);
       text-align: center;
@@ -170,7 +177,72 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
+/* --- Gaya Tombol Donasi Timbul --- */
+    .button-group {
+        margin-top: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px; /* Jarak antar tombol */
+    }
 
+    .btn {
+        display: block;
+        width: 80%; /* Lebar tombol */
+        max-width: 400px;
+        text-align: center;
+        padding: 15px 25px;
+        text-decoration: none; /* Menghilangkan garis bawah */
+        font-weight: 700;
+        font-size: 1.1em;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        position: relative;
+        color: #fff; /* Teks default putih */
+        box-shadow: 0 5px 0 0 rgba(0,0,0,0.2), 0 8px 15px rgba(0, 0, 0, 0.4);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn:hover {
+        transform: translateY(1px);
+        box-shadow: 0 4px 0 0 rgba(0,0,0,0.2), 0 7px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn:active {
+        transform: translateY(5px);
+        box-shadow: 0 0px 0 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Tombol Hijau */
+    .btn-green {
+        background: #007700; /* Warna utama hijau */
+        border-bottom: 5px solid #005500; /* Efek "timbul" gelap */
+    }
+
+    .btn-green:hover {
+        background: #009900;
+        border-bottom: 4px solid #005500;
+    }
+
+    .btn-green:active {
+        border-bottom: 0px solid #005500;
+    }
+
+    /* Tombol Kuning */
+    .btn-yellow {
+        background: #ffcc00; /* Warna utama kuning/emas */
+        border-bottom: 5px solid #ccaa00; /* Efek "timbul" gelap */
+        color: #004000; /* Teks hijau tua untuk kontras */
+    }
+
+    .btn-yellow:hover {
+        background: #ffd700;
+        border-bottom: 4px solid #ccaa00;
+    }
+
+    .btn-yellow:active {
+        border-bottom: 0px solid #ccaa00;
+    }
   </style>
 </head>
 <body>
@@ -288,3 +360,4 @@
   </script>
   </body>
 </html>
+
