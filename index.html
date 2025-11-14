@@ -14,11 +14,17 @@
     }
 
     body {
+      /* Pastikan file background-masjid-hijau-3.jpg ada */
       background: linear-gradient(rgba(0, 40, 0, 0.9), rgba(0, 40, 0, 0.9)),
                   url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       overflow-x: hidden;
+    }
+
+    /* Hapus garis bawah pada semua link secara umum */
+    a {
+      text-decoration: none; 
     }
 
       header {
@@ -78,7 +84,7 @@
 
     nav a {
       color: #fff;
-      text-decoration: none;
+      /* text-decoration: none; Dihapus karena sudah ada di selector 'a' global */
       font-weight: 600;
       padding: 8px 18px;
       margin: 5px;
@@ -147,10 +153,8 @@
     /* Penyesuaian H2 di dalam formulir agar rapat */
     .section-formulir h2 {
         color: #ffd700;
-        /* ************* PERBAIKAN MERAPATKAN ************* */
         margin-top: 0; 
-        margin-bottom: 5px; /* Kurangi margin bawah agar rapat */
-        /* ********************************************** */
+        margin-bottom: 5px; 
         font-size: 1.7em;
         text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
     }
@@ -195,7 +199,7 @@
   .floating-buttons a {
     background: linear-gradient(135deg, #009900, #00cc00);
     color: #fff;
-    text-decoration: none;
+    /* text-decoration: none; Dihapus karena sudah ada di selector 'a' global */
     padding: 10px 18px;
     border-radius: 25px;
     box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
