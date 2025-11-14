@@ -170,70 +170,7 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
-/* --- FIX: STYLING UMUM CONTAINER (MERINGKASKAN RUANG KOSONG) --- */
-.container {
-    max-width: 600px;
-    margin: 20px auto; /* Margin atas/bawah container dirampingkan */
-    padding: 15px; /* Padding internal container dirampingkan */
-    background-color: transparent; 
-    border-radius: 10px;
-    text-align: center;
-}
 
-h1 {
-    /* ... (Tetap sama) ... */
-    margin-bottom: 5px; /* Jarak di bawah judul utama DIRApatkan */
-}
-
-.date {
-    /* ... (Tetap sama) ... */
-    margin-bottom: 15px; /* Jarak di bawah tanggal DIRApatkan */
-}
-
-/* --- FIX: BUTTON GROUP (MERINGKASKAN JARAK ANTAR TOMBOL) --- */
-.button-group {
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    gap: 10px; /* Jarak antar tombol (Rapat) */
-    margin: 15px auto; /* Margin atas/bawah button group DIRApatkan */
-}
-/* --- FIX: DASAR TOMBOL, HILANGKAN GARIS & TINGGI RAMPING --- */
-.btn {
-    text-decoration: none !important; /* MENGHILANGKAN GARIS BAWAH */
-    padding: 12px 20px; /* Membuat tombol lebih ramping */
-    border-radius: 8px; 
-    font-weight: bold;
-    font-size: 16px; 
-    transition: all 0.3s ease;
-    display: block; 
-    text-align: center;
-    line-height: 1.2; 
-    width: 350px; /* Lebar Dibuat Sama untuk Desktop dan Mobile */
-    max-width: 90%; /* Pastikan responsif di HP */
-}
-
-/* --- FIX: WARNA BIRU PRIMARY KEMBALI --- */
-.btn-primary {
-    background-color: #0047AB; /* Royal Blue */
-    color: #ffffff;
-    border: 2px solid #0047AB;
-}
-
-.btn-primary:hover {
-    background-color: #003380;
-}
-
-/* --- FIX: WARNA EMAS SECONDARY KEMBALI --- */
-.btn-secondary {
-    background-color: transparent;
-    color: #DAA520; /* Teks Emas */
-    border: 2px solid #DAA520; /* Border Emas */
-}
-
-.btn-secondary:hover {
-    background-color: rgba(218, 165, 32, 0.1); 
-}
   </style>
 </head>
 <body>
@@ -246,7 +183,85 @@ h1 {
     <img src="logo yayasan.png" alt="Logo Yayasan">
     <h1>Yayasan Pendidikan Islam Nurul Huda ( YAPIN )</h1>
   </header>
-<div style="
+<div style="/* --- FIX: STYLING UMUM CONTAINER (SANGAT RAPAT) --- */
+.container {
+    max-width: 600px;
+    margin: 10px auto; /* Margin atas/bawah container SANGAT dirapatkan */
+    padding: 10px; /* Padding internal container SANGAT dirapatkan */
+    background-color: transparent; 
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* FIX: JUDUL UTAMA (MERAPATKAN) */
+h1 {
+    color: #DAA520; /* Warna Emas kembali */
+    font-size: 32px;
+    font-family: 'Segoe UI', sans-serif;
+    margin-top: 5px;
+    margin-bottom: 5px; /* Jarak di bawah judul utama SANGAT rapat */
+}
+
+/* FIX: TEKS TAMBAHAN (Mari Berdonasi) */
+.container p:not(.date) { 
+    color: #DAA520; /* Warna Emas kembali */
+    margin: 3px 0 3px 0; /* Margin atas/bawah SANGAT tipis */
+    font-size: 16px;
+}
+
+/* FIX: TANGGAL (MERAPATKAN) */
+.date {
+    color: #DAA520; /* Warna Emas kembali */
+    font-size: 15px;
+    font-family: 'Segoe UI', sans-serif;
+    margin-top: 5px;
+    margin-bottom: 10px; /* Jarak di bawah tanggal SANGAT rapat */
+}
+
+/* --- FIX: BUTTON GROUP (SANGAT RAPAT) --- */
+.button-group {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 8px; /* Jarak antar tombol (SANGAT RAPAT) */
+    margin: 10px auto; /* Margin atas/bawah button group SANGAT dirapatkan */
+}
+
+/* --- TOMBOL BIRU PRIMARY & EMAS SECONDARY (TETAP SAMA) --- */
+.btn {
+    text-decoration: none !important; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    font-weight: bold;
+    font-size: 16px; 
+    transition: all 0.3s ease;
+    display: block; 
+    text-align: center;
+    line-height: 1.2; 
+    width: 350px; 
+    max-width: 90%;
+}
+.btn-primary {
+    background-color: #0047AB; 
+    color: #ffffff; /* Pastikan teks tombol biru tetap putih */
+    border: 2px solid #0047AB;
+}
+.btn-secondary {
+    background-color: transparent;
+    color: #DAA520; 
+    border: 2px solid #DAA520; 
+}
+@media (min-width: 768px) {
+    .button-group {
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+    }
+    .btn {
+        width: 320px; 
+        max-width: 320px; 
+    }
+}
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: radial-gradient(circle at center, rgba(255,215,0,0.15), transparent 70%);
@@ -328,6 +343,7 @@ h1 {
   </script>
 </body>
 </html>
+
 
 
 
