@@ -216,19 +216,18 @@
 
 /* FIX 2: BUTTON GROUP (UNTUK MERAPIKAN TOMBOL) */
 .button-group {
-    display: flex;
-    /* Tombol sejajar (row) secara default, dan bertumpuk (column) di mobile */
-    flex-direction: row; 
-    justify-content: center; /* Pusatkan tombol horizontal */
-    align-items: flex-start; 
-    flex-wrap: wrap; /* Jika tidak muat, tombol pindah baris */
-    gap: 20px; /* Jarak antar tombol */
-    margin: 15px auto 0 auto;
+    display: flex;
+    flex-direction: row; 
+    justify-content: center; /* Pusatkan tombol horizontal */
+    align-items: flex-start; 
+    flex-wrap: wrap; 
+    gap: 20px; /* Jarak antar tombol */
+    margin: 15px auto 0 auto;
 }
 
 /* --- TOMBOL BIRU PRIMARY & EMAS SECONDARY (Lebar yang Rapi) --- */
 .btn {
-    text-decoration: none !important; 
+    text-decoration: none !important;  /* MENGHILANGKAN GARIS BAWAH PADA LINK */
     padding: 10px 20px; 
     border-radius: 8px; 
     font-weight: bold;
@@ -237,7 +236,7 @@
     display: block; 
     text-align: center;
     line-height: 1.2; 
-    width: 300px;  /* Lebar tombol yang seragam */
+    width: 300px;  
     max-width: 100%;
 }
 .btn-primary {
@@ -319,7 +318,8 @@
    <div class="main-wrapper">
     
     <div class="container">
-        <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2>         <p class="date">Senin, 10 November 2025</p> 
+        <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2> 
+        <p class="date">Senin, 10 November 2025</p> 
 
         <div class="button-group">
             <a href="https://bit.ly/jariyahyapin" target="_blank" class="btn btn-primary">
@@ -330,6 +330,11 @@
                 LIHAT DAFTAR NAMA DONATUR KAMI
             </a>
         </div>
+        
+        <a href="index.html" style="color: #DAA520; text-decoration: none; display: block; margin-top: 20px; font-weight: 600; font-size: 1.1em;">
+            GAIS KEMBALI
+        </a>
+
     </div>
 </div>
   </section>
@@ -344,7 +349,7 @@
   </div>
 
   <script>
-    const sections = document.querySelectorAll('.section, .section-formulir'); // Tambahkan .section-formulir di sini
+    const sections = document.querySelectorAll('.section, .section-formulir'); 
     window.addEventListener('scroll', () => {
       const triggerBottom = window.innerHeight * 0.85;
       sections.forEach(section => {
