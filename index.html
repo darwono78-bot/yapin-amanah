@@ -97,7 +97,7 @@
       margin: 50px auto;
       width: 90%;
       max-width: 900px;
-      padding: 30px;
+      padding: 40px;
       border-radius: 20px;
       border: 1.8px solid rgba(255, 215, 0, 0.6);
       box-shadow:
@@ -177,7 +177,71 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
+/* --- Gaya Tombol Donasi Timbul FIX --- */
+    .button-group {
+        margin-top: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px; /* Jarak antar tombol */
+    }
 
+    .btn {
+        display: block;
+        width: 80%; /* Lebar tombol */
+        max-width: 400px;
+        text-align: center;
+        padding: 15px 25px;
+        **text-decoration: none;** /* PENTING: Menghilangkan garis bawah */
+        font-weight: 700;
+        font-size: 1.1em;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        position: relative;
+        **border: none;** /* Menghilangkan border default jika ada */
+    }
+
+    /* Efek Timbul Umum */
+    .btn:active {
+        transform: translateY(5px);
+        box-shadow: 0 0px 0 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Tombol Hijau */
+    .btn-green {
+        **background: linear-gradient(to bottom, #00B300, #007700);** /* Gradient untuk kesan timbul */
+        **color: #fff;**
+        **box-shadow: 0 6px 0 0 #005500;** /* Bayangan bawah yang lebih tebal */
+    }
+
+    .btn-green:hover {
+        **background: linear-gradient(to bottom, #00CC00, #008800);**
+        transform: translateY(1px);
+        box-shadow: 0 5px 0 0 #005500;
+    }
+
+    .btn-green:active {
+        transform: translateY(6px);
+        box-shadow: 0 0px 0 0 #005500;
+    }
+
+    /* Tombol Kuning */
+    .btn-yellow {
+        **background: linear-gradient(to bottom, #ffea00, #ffcc00);** /* Gradient untuk kesan timbul */
+        **color: #004000;** /* Teks hijau gelap untuk kontras */
+        **box-shadow: 0 6px 0 0 #ccaa00;** /* Bayangan bawah yang lebih tebal */
+    }
+
+    .btn-yellow:hover {
+        **background: linear-gradient(to bottom, #fffa00, #ffd700);**
+        transform: translateY(1px);
+        box-shadow: 0 5px 0 0 #ccaa00;
+    }
+
+    .btn-yellow:active {
+        transform: translateY(6px);
+        box-shadow: 0 0px 0 0 #ccaa00;
+    }
   </style>
 </head>
 <body>
@@ -231,6 +295,7 @@
     <p>Assalamu’alaikum warahmatullahi wabarakatuh.<br>
     Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
   </section>
+ 
  <section class="section" id="Formulir">
     <h2>FORMULIR UNTUK KONFIRMASI DONATUR</h2>
         <p class="date" id="currentDate"></p> 
@@ -338,6 +403,7 @@
   </script>
   </body>
 </html>
+
 
 
 
