@@ -249,7 +249,12 @@
     <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
-
+<script>
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date().toLocaleDateString('id-ID', options);
+    document.getElementById('current-date').textContent = today;
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
   <script>
     const sections = document.querySelectorAll('.section');
     window.addEventListener('scroll', () => {
@@ -262,6 +267,7 @@
   </script>
   </body>
 </html>
+
 
 
 
