@@ -193,19 +193,29 @@ h1 {
 
 /* Styling untuk Grup Tombol */
 .button-group {
-    /* ... (tetap sama) ... */
-    gap: 20px; /* Jarak antar tombol lebih besar */
+    display: flex; /* Memastikan tombol berjajar */
+    justify-content: center; /* Pusatkan tombol di tengah */
+    gap: 20px; /* Jarak antar tombol */
+    margin: 30px auto; /* Memberi jarak dan memusatkan grup */
+    max-width: 100%; /* Memastikan tidak ada luapan */
+    flex-wrap: wrap; /* Tombol pindah ke bawah jika layar kecil */
 }
 
 /* Styling Dasar Tombol (Button Base) */
 .btn {
-    /* ... (tetap sama) ... */
-    padding: 18px 35px; /* Tombol lebih besar */
-    border-radius: 10px; /* Lebih membulat */
-    font-size: 17px;
-    font-family: 'Segoe UI', sans-serif; /* Font lebih elegan */
+    display: block; /* Pastikan tombol mengambil lebar yang dibutuhkan */
+    flex-grow: 1; /* Biarkan tombol tumbuh agar adil */
+    max-width: 45%; /* Batasi lebar tombol agar tidak terlalu besar */
+    /* ... (Atribut lain seperti padding, border-radius tetap sama) ... */
+    padding: 18px 25px; 
+    text-align: center;
 }
-
+    /* Tombol akan kembali sejajar horizontal di Desktop */
+@media (min-width: 768px) {
+    .button-group {
+        flex-direction: row;
+    }
+}
 /* --- TOMBOL UTAMA (KLIK DISINI UNTUK DONASI) --- */
 .btn-primary {
     background-color: #0047AB; /* Royal Blue */
@@ -338,6 +348,7 @@ Mari bergabung dalam perjalanan ini — perjalanan menuju Nurul Huda yang baru: 
   </script>
 </body>
 </html>
+
 
 
 
