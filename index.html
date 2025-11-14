@@ -170,75 +170,56 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
-/* Styling Umum untuk Kontainer */
+/* --- FIX: STYLING UMUM --- */
 .container {
-    /* ... (tetap sama) ... */
-    border-radius: 15px; /* Lebih membulat */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Bayangan lebih kuat */
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    /* Hilangkan background putih agar menyatu dengan web Anda */
+    background-color: transparent; 
+    border-radius: 10px;
+    text-align: center;
 }
 
 h1 {
     color: #DAA520; /* Emas */
-    font-size: 32px; /* Sedikit lebih besar */
-    font-family: 'Segoe UI', sans-serif; /* Font lebih elegan */
+    font-size: 32px;
+    font-family: 'Segoe UI', sans-serif;
     margin-bottom: 15px;
 }
 
 .date {
-    color: #aaa; /* Abu-abu terang */
+    color: #DAA520; /* Emas */
     font-size: 15px;
     font-family: 'Segoe UI', sans-serif;
     margin-bottom: 30px;
 }
 
-/* Styling untuk Grup Tombol */
-/* --- FIX: MENGATUR JARAK ANTAR TOMBOL (VERTIKAL) --- */
+/* --- FIX: BUTTON GROUP DAN KERAPIAN JARAK --- */
 .button-group {
     display: flex;
-    flex-direction: column; /* Tombol bertumpuk vertikal */
+    flex-direction: column; /* Tombol bertumpuk vertikal (Mobile/Desktop) */
     align-items: center; /* Pusatkan tombol secara horizontal */
     gap: 12px; /* Jarak antar tombol (lebih rapat) */
     margin: 30px auto; 
 }
 
-/* Styling Dasar Tombol (Button Base) */
-/* --- FIX: MENGHILANGKAN GARIS BAWAH DAN MENGATUR TINGGI --- */
+/* --- FIX: DASAR TOMBOL, HILANGKAN GARIS & TINGGI RAMPING --- */
 .btn {
     text-decoration: none !important; /* MENGHILANGKAN GARIS BAWAH */
-    padding: 10px 20px; /* Membuat tombol lebih ramping (tinggi berkurang) */
-    border-radius: 8px; /* Sudut sedikit lebih tegas */
+    padding: 12px 20px; /* Membuat tombol lebih ramping */
+    border-radius: 8px; 
     font-weight: bold;
     font-size: 16px; 
     transition: all 0.3s ease;
     display: block; 
     text-align: center;
     line-height: 1.2; 
-    white-space: normal; /* Memastikan teks bisa melipat jika diperlukan */
+    width: 350px; /* Lebar Dibuat Sama untuk Desktop dan Mobile */
+    max-width: 90%; /* Pastikan responsif di HP */
 }
 
-/* --- FIX KRUSIAL: MEMBUAT LEBAR SAMA DI DESKTOP (@media) --- */
-@media (min-width: 768px) {
-    .button-group {
-        flex-direction: row;
-        justify-content: center;
-        gap: 20px;
-    }
-    
-    /* Tombol akan memiliki lebar yang sama persis dan tidak tumpang tindih */
-    .btn {
-        width: 320px; /* SET LEBAR FIX: Disesuaikan agar teks terpanjang muat (320px) */
-        max-width: 320px; 
-        flex-grow: 0;
-    }
-}
-    /* Tombol akan memiliki lebar yang sama persis */
-    .btn {
-        width: 300px; /* SET LEBAR FIX: Sesuaikan angka ini jika kurang panjang */
-        max-width: 300px; 
-        flex-grow: 0; /* Nonaktifkan pertumbuhan agar width fix berlaku */
-    }
-}
-/* --- TOMBOL UTAMA (KLIK DISINI UNTUK DONASI) --- */
+/* --- FIX: WARNA BIRU PRIMARY KEMBALI --- */
 .btn-primary {
     background-color: #0047AB; /* Royal Blue */
     color: #ffffff;
@@ -246,11 +227,10 @@ h1 {
 }
 
 .btn-primary:hover {
-    background-color: #003380; /* Royal Blue lebih gelap saat di-hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #003380;
 }
 
-/* --- TOMBOL SEKUNDER (LIHAT DAFTAR) --- */
+/* --- FIX: WARNA EMAS SECONDARY KEMBALI --- */
 .btn-secondary {
     background-color: transparent;
     color: #DAA520; /* Teks Emas */
@@ -258,8 +238,7 @@ h1 {
 }
 
 .btn-secondary:hover {
-    background-color: rgba(218, 165, 32, 0.1); /* Sedikit warna emas saat di-hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(218, 165, 32, 0.1); 
 }
   </style>
 </head>
@@ -315,14 +294,22 @@ h1 {
     Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
   </section>
   <section class="section">
-   <div class="button-group">
-    <a href="https://bit.ly/jariyahyapin" target="_blank" class="btn btn-primary">
-        KLIK DISINI UNTUK MENJADI DONATUR KAMI
-    </a>
+   <div class="main-wrapper">
     
-    <a href="https://docs.google.com/spreadsheets/d/1SGz8E72Ped3bLUe0TCqO91wsKA_t4v5P_VCaAxOU4I8/edit?usp=sharing" target="_blank" class="btn btn-secondary">
-        JIKA SUDAH ISI FORMULIR, CEK NAMA ANDA DI SINI
-    </a>
+    <div class="container">
+        <h1>FORMULIR UNTUK KONFIRMASI DONATUR</h1>
+        <p class="date">Senin, 10 November 2025</p> 
+
+        <div class="button-group">
+            <a href="https://bit.ly/jariyahyapin" target="_blank" class="btn btn-primary">
+                KLIK DISINI UNTUK DONASI SEKARANG
+            </a>
+            
+            <a href="https://docs.google.com/spreadsheets/d/1SGz8E72Ped3bLUe0TCqO91wsKA_t4v5P_VCaAxOU4I8/edit?usp=sharing" target="_blank" class="btn btn-secondary">
+                LIHAT DAFTAR NAMA DONATUR KAMI
+            </a>
+        </div>
+    </div>
 </div>
   </section>
 
@@ -347,6 +334,7 @@ h1 {
   </script>
 </body>
 </html>
+
 
 
 
