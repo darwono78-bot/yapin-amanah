@@ -170,62 +170,86 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
-/* BUTTON GROUP (UNTUK MERAPIKAN TOMBOL) */
+/* --- FIX: STYLING UMUM CONTAINER (SANGAT RAPAT) --- */
+.container {
+    max-width: 600px;
+    margin: 10px auto; /* Margin atas/bawah container SANGAT dirapatkan */
+    padding: 10px; /* Padding internal container SANGAT dirapatkan */
+    background-color: transparent; 
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* FIX: JUDUL UTAMA (MERAPATKAN) */
+h1 {
+    color: #DAA520; /* Warna Emas kembali */
+    font-size: 32px;
+    font-family: 'Segoe UI', sans-serif;
+    margin-top: 5px;
+    margin-bottom: 5px; /* Jarak di bawah judul utama SANGAT rapat */
+}
+
+/* FIX: TEKS TAMBAHAN (Mari Berdonasi) */
+.container p:not(.date) { 
+    color: #DAA520; /* Warna Emas kembali */
+    margin: 3px 0 3px 0; /* Margin atas/bawah SANGAT tipis */
+    font-size: 16px;
+}
+
+/* FIX: TANGGAL (MERAPATKAN) */
+.date {
+    color: #DAA520; /* Warna Emas kembali */
+    font-size: 15px;
+    font-family: 'Segoe UI', sans-serif;
+    margin-top: 5px;
+    margin-bottom: 10px; /* Jarak di bawah tanggal SANGAT rapat */
+}
+
+/* --- FIX: BUTTON GROUP (SANGAT RAPAT) --- */
 .button-group {
     display: flex;
-    flex-direction: row; 
-    justify-content: center; 
-    align-items: flex-start; 
-    flex-wrap: wrap; 
-    gap: 20px; 
-    margin: 15px auto 0 auto;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 8px; /* Jarak antar tombol (SANGAT RAPAT) */
+    margin: 10px auto; /* Margin atas/bawah button group SANGAT dirapatkan */
 }
 
-/* --- TOMBOL BIRU PRIMARY & EMAS SECONDARY (Lebar yang Rapi) --- */
+/* --- TOMBOL BIRU PRIMARY & EMAS SECONDARY (TETAP SAMA) --- */
 .btn {
-    text-decoration: none !important; 
-    padding: 10px 20px; 
-    border-radius: 8px; 
-    font-weight: bold;
-    font-size: 16px; 
-    transition: all 0.3s ease;
-    display: block; 
-    text-align: center;
-    line-height: 1.2; 
-    width: 300px;  
-    max-width: 100%;
+    text-decoration: none !important; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    font-weight: bold;
+    font-size: 16px; 
+    transition: all 0.3s ease;
+    display: block; 
+    text-align: center;
+    line-height: 1.2; 
+    width: 350px; 
+    max-width: 90%;
 }
 .btn-primary {
-    background-color: #0047AB; 
-    color: #ffffff; 
-    border: 2px solid #0047AB;
+    background-color: #0047AB; 
+    color: #ffffff; /* Pastikan teks tombol biru tetap putih */
+    border: 2px solid #0047AB;
 }
 .btn-secondary {
-    background-color: transparent;
-    color: #DAA520; 
-    border: 2px solid #DAA520; 
+    background-color: transparent;
+    color: #DAA520; 
+    border: 2px solid #DAA520; 
 }
-
-/* MEDIA QUERY untuk layar kecil */
-@media (max-width: 650px) {
+@media (min-width: 768px) {
     .button-group {
-        flex-direction: column; 
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
     }
     .btn {
-        width: 90%; 
-        max-width: 400px;
+        width: 320px; 
+        max-width: 320px; 
     }
 }
-
-/* Style container (agar tidak mengganggu div glowing) */
-.container {
-    max-width: 800px; 
-    margin: 0 auto; 
-    padding: 0; 
-    background-color: transparent; 
-    border-radius: 10px;
-    text-align: center;
-}
+   
   </style>
 </head>
 <body>
@@ -324,6 +348,7 @@
   </script>
 </body>
 </html>
+
 
 
 
