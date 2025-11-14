@@ -170,7 +170,76 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
+/* Styling Umum untuk Kontainer */
+.container {
+    max-width: 800px; /* Batasi lebar agar fokus */
+    margin: 40px auto; /* Memberi jarak atas/bawah */
+    padding: 30px;
+    background-color: #f9f9f9; /* Warna latar belakang kontainer */
+    border-radius: 8px; /* Sudut membulat */
+    text-align: center; /* Pusatkan teks */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+}
 
+h1 {
+    color: #0d47a1; /* Biru tua untuk judul */
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.date {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* Styling untuk Grup Tombol */
+.button-group {
+    display: flex; /* Tombol sejajar horizontal */
+    flex-direction: column; /* Tumpuk tombol secara vertikal di HP */
+    gap: 15px; /* Jarak antar tombol */
+    margin-top: 30px;
+}
+
+/* Styling Dasar Tombol (Button Base) */
+.btn {
+    text-decoration: none; /* Hilangkan garis bawah link */
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Transisi halus saat di-hover */
+}
+
+/* --- TOMBOL UTAMA (KLIK DISINI UNTUK DONASI) --- */
+.btn-primary {
+    background-color: #1976d2; /* Biru Primer (Mencolok) */
+    color: #ffffff; /* Teks Putih */
+    border: 2px solid #1976d2;
+}
+
+.btn-primary:hover {
+    background-color: #1565c0; /* Biru lebih gelap saat di-hover */
+}
+
+/* --- TOMBOL SEKUNDER (LIHAT DAFTAR) --- */
+.btn-secondary {
+    background-color: transparent; /* Transparan */
+    color: #666; /* Teks abu-abu */
+    border: 2px solid #ccc; /* Border abu-abu */
+}
+
+.btn-secondary:hover {
+    background-color: #f1f1f1; /* Sedikit abu-abu saat di-hover */
+}
+
+/* Tampilkan tombol berdampingan di Desktop */
+@media (min-width: 768px) {
+    .button-group {
+        flex-direction: row;
+        justify-content: center; /* Pusatkan tombol */
+    }
+}
   </style>
 </head>
 <body>
@@ -285,4 +354,5 @@ Mari bergabung dalam perjalanan ini — perjalanan menuju Nurul Huda yang baru: 
   </script>
 </body>
 </html>
+
 
