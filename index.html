@@ -170,40 +170,34 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
-/* --- FIX: STYLING UMUM --- */
+/* --- FIX: STYLING UMUM CONTAINER (MERINGKASKAN RUANG KOSONG) --- */
 .container {
-    max-width: 8000px;
-    margin: 40px auto;
-    padding: 30px;
-    /* Hilangkan background putih agar menyatu dengan web Anda */
+    max-width: 600px;
+    margin: 20px auto; /* Margin atas/bawah container dirampingkan */
+    padding: 15px; /* Padding internal container dirampingkan */
     background-color: transparent; 
     border-radius: 10px;
     text-align: center;
 }
 
 h1 {
-    color: #DAA520; /* Emas */
-    font-size: 32px;
-    font-family: 'Segoe UI', sans-serif;
-    margin-bottom: 15px;
+    /* ... (Tetap sama) ... */
+    margin-bottom: 5px; /* Jarak di bawah judul utama DIRApatkan */
 }
 
 .date {
-    color: #DAA520; /* Emas */
-    font-size: 15px;
-    font-family: 'Segoe UI', sans-serif;
-    margin-bottom: 30px;
+    /* ... (Tetap sama) ... */
+    margin-bottom: 15px; /* Jarak di bawah tanggal DIRApatkan */
 }
 
-/* --- FIX: BUTTON GROUP DAN KERAPIAN JARAK --- */
+/* --- FIX: BUTTON GROUP (MERINGKASKAN JARAK ANTAR TOMBOL) --- */
 .button-group {
     display: flex;
-    flex-direction: column; /* Tombol bertumpuk vertikal (Mobile/Desktop) */
-    align-items: center; /* Pusatkan tombol secara horizontal */
-    gap: 5px; /* Jarak antar tombol (lebih rapat) */
-    margin: 30px auto; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; /* Jarak antar tombol (Rapat) */
+    margin: 15px auto; /* Margin atas/bawah button group DIRApatkan */
 }
-
 /* --- FIX: DASAR TOMBOL, HILANGKAN GARIS & TINGGI RAMPING --- */
 .btn {
     text-decoration: none !important; /* MENGHILANGKAN GARIS BAWAH */
@@ -334,6 +328,7 @@ h1 {
   </script>
 </body>
 </html>
+
 
 
 
