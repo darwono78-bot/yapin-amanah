@@ -215,7 +215,79 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
-  </style>
+	    /* ========================================================================= */
+/* STYLING DROPDOWN NAVIGASI (KOREKSI UNTUK FLEX LAYOUT) */
+/* ========================================================================= */
+
+.dropdown {
+    position: relative; 
+    /* Penting: Set display ke inline-block agar berbaris horizontal dengan menu lain */
+    display: inline-block; 
+    vertical-align: top; /* Pastikan rata atas dengan menu lain */
+}
+
+/* Gaya Tombol Pemicu Dropdown (Dropbtn) */
+.dropbtn {
+    background-color: transparent;
+    color: #fff;
+    font-size: 1em; /* Mengikuti font-size dari nav a */
+    font-weight: 600;
+    padding: 8px 18px; /* Mengikuti padding dari nav a */
+    border: none;
+    cursor: pointer;
+    border-radius: 25px; /* Mengikuti border-radius dari nav a */
+    transition: all 0.3s ease;
+}
+
+/* Tombol Dropdown Aktif/Hover */
+.dropbtn:hover, .dropbtn.active {
+    background-color: #ffd700;
+    color: #004000;
+    transform: scale(1.05);
+}
+
+/* Gaya Konten Dropdown (Kotak yang muncul) */
+.dropdown-content {
+    display: none; 
+    position: absolute;
+    background-color: rgba(0, 45, 0, 0.95); /* Warna lebih gelap */
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 100; /* Z-index tinggi agar pasti muncul di atas */
+    border-radius: 8px;
+    margin-top: 0px; 
+    left: 0; 
+    border: 1px solid rgba(255, 215, 0, 0.5); /* Border emas */
+    text-align: left;
+    overflow: hidden; /* Agar border-radius terlihat rapi */
+}
+
+/* Gaya Link di dalam Dropdown */
+.dropdown-content a {
+    color: #fff;
+    padding: 12px 18px;
+    text-decoration: none;
+    display: block;
+    margin: 0; /* Penting: Hapus margin */
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 0; /* Hapus border radius */
+}
+
+.dropdown-content a:hover {
+    background-color: #ffd700; 
+    color: #004000;
+    transform: none; /* Hilangkan scale 1.05 agar menu tidak bergerak */
+}
+
+/* Tampilkan konten dropdown saat mouse berada di atas .dropdown */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* GANTI/TAMBAHKAN PROPERTI INI: */
+    top: 95%; /* Pastikan kotak muncul di bawah link utama */
+    padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
+</style>
 </head>
 <body>
 <header>
@@ -350,5 +422,6 @@
   </script>
 </body>
 </html>
+
 
 
