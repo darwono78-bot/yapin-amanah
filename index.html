@@ -170,7 +170,62 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
+/* BUTTON GROUP (UNTUK MERAPIKAN TOMBOL) */
+.button-group {
+    display: flex;
+    flex-direction: row; 
+    justify-content: center; 
+    align-items: flex-start; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    margin: 15px auto 0 auto;
+}
 
+/* --- TOMBOL BIRU PRIMARY & EMAS SECONDARY (Lebar yang Rapi) --- */
+.btn {
+    text-decoration: none !important;  
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    font-weight: bold;
+    font-size: 16px; 
+    transition: all 0.3s ease;
+    display: block; 
+    text-align: center;
+    line-height: 1.2; 
+    width: 300px;  
+    max-width: 100%;
+}
+.btn-primary {
+    background-color: #0047AB; 
+    color: #ffffff; 
+    border: 2px solid #0047AB;
+}
+.btn-secondary {
+    background-color: transparent;
+    color: #DAA520; 
+    border: 2px solid #DAA520; 
+}
+
+/* MEDIA QUERY untuk layar kecil */
+@media (max-width: 650px) {
+    .button-group {
+        flex-direction: column; 
+    }
+    .btn {
+        width: 90%; 
+        max-width: 400px;
+    }
+}
+
+/* Style container (agar tidak mengganggu div glowing) */
+.container {
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 0; 
+    background-color: transparent; 
+    border-radius: 10px;
+    text-align: center;
+}
   </style>
 </head>
 <body>
@@ -265,5 +320,3 @@
   </script>
 </body>
 </html>
-( TOLOG KAKA RAPIKAN SAJA YA , SAYA DAH CAPEK KAK 
-
