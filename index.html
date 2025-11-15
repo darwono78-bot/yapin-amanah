@@ -393,6 +393,25 @@
         max-width: 100%; /* Di layar sangat kecil, satu kartu per baris */
     }
 }
+    /* Tambahkan ini di dalam tag <style> */
+.transparency-section {
+    /* Menambahkan shadow yang lebih kuat ke bawah (efek 3D) */
+    box-shadow: 
+        0 8px 0 0 #A89000, /* Bayangan bawah yang solid dan gelap (Warna Emas Tua) */
+        0 0 30px rgba(255, 215, 0, 0.5),
+        0 0 40px rgba(255, 215, 0, 0.3),
+        inset 0 0 30px rgba(255, 215, 0, 0.3);
+    
+    transition: all 0.2s ease; /* Transisi agar efek saat disentuh mulus */
+}
+
+/* Efek saat mouse di atas (seolah-olah tombol ditekan) */
+.transparency-section:hover {
+    transform: translateY(4px); /* Turun 4px */
+    box-shadow: 
+        0 4px 0 0 #A89000, /* Bayangan bawah ikut mengecil */
+        0 0 40px rgba(255, 215, 0, 0.7);
+}
   </style>
 </head>
 <body>
@@ -753,6 +772,7 @@
 
 </body>
 </html>
+
 
 
 
