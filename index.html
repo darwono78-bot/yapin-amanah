@@ -420,8 +420,7 @@
   </div>
 
 
-<script type="module">
-    // ... (Bagian import dan konfigurasi Firebase SAMA) ...
+// ... (Bagian import dan konfigurasi Firebase SAMA) ...
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
@@ -493,24 +492,22 @@
         try {
             const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
             
-            console.log(`[DONATUR DEBUG]: Target Awalan: ${targetMonthsDonatur.join(', ')}`);
-            console.log(`[DONATUR DEBUG]: Total Dokumen ditemukan: ${donaturSnapshot.size}`);
-            
             donaturSnapshot.forEach((doc, index) => {
                 const data = doc.data();
                 let docDateString = null;
                 
-                if (!data.Tanggal) return;
+                // --- PERUBAHAN KRUSIAL DI SINI: MENGGUNAKAN 'tanggal' (huruf kecil) ---
+                if (!data.tanggal) return;
 
                 // Cek Tipe Data dan pastikan hasilnya bersih dari spasi (.trim())
-                if (typeof data.Tanggal.toDate === 'function') {
-                    docDateString = data.Tanggal.toDate().toISOString().substring(0, 10).trim(); 
+                // Menggunakan data.tanggal (huruf kecil)
+                if (typeof data.tanggal.toDate === 'function') {
+                    docDateString = data.tanggal.toDate().toISOString().substring(0, 10).trim(); 
                 } 
-                else if (typeof data.Tanggal === 'string') {
-                    // Cek jika ada spasi di awal/akhir string
-                    docDateString = data.Tanggal.substring(0, 10).trim(); 
+                else if (typeof data.tanggal === 'string') {
+                    docDateString = data.tanggal.substring(0, 10).trim(); 
                 } else {
-                    console.error(`[DONATUR DEBUG]: Dokumen ${index + 1} Tanggal memiliki tipe data tidak dikenal:`, typeof data.Tanggal);
+                    console.error(`[DONATUR DEBUG]: Dokumen #${index + 1} Tanggal memiliki tipe data tidak dikenal:`, typeof data.tanggal);
                     return;
                 }
                 
@@ -519,13 +516,10 @@
                 
                 if (isMatch) { 
                     totalDonatur++;
-                    console.log(`[DONATUR DEBUG]: 🔥 COCOK! Tanggal yang dibaca: ${docDateString}`);
-                } else {
-                    console.log(`[DONATUR DEBUG]: TIDAK COCOK. Tanggal dibaca: ${docDateString}`);
+                    // Pesan debug yang sukses:
+                    console.log(`[DONATUR DEBUG]: 🔥 SUKSES COCOK! Tanggal yang dibaca: ${docDateString}`);
                 }
             });
-            
-            console.log(`[DONATUR DEBUG]: TOTAL AKHIR DONATUR: ${totalDonatur}`);
             
         } catch (error) {
             console.error("Error fatal saat memproses Donatur:", error);
@@ -589,6 +583,7 @@ Jika masih belum muncul, **tolong cek lagi Konsol Browser (F12) Anda** dan lihat
 </script>
 </body>
 </html>
+
 
 
 
