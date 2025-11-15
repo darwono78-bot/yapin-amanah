@@ -689,10 +689,157 @@ Setelah Anda menempatkan kode ini, jangan lupa untuk memastikan **Koreksi HTML d
         updateDate();
         updateAccountabilityBar();
     });
+  <script type="module">
+    // =========================================================================
+    // IMPORT SDK MODULAR
+    // =========================================================================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
+        authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
+        projectId: "laporan-keuangan-yayasan",
+        storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
+        messagingSenderId: "616927572689",
+        appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const FINANCE_COLLECTION = "laporan";
+    const DONATUR_COLLECTION = "donatur";
+
+    const formatRupiah = (angka) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(angka);
+    };
+
+    // Fungsi untuk menampilkan tanggal hari ini secara dinamis (DIPINDAHKAN KE SINI)
+    function displayCurrentDate() {
+        const dateElement = document.getElementById('currentDate');
+        if (!dateElement) return;
+
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateElement.textContent = now.toLocaleDateString('id-ID', options); 
+    }
+
+
+    async function loadMonthlySummary() {
+        const now = new Date();
+        const yearNow = now.getFullYear();
+        
+        const targetMonthsDonatur = [];
+        
+        // 1. Tentukan rentang 3 bulan (M, M-1, M-2) untuk Donatur
+        for (let i = 0; i < 3; i++) {
+            const date = new Date(yearNow, now.getMonth() - i, 1); 
+            const year = date.getFullYear().toString();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            targetMonthsDonatur.push(`${year}-${month}`);
+        }
+        
+        const currentMonthPrefix = targetMonthsDonatur[0];
+        
+        // 2. Buat label rentang bulan
+        const endMonthName = now.toLocaleDateString('id-ID', { month: 'short' });
+        const startOfMonth = new Date(yearNow, now.getMonth() - 2, 1);
+        const startMonthName = startOfMonth.toLocaleDateString('id-ID', { month: 'short' });
+        const yearLabel = startOfMonth.getFullYear();
+        const monthRangeLabel = `(${startMonthName} - ${endMonthName} ${yearLabel})`;
+
+        let totalPemasukan = 0;
+        let totalPengeluaran = 0;
+        let totalUangDonasi = 0; 
+
+        // 3. Ambil data LAPORAN KEUANGAN (Hanya 1 Bulan) - SAMA
+        try {
+            const laporanSnapshot = await getDocs(collection(db, FINANCE_COLLECTION));
+            laporanSnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.tanggal && data.tanggal.startsWith(currentMonthPrefix)) { 
+                    totalPemasukan += (parseInt(data.danaMasuk) || 0);
+                    totalPengeluaran += (parseInt(data.danaKeluar) || 0);
+                }
+            });
+        } catch (error) {
+            console.error("Error mengambil data Laporan Keuangan:", error);
+        }
+
+        // 4. Ambil data DONATUR (Filter 3 Bulan, hitung JUMLAH UANG)
+        try {
+            const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
+            
+            donaturSnapshot.forEach((doc) => {
+                const data = doc.data();
+                let docDateString = null;
+                
+                if (!data.tanggal) return; 
+
+                // LOGIKA UTAMA: PRIORITAS STRING ISO 8601
+                if (typeof data.tanggal === 'string') {
+                    docDateString = data.tanggal.substring(0, 10).trim(); 
+                } 
+                else {
+                    try {
+                        docDateString = data.tanggal.toDate().toISOString().substring(0, 10).trim();
+                    } catch (e) {
+                         return;
+                    }
+                }
+                
+                // Cek Filter 3 Bulan
+                const isMatch = docDateString && targetMonthsDonatur.some(prefix => docDateString.startsWith(prefix));
+                
+                if (isMatch) { 
+                    // AMBIL NILAI DARI FIELD 'jumlah' DAN JUMLAHKAN
+                    const jumlahDonasi = parseInt(data.jumlah) || 0; 
+                    totalUangDonasi += jumlahDonasi;
+                }
+            });
+            
+        } catch (error) {
+            console.error("Error fatal saat memproses Donatur:", error);
+            document.getElementById('donaturBulanIni').textContent = 'ERROR'; 
+        }
+
+        // 5. Hitung dan Tampilkan Hasil
+        const totalSaldo = totalPemasukan - totalPengeluaran;
+
+        // Tampilkan TOTAL UANG DONASI
+        document.getElementById('donaturRangeInfo').textContent = monthRangeLabel;
+        document.getElementById('donaturBulanIni').textContent = formatRupiah(totalUangDonasi); 
+        
+        document.getElementById('pemasukanBulanIni').textContent = formatRupiah(totalPemasukan);
+        document.getElementById('pengeluaranBulanIni').textContent = formatRupiah(totalPengeluaran);
+        
+        const saldoElement = document.getElementById('saldoBulanIni');
+        saldoElement.textContent = formatRupiah(totalSaldo);
+
+        saldoElement.classList.remove('minus');
+        if (totalSaldo < 0) {
+            saldoElement.classList.add('minus');
+        }
+    }
+
+    // Panggil kedua fungsi saat DOM Content dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMonthlySummary();
+        displayCurrentDate(); // Tanggal akan dimuat di sini
+    });
+
+</script>
+Setelah Anda menempatkan kode ini, jangan lupa untuk memastikan **Koreksi HTML dan CSS** dari jawaban saya sebelumnya sudah diterapkan untuk memperbaiki masalah kotak timbul dan kotak hitam di bawah.
 </script>
 
 </body>
 </html>
+
 
 
 
