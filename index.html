@@ -117,7 +117,14 @@
       line-height: 1.8em;
       color: #fdfdfd;
     }
-
+/* Gaya Tanggal */
+    .date {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #00FFCC; /* Warna cerah untuk tanggal */
+        margin-bottom: 30px;
+        text-shadow: 0 0 8px #00FFCC;
+    }
     footer {
       background: rgba(0, 60, 0, 0.85);
       text-align: center;
@@ -257,6 +264,34 @@ atau hubungi kami untuk konfirmasi donasi.</div>
     <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
+<script>
+    // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
+    const updateDate = () => {
+        const dateElement = document.getElementById('currentDate');
+        if (!dateElement) return;
+
+        const date = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        
+        // Menggunakan toLocaleDateString untuk format bahasa Indonesia
+        const formattedDate = date.toLocaleDateString('id-ID', options);
+        
+        dateElement.textContent = formattedDate;
+    };
+    
+    // Panggil fungsi segera setelah halaman dimuat
+    updateDate();
+
+    // 2. JavaScript untuk Animasi Scroll
+    const sections = document.querySelectorAll('.section'); 
+    window.addEventListener('scroll', () => {
+      const triggerBottom = window.innerHeight * 0.85;
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if(sectionTop < triggerBottom) section.classList.add('visible');
+      });
+    });
+</script>
 
   <script>
     const sections = document.querySelectorAll('.section');
@@ -270,3 +305,4 @@ atau hubungi kami untuk konfirmasi donasi.</div>
   </script>
 </body>
 </html>
+
