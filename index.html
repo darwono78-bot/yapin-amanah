@@ -124,12 +124,11 @@
     }
     
     .date-display {
-        margin-top: 50px; /* Tambahkan jarak dari tombol di atasnya */
+        margin-top: 30px; /* PERBAIKAN: Memberi jarak agar tidak menumpuk */
         font-size: 1.2em;
         font-weight: bold;
         color: #00FFCC; 
         text-shadow: 0 0 8px #00FFCC;
-    }
     }
 
     footer {
@@ -180,7 +179,7 @@
     /* ==================================================================== */
 
     .hero-section {
-        padding: 20px 20px; 
+        padding: 50px 20px; 
         text-align: center;
         min-height: 70vh; 
         display: flex;
@@ -360,12 +359,20 @@
 
     <div class="accountability-bar section visible"> 
         <div class="bar-item">
-            <p>Total Donasi Bulan Ini:</p>
-            <h3>Rp 4.567.000,-</h3>
+            <p>Total Donatur Bulan Ini:</p>
+            <h3 id="donaturBulanIni">0</h3>
         </div>
         <div class="bar-item">
-            <p>Total Penyaluran Bulan Ini:</p>
-            <h3>Rp 4.200.000,-</h3>
+            <p>Total Pemasukan Bulan Ini:</p>
+            <h3 id="pemasukanBulanIni">Rp 0,-</h3>
+        </div>
+        <div class="bar-item">
+            <p>Total Pengeluaran Bulan Ini:</p>
+            <h3 id="pengeluaranBulanIni">Rp 0,-</h3>
+        </div>
+        <div class="bar-item">
+            <p>Total Saldo Bulan Ini:</p>
+            <h3 id="saldoBulanIni">Rp 0,-</h3>
         </div>
     </div>
 
@@ -408,6 +415,59 @@
   </div>
 
 <script>
+    // ==========================================================
+    // 3. FUNGSI OTOMATIS DATA KEUANGAN DARI LOCAL STORAGE
+    // ==========================================================
+    const formatRupiah = (angka) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(angka);
+    };
+
+    const updateAccountabilityBar = () => {
+        // Mengambil data keuangan dari Local Storage (KEY: keuanganData)
+        // Kunci ini harus sama dengan yang digunakan di laporan.html
+        const data = JSON.parse(localStorage.getItem('keuanganData')) || [];
+
+        // Filter data untuk bulan ini
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        const dataBulanIni = data.filter(item => {
+            const itemDate = new Date(item.tanggal);
+            return itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear;
+        });
+
+        let totalPemasukan = 0;
+        let totalPengeluaran = 0;
+        // Set untuk menghitung jumlah donatur unik (berdasarkan kolom keterangan/nama)
+        let donaturSet = new Set(); 
+
+        dataBulanIni.forEach(item => {
+            if (item.tipe === 'Pemasukan') {
+                totalPemasukan += item.nominal;
+                // Kami menggunakan 'keterangan' sebagai nama donatur/sumber dana untuk dihitung unik
+                if(item.keterangan && item.keterangan.trim() !== '') {
+                   donaturSet.add(item.keterangan.trim().toLowerCase()); 
+                }
+            } else if (item.tipe === 'Pengeluaran') {
+                totalPengeluaran += item.nominal;
+            }
+        });
+
+        const totalSaldo = totalPemasukan - totalPengeluaran;
+        const totalDonatur = donaturSet.size;
+
+        // Update elemen di Beranda
+        document.getElementById('donaturBulanIni').textContent = totalDonatur;
+        document.getElementById('pemasukanBulanIni').textContent = formatRupiah(totalPemasukan);
+        document.getElementById('pengeluaranBulanIni').textContent = formatRupiah(totalPengeluaran);
+        document.getElementById('saldoBulanIni').textContent = formatRupiah(totalSaldo);
+    };
+    
     // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
     const updateDate = () => {
         const dateElement = document.getElementById('currentDate');
@@ -420,8 +480,6 @@
         }
     };
     
-    updateDate();
-
     // 2. JavaScript untuk Animasi Scroll 
     const sections = document.querySelectorAll('.section');  
     window.addEventListener('scroll', () => {
@@ -431,9 +489,13 @@
             if(sectionTop < triggerBottom) section.classList.add('visible');
         });
     });
+
+    // Panggil fungsi saat halaman Beranda dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+        updateDate();
+        updateAccountabilityBar();
+    });
 </script>
 
 </body>
 </html>
-
-
