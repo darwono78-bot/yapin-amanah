@@ -168,10 +168,15 @@
     font-size: 1.2em;
     font-weight: bold;
     color: #00FFCC; 
-    margin-bottom: 5px; /* Kunci 2: Kurangi jarak ke bawah (ke tombol) */
-    margin-top: 10px; /* Kunci 1: Kurangi jarak ke atas (ke H2/Formulir) */
     text-shadow: 0 0 8px #00FFCC;
+    /* PROPERTI PENTING YANG MUNGKIN HILANG */
+    display: block; /* Kunci: Memaksa elemen mengambil lebar penuh (agar center bekerja) */
+    /* PENGATURAN JARAK */
+    margin-bottom: 5px; /* Jarak ke bawah (ke tombol) dirapatkan */
+    margin-top: 10px; /* Jarak ke atas (ke Formulir) dirapatkan */
+	text-shadow: 0 0 8px #00FFCC;
 }
+
     footer {
       background: rgba(0, 60, 0, 0.85);
       text-align: center;
@@ -517,5 +522,6 @@
   </script>
 </body>
 </html>
+
 
 
