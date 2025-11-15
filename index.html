@@ -422,12 +422,12 @@
 
 <script type="module">
     // =========================================================================
-    // IMPORT SDK MODULAR (Sesuai dengan versi yang Anda gunakan)
+    // IMPORT SDK MODULAR
     // =========================================================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    // FIREBASE CONFIG & INISIALISASI
+    // FIREBASE CONFIG & INISIALISASI (Sudah Sesuai API Key Anda)
     const firebaseConfig = {
         apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
         authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
@@ -464,11 +464,16 @@
         const month = (now.getMonth() + 1).toString().padStart(2, '0');
         const targetPrefix = `${year}-${month}`; // Contoh: "2025-11"
 
+        // DEBUG LOGGING
+        console.log(`--- DEBUG FIREBASE ---`);
+        console.log(`Bulan/Tahun Target: ${targetPrefix}`); 
+        console.log(`----------------------`);
+
         let totalPemasukan = 0;
         let totalPengeluaran = 0;
         let totalDonatur = 0;
 
-        // 1. Ambil data LAPORAN KEUANGAN (Menggunakan field 'tanggal' huruf kecil)
+        // 1. Ambil data LAPORAN KEUANGAN (Asumsi sudah berhasil)
         try {
             const laporanSnapshot = await getDocs(collection(db, FINANCE_COLLECTION));
             laporanSnapshot.forEach(doc => {
@@ -484,20 +489,49 @@
             console.error("Error mengambil data Laporan Keuangan:", error);
         }
 
-        // 2. Ambil data DONATUR (MENGGUNAKAN field 'Tanggal' huruf Kapital)
+        // 2. Ambil data DONATUR (Perbaikan Tangguh untuk 'Tanggal' Kapital)
         try {
             const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
+            
+            // DEBUG LOGGING
+            console.log(`[DONATUR]: Ditemukan total ${donaturSnapshot.size} dokumen donatur.`);
+            
+            let countMatched = 0;
 
-            donaturSnapshot.forEach(doc => {
+            donaturSnapshot.forEach((doc, index) => {
                 const data = doc.data();
+                let docDateString = null;
                 
-                // PERBAIKAN: Menggunakan 'Tanggal' sesuai screenshot
-                if (data.Tanggal && data.Tanggal.startsWith(targetPrefix)) { 
+                if (data.Tanggal) { 
+                    // Kasus A: Ini adalah Firestore Timestamp
+                    if (typeof data.Tanggal.toDate === 'function') {
+                        docDateString = data.Tanggal.toDate().toISOString().substring(0, 10);
+                    } 
+                    // Kasus B: Ini adalah String biasa (Contoh: "2025-11-01")
+                    else if (typeof data.Tanggal === 'string') {
+                        docDateString = data.Tanggal;
+                    }
+                }
+                
+                // Cek apakah tanggal dokumen cocok dengan bulan ini
+                if (docDateString && docDateString.startsWith(targetPrefix)) { 
                     totalDonatur++;
-                } 
+                    countMatched++;
+                    // DEBUG LOGGING: Tunjukkan dokumen mana yang cocok
+                    console.log(`[DONATUR]: Dokumen ${index+1} cocok. Tanggal: ${docDateString}`);
+                }
+                // DEBUG LOGGING: Tunjukkan dokumen mana yang tidak cocok
+                // else {
+                //     console.log(`[DONATUR]: Dokumen ${index+1} TIDAK cocok. Tanggal: ${docDateString}`);
+                // }
             });
+
+            // DEBUG LOGGING
+            console.log(`[DONATUR]: Total yang cocok untuk bulan ini adalah ${totalDonatur}`);
+            
         } catch (error) {
-            console.error("Error mengambil data Donatur:", error);
+            console.error("Error mengambil data Donatur (Cek field 'Tanggal'):", error);
+            document.getElementById('donaturBulanIni').textContent = 'ERROR'; 
         }
 
         // 3. Hitung dan Tampilkan Saldo
@@ -550,4 +584,5 @@
 </script>
 </body>
 </html>
+
 
