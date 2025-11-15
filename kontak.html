@@ -169,9 +169,14 @@
     font-weight: bold;
     color: #00FFCC; 
     text-shadow: 0 0 8px #00FFCC;
-    /* PROPERTI PENTING YANG MUNGKIN HILANG */
-    display: block; /* Kunci: Memaksa elemen mengambil lebar penuh (agar center bekerja) */
-    /* PENGATURAN JARAK */
+    
+    /* PROPERTI TERKUAT UNTUK CENTERING */
+    display: block; /* Memastikan elemen bisa menerima margin */
+    max-width: 300px; /* Batasi lebar hanya selebar teks */
+    margin-left: auto; /* PENTING: Margin kiri otomatis */
+    margin-right: auto; /* PENTING: Margin kanan otomatis */
+    
+    /* PENGATURAN JARAK VERTIKAL */
     margin-bottom: 5px; /* Jarak ke bawah (ke tombol) dirapatkan */
     margin-top: 10px; /* Jarak ke atas (ke Formulir) dirapatkan */
 }
@@ -521,6 +526,7 @@
   </script>
 </body>
 </html>
+
 
 
 
