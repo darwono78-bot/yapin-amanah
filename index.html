@@ -91,7 +91,7 @@
       color: #004000;
       transform: scale(1.05);
     }
-  .section {
+      .section {
       background: rgba(0, 45, 0, 0.93);
       margin: 50px auto;
       width: 90%;
@@ -103,10 +103,14 @@
         0 0 25px rgba(255, 215, 0, 0.4),
         0 0 35px rgba(255, 215, 0, 0.2),
         inset 0 0 25px rgba(255, 215, 0, 0.25);
-      text-align: center;
+      text-align: left;
       opacity: 0;
       transform: translateY(40px);
       transition: all 1s ease;
+    }
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .section.visible {
@@ -350,3 +354,4 @@
   </script>
   </body>
 </html>
+
