@@ -124,7 +124,7 @@
     }
     
     .date-display {
-        margin-top: 30px; 
+        margin-top: 30px; /* PERBAIKAN: Memberi jarak agar tidak menumpuk */
         font-size: 1.2em;
         font-weight: bold;
         color: #00FFCC; 
@@ -179,7 +179,7 @@
     /* ==================================================================== */
 
     .hero-section {
-        padding: 10px 10px; 
+        padding: 50px 20px; 
         text-align: center;
         min-height: 70vh; 
         display: flex;
@@ -215,7 +215,7 @@
     
     /* Tombol CTA dan Perbaikan Padding */
     .cta-button {
-        padding: 18px 30px; 
+        padding: 18px 30px; /* Padding vertikal yang sudah disesuaikan */
         border-radius: 50px;
         text-decoration: none;
         font-weight: bold;
@@ -256,11 +256,6 @@
     .bar-item h3 {
         font-size: 1.8em;
         margin-bottom: 5px;
-        /* Tambahan: Agar saldo minus/plus bisa diwarnai */
-        color: #00ff00; 
-    }
-    .bar-item h3.minus {
-        color: #ff6666;
     }
     .bar-item p {
         font-size: 0.9em;
@@ -304,101 +299,6 @@
         .cta-group { flex-direction: column; gap: 10px; }
         .cta-button { width: 100%; }
     }
-/* Styling untuk Kotak Timbul DONASI SEKARANG */
-.main-actions {
-    text-align: center; /* Pastikan tombol di tengah */
-    margin-top: 30px; 
-    margin-bottom: 100px; /* Jarak yang cukup dari footer fixed */
-}
-
-.btn-donasi {
-    display: inline-block;
-    padding: 15px 40px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333; 
-    background-color: #FFEB3B; /* Kuning Terang */
-    border: none;
-    border-radius: 12px; 
-    box-shadow: 0 8px 0 #FFC107, /* Bayangan bawah */
-                0 15px 30px rgba(0, 0, 0, 0.3); /* Bayangan melayang */
-    text-decoration: none; 
-    transition: all 0.2s ease; 
-    cursor: pointer;
-    text-align: center;
-    min-width: 200px; 
-}
-
-.btn-donasi:hover {
-    transform: translateY(-3px); 
-    box-shadow: 0 10px 0 #FFC107,
-                0 20px 40px rgba(0, 0, 0, 0.4);
-}
-
-.btn-donasi:active {
-    transform: translateY(5px); 
-    box-shadow: 0 3px 0 #FFC107,
-                0 5px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Styling untuk Kotak Hitam Bawah (FOOTER BARU) */
-.footer-live-check {
-    /* Perbaikan Krusial: Gunakan !important jika ada CSS lain yang menimpa */
-    position: fixed !important; 
-    bottom: 0 !important;
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.9); /* Hitam pekat */
-    padding: 15px 10px;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5); 
-    text-align: center;
-    z-index: 9999; /* Pastikan dia di atas elemen apa pun */
-}
-
-.footer-live-check .date-info {
-    font-size: 16px;
-    color: #ccc; 
-    margin-bottom: 5px; /* Jarak antara tanggal dan link cek transaksi */
-}
-
-.footer-live-check .cek-transaksi-live {
-    font-size: 18px;
-    color: #9C27B0; /* Warna ungu */
-    text-decoration: none;
-    font-weight: bold;
-    display: block; 
-}
-
-.footer-live-check .cek-transaksi-live:hover {
-    color: #E040FB; 
-}
-
-/* Tambahkan padding di bagian bawah body agar konten tidak tertutup footer fixed */
-body {
-    padding-bottom: 90px; /* Jarak aman agar konten terakhir terlihat di atas footer */
-}
-/* Styling untuk CEK TRANSAKSI LIVE (Link biasa yang agak menonjol) */
-.cek-transaksi-live {
-    font-size: 18px;
-    color: #9C27B0; /* Warna ungu */
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 20px; /* Jarak dari tombol DONASI SEKARANG */
-    transition: color 0.2s ease;
-}
-
-.cek-transaksi-live:hover {
-    color: #E040FB; /* Warna ungu lebih terang saat di-hover */
-}
-
-/* Styling untuk Tanggal */
-.date-info {
-    text-align: center; /* Posisikan tanggal di tengah */
-    margin-top: 50px; /* Jarak lebih jauh ke bawah dari tombol */
-    font-size: 20px; /* Ukuran font tanggal */
-    color: #00BCD4; /* Warna cyan terang */
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5); /* Efek glow */
-}
   </style>
 </head>
 <body>
@@ -439,7 +339,7 @@ body {
     <a href="galeri.html">Galeri</a>
     <a href="kontak.html">Kontak & Donasi</a>
     <a href="laporan.html">Laporan Keuangan</a>
-    <a href="donatur-yapin.html">Donatur YAPIN</a>
+    <a href="donatur YAPIN.html">Donatur YAPIN</a>
   </nav>
 
   <main>
@@ -448,24 +348,18 @@ body {
             <h1>Wujudkan Masa Depan Cemerlang Generasi Islami di Pati.</h1>
             <p class="subtitle">15 Tahun Legalitas Kuat. Kini Kami Hadir dengan Amanah 100%. Donasi Anda, Laporan Kami.</p>
             
-              <div class="accountability-summary section">
-    </div>
+            <div class="cta-group">
+                <a href="https://wa.me/6282324153933" target="_blank" class="cta-button primary-cta">DONASI SEKARANG</a> 
+                <a href="laporan.html" target="_blank" class="cta-button secondary-cta">CEK TRANSAKSI LIVE</a>
+            </div>
 
-<div class="main-actions section">
-    <a href="#" class="btn-donasi">DONASI SEKARANG</a>
-</div>
-
-<div class="footer-live-check">
-    <div class="date-info">
-        <p class="today-date">Hari ini: <span id="currentDate">Memuat tanggal...</span></p>
-    </div>
-    <a href="#" class="cek-transaksi-live">CEK TRANSAKSI LIVE</a>
-</div>
+            <p class="date-display">Hari ini: <span id="currentDate"></span></p>
+        </div>
     </section>
 
     <div class="accountability-bar section visible"> 
         <div class="bar-item">
-           <p>Total Donatur <span id="donaturRangeInfo">Memuat...</span>:</p>
+            <p>Total Donatur Bulan Ini:</p>
             <h3 id="donaturBulanIni">0</h3>
         </div>
         <div class="bar-item">
@@ -519,29 +413,11 @@ body {
     <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
-<script type="module">
- 
-    // =========================================================================
-    // IMPORT SDK MODULAR
-    // =========================================================================
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
-        authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
-        projectId: "laporan-keuangan-yayasan",
-        storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
-        messagingSenderId: "616927572689",
-        appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const FINANCE_COLLECTION = "laporan";
-    const DONATUR_COLLECTION = "donatur";
-
+<script>
+    // ==========================================================
+    // 3. FUNGSI OTOMATIS DATA KEUANGAN DARI LOCAL STORAGE
+    // ==========================================================
     const formatRupiah = (angka) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -550,134 +426,49 @@ body {
         }).format(angka);
     };
 
-    async function loadMonthlySummary() {
-        const now = new Date();
-        const yearNow = now.getFullYear();
-        
-        const targetMonthsDonatur = [];
-        
-        // 1. Tentukan rentang 3 bulan (M, M-1, M-2) untuk Donatur
-        for (let i = 0; i < 3; i++) {
-            const date = new Date(yearNow, now.getMonth() - i, 1); 
-            const year = date.getFullYear().toString();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            targetMonthsDonatur.push(`${year}-${month}`);
-        }
-        
-        const currentMonthPrefix = targetMonthsDonatur[0];
-        
-        // 2. Buat label rentang bulan
-        const endMonthName = now.toLocaleDateString('id-ID', { month: 'short' });
-        const startOfMonth = new Date(yearNow, now.getMonth() - 2, 1);
-        const startMonthName = startOfMonth.toLocaleDateString('id-ID', { month: 'short' });
-        const yearLabel = startOfMonth.getFullYear();
-        const monthRangeLabel = `(${startMonthName} - ${endMonthName} ${yearLabel})`;
+    const updateAccountabilityBar = () => {
+        // Mengambil data keuangan dari Local Storage (KEY: keuanganData)
+        // Kunci ini harus sama dengan yang digunakan di laporan.html
+        const data = JSON.parse(localStorage.getItem('keuanganData')) || [];
+
+        // Filter data untuk bulan ini
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        const dataBulanIni = data.filter(item => {
+            const itemDate = new Date(item.tanggal);
+            return itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear;
+        });
 
         let totalPemasukan = 0;
         let totalPengeluaran = 0;
-        // NILAI DONATUR KITA UBAH MENJADI AKUMULATOR UANG (default 0)
-        let totalUangDonasi = 0; 
+        // Set untuk menghitung jumlah donatur unik (berdasarkan kolom keterangan/nama)
+        let donaturSet = new Set(); 
 
-        // 3. Ambil data LAPORAN KEUANGAN (Hanya 1 Bulan) - SAMA
-        try {
-            const laporanSnapshot = await getDocs(collection(db, FINANCE_COLLECTION));
-            laporanSnapshot.forEach(doc => {
-                const data = doc.data();
-                if (data.tanggal && data.tanggal.startsWith(currentMonthPrefix)) { 
-                    totalPemasukan += (parseInt(data.danaMasuk) || 0);
-                    totalPengeluaran += (parseInt(data.danaKeluar) || 0);
+        dataBulanIni.forEach(item => {
+            if (item.tipe === 'Pemasukan') {
+                totalPemasukan += item.nominal;
+                // Kami menggunakan 'keterangan' sebagai nama donatur/sumber dana untuk dihitung unik
+                if(item.keterangan && item.keterangan.trim() !== '') {
+                   donaturSet.add(item.keterangan.trim().toLowerCase()); 
                 }
-            });
-        } catch (error) {
-            console.error("Error mengambil data Laporan Keuangan:", error);
-        }
+            } else if (item.tipe === 'Pengeluaran') {
+                totalPengeluaran += item.nominal;
+            }
+        });
 
-        // 4. Ambil data DONATUR (Filter 3 Bulan, hitung JUMLAH UANG)
-        try {
-            const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
-            
-            donaturSnapshot.forEach((doc) => {
-                const data = doc.data();
-                let docDateString = null;
-                
-                // Pastikan Field 'tanggal' ada (huruf kecil)
-                if (!data.tanggal) return; 
-
-                // Ambil string tanggal (logic yang sudah kita perbaiki)
-                if (typeof data.tanggal.toDate === 'function') {
-                    docDateString = data.tanggal.toDate().toISOString().substring(0, 10).trim(); 
-                } 
-                else if (typeof data.tanggal === 'string') {
-                    docDateString = data.tanggal.substring(0, 10).trim(); 
-                } else {
-                    return;
-                }
-                
-                // Cek Filter 3 Bulan
-                const isMatch = targetMonthsDonatur.some(prefix => docDateString.startsWith(prefix));
-                
-                if (isMatch) { 
-                    // === PERUBAHAN KRUSIAL DI SINI ===
-                    // Ambil nilai dari field 'jumlah' dan tambahkan ke total
-                    const jumlahDonasi = parseInt(data.jumlah) || 0; 
-                    totalUangDonasi += jumlahDonasi;
-                    // ================================
-                }
-            });
-            
-        } catch (error) {
-            console.error("Error fatal saat memproses Donatur:", error);
-            document.getElementById('donaturBulanIni').textContent = 'ERROR'; 
-        }
-
-        // 5. Hitung dan Tampilkan Hasil
         const totalSaldo = totalPemasukan - totalPengeluaran;
+        const totalDonatur = donaturSet.size;
 
-        // Update ID Elemen di HTML: Menampilkan UANG DONASI
-        document.getElementById('donaturRangeInfo').textContent = monthRangeLabel;
-        document.getElementById('donaturBulanIni').textContent = formatRupiah(totalUangDonasi); 
-        
+        // Update elemen di Beranda
+        document.getElementById('donaturBulanIni').textContent = totalDonatur;
         document.getElementById('pemasukanBulanIni').textContent = formatRupiah(totalPemasukan);
         document.getElementById('pengeluaranBulanIni').textContent = formatRupiah(totalPengeluaran);
-        
-        const saldoElement = document.getElementById('saldoBulanIni');
-        saldoElement.textContent = formatRupiah(totalSaldo);
-
-        saldoElement.classList.remove('minus');
-        if (totalSaldo < 0) {
-            saldoElement.classList.add('minus');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', loadMonthlySummary);
-// ... (kode di atas) ...
-
-   <script>
-    // FUNGSI BARU UNTUK MENAMPILKAN TANGGAL HARI INI SECARA DINAMIS
-    function displayCurrentDate() {
-        const dateElement = document.getElementById('currentDate');
-        if (dateElement) {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            // Menggunakan ID 'currentDate' yang ada di HTML baru Anda
-            dateElement.textContent = now.toLocaleDateString('id-ID', options); 
-        }
-    }
-
-    // Panggil fungsi displayCurrentDate() segera setelah halaman dimuat
-    document.addEventListener('DOMContentLoaded', displayCurrentDate);
-
-    // ... (Sisa kode JS lama Anda, seperti animasi scroll) ...
-</script>
-
-    // Panggil fungsi displayCurrentDate() saat halaman selesai dimuat
-    document.addEventListener('DOMContentLoaded', () => {
-        loadMonthlySummary(); // Panggil fungsi utama laporan
-        displayCurrentDate(); // Panggil fungsi untuk menampilkan tanggal
-    });
-</script>
-
-// 1. Fungsi untuk mengaktifkan Tanggal Otomatis
+        document.getElementById('saldoBulanIni').textContent = formatRupiah(totalSaldo);
+    };
+    
+    // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
     const updateDate = () => {
         const dateElement = document.getElementById('currentDate');
         const date = new Date();
@@ -699,14 +490,13 @@ body {
         });
     });
 
-    // Panggil fungsi segera
-    document.addEventListener('DOMContentLoaded', updateDate);
+    // Panggil fungsi saat halaman Beranda dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+        updateDate();
+        updateAccountabilityBar();
+    });
 </script>
+
 </body>
 </html>
-
-
-
-
-
 
