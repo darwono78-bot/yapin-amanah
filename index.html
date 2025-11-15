@@ -29,16 +29,6 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
 
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
     header img {
       width: 150px;
       height: auto;
@@ -91,7 +81,8 @@
       color: #004000;
       transform: scale(1.05);
     }
-      .section {
+
+    .section {
       background: rgba(0, 45, 0, 0.93);
       margin: 50px auto;
       width: 90%;
@@ -103,14 +94,10 @@
         0 0 25px rgba(255, 215, 0, 0.4),
         0 0 35px rgba(255, 215, 0, 0.2),
         inset 0 0 25px rgba(255, 215, 0, 0.25);
-      text-align: left;
+      text-align: center;
       opacity: 0;
       transform: translateY(40px);
       transition: all 1s ease;
-    }
-    .section.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
 
     .section.visible {
@@ -130,14 +117,7 @@
       line-height: 1.8em;
       color: #fdfdfd;
     }
-/* Gaya Tanggal */
-    .date {
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #00FFCC; /* Warna cerah untuk tanggal */
-        margin-bottom: 30px;
-        text-shadow: 0 0 8px #00FFCC;
-    }
+
     footer {
       background: rgba(0, 60, 0, 0.85);
       text-align: center;
@@ -180,74 +160,9 @@
     transform: scale(1.05);
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
   }
-/* --- Gaya Tombol Donasi Timbul FIX --- */
-    .button-group {
-        margin-top: 25px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px; /* Jarak antar tombol */
-    }
 
-    .btn {
-        display: block;
-        width: 80%; /* Lebar tombol */
-        max-width: 400px;
-        text-align: center;
-        padding: 15px 25px;
-        **text-decoration: none;** /* PENTING: Menghilangkan garis bawah */
-        font-weight: 700;
-        font-size: 1.1em;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-        position: relative;
-        **border: none;** /* Menghilangkan border default jika ada */
-    }
-
-    /* Efek Timbul Umum */
-    .btn:active {
-        transform: translateY(5px);
-        box-shadow: 0 0px 0 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Tombol Hijau */
-    .btn-green {
-        **background: linear-gradient(to bottom, #00B300, #007700);** /* Gradient untuk kesan timbul */
-        **color: #fff;**
-        **box-shadow: 0 6px 0 0 #005500;** /* Bayangan bawah yang lebih tebal */
-    }
-
-    .btn-green:hover {
-        **background: linear-gradient(to bottom, #00CC00, #008800);**
-        transform: translateY(1px);
-        box-shadow: 0 5px 0 0 #005500;
-    }
-
-    .btn-green:active {
-        transform: translateY(6px);
-        box-shadow: 0 0px 0 0 #005500;
-    }
-
-    /* Tombol Kuning */
-    .btn-yellow {
-        **background: linear-gradient(to bottom, #ffea00, #ffcc00);** /* Gradient untuk kesan timbul */
-        **color: #004000;** /* Teks hijau gelap untuk kontras */
-        **box-shadow: 0 6px 0 0 #ccaa00;** /* Bayangan bawah yang lebih tebal */
-    }
-
-    .btn-yellow:hover {
-        **background: linear-gradient(to bottom, #fffa00, #ffd700);**
-        transform: translateY(1px);
-        box-shadow: 0 5px 0 0 #ccaa00;
-    }
-
-    .btn-yellow:active {
-        transform: translateY(6px);
-        box-shadow: 0 0px 0 0 #ccaa00;
-    }
   </style>
 </head>
-
 <body>
  <header>
     <img src="Ornamen Header.png" class="ornamen atas-kiri">
@@ -273,7 +188,7 @@
     color: #00FFCC;
     text-shadow: 0 0 10px #00FFCC, 0 0 20px #009999;
     font-weight: bold;
-  ">Yakin - Akuntabel - Profesional - Integritas - Niat Lillah  </span>
+  ">Yakin - Amanah - Profesional - Integritas - Niat Lillah  </span>
 </marquee>
     </h1>
     <style>
@@ -291,7 +206,7 @@
     <a href="galeri.html">Galeri</a>
     <a href="kontak.html">Kontak & Donasi</a>
     <a href="laporan.html">Laporan Keuangan</a>
-    <a href="donatur-yapin.html">Donatur YAPIN</a>
+    <a href="donatur YAPIN.html">Donatur YAPIN</a>
   </nav>
 
   <section class="section" id="beranda">
@@ -299,13 +214,41 @@
     <p>Assalamu’alaikum warahmatullahi wabarakatuh.<br>
     Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
   </section>
- 
-    <section class="section" id="beranda">
-    <h2>Selamat Datang</h2>
-    <p>Assalamu’alaikum warahmatullahi wabarakatuh.<br>
-    Selamat datang di situs resmi Yayasan Pendidikan Islam Nurul Huda. Kami berkomitmen membangun generasi yang beriman, cerdas, dan berakhlakul karimah.</p>
+ <section class="section" id="Yayasan">
+    <h2>Tentang Yayasan</h2>
+    <p>Yayasan Pendidikan Islam Nurul Huda berdiri sebagai lembaga yang berfokus pada pendidikan, sosial, dan dakwah Islam. Didirikan dengan semangat melahirkan generasi penerus bangsa yang berilmu dan beramal shalih.<br>
+</p>
   </section>
-  
+ <section class="section" id="Kebangkitan">
+    <h2>💖 Menyalakan Kembali Cahaya Nurul Huda</h2>
+    <p>🌿Dari sunyi menuju cahaya.<br>
+<div style="text-align: justify; line-height: 1.6;"><p>Yayasan Nurul Huda kini menapaki langkah baru — langkah perubahan yang lahir dari semangat kebersamaan, keikhlasan, dan cinta pada ilmu. Kami percaya, setiap perubahan besar dimulai dari hati yang tulus untuk melayani. Mari bersama menata kembali Nurul Huda menjadi pusat pendidikan Islam yang transparan, tangguh, dan penuh keberkahan.
+Pernah ada masa ketika langkah Yayasan Nurul Huda terasa berat. Administrasi tak terarah, kegiatan berjalan seadanya, dan semangat perlahan memudar. Namun di balik semua itu, ada satu hal yang tak pernah padam — harapan. Harapan bahwa Nurul Huda bisa kembali menjadi rumah ilmu, tempat tumbuhnya generasi berakhlak dan berilmu.
+Kini, harapan itu mulai berwujud. Dari tangan-tangan tulus yang percaya bahwa perubahan besar dimulai dari langkah kecil, Yayasan Nurul Huda menata diri — dengan niat suci untuk membangun lembaga yang transparan, mandiri, dan bermanfaat bagi umat.
+Kami tidak sedang membangun kejayaan untuk dipuji, tapi menyalakan kembali ruh pengabdian yang sempat redup. Di sini, setiap donasi, setiap doa, dan setiap langkah kecil berarti besar bagi kebangkitan bersama.
+Mari bergabung dalam perjalanan ini — perjalanan menuju Nurul Huda yang baru: tempat ilmu dan ketulusan berpadu, demi cahaya masa depan umat.<br>
+</p></div>
+  </section>
+  <section class="section" id="donasi">
+    <h2>Ajakan Donasi</h2>
+    <p>🤝 Dengan semangat kebersamaan, kami mengajak para dermawan untuk turut serta dalam amal jariyah melalui donasi pendidikan, pembangunan sarana pendukung, dan kegiatan sosial. Setiap donasi Anda sangat berarti untuk kemajuan generasi mudan dan umat.</p>
+
+  </section>
+
+  <section class="section" id="kontak">
+    <h2>Kontak & Donasi</h2>
+    <p>
+<div style="text-align: center; line-height: 1.6;">🤝 Mari Berdonasi:<br>
+Dukung program pendidikan dan dakwah Yayasan Pendidikan Islam Nurul Huda.<br>
+Rekening: <span style="color: #25D366; font-weight: bold;">BRI 5956-0100-4038-502</span> a.n. Darwono ( Rek. Sementara )<br>
+atau hubungi kami untuk konfirmasi donasi.</div>
+
+      💬 <strong>WhatsApp:</strong> <a href="https://wa.me/6282324153933" target="_blank" style="color:#25D366;text-decoration:none;font-weight:600;">+62 823-2415-3933 ( ADMIN )</a><br>
+      📧 <strong>Email:</strong> info@yayasannurulhuda.or.id<br>
+      📍 Alamat: Dk. Kramat, Desa Ngablak, Kec. Cluwak, Kab. Pati, Jawa Tengah
+    </p>
+  </section>
+
   <footer>
     &copy; 2025 Yayasan Pendidikan Islam Nurul Huda | Khodimul Umat Ngablak Cluwak Pati
   </footer>
@@ -314,34 +257,7 @@
     <a href="https://wa.me/6282324153933" target="_blank">💬 Chat via WA</a>
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
-  <script>
-    // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
-    const updateDate = () => {
-        const dateElement = document.getElementById('currentDate');
-        if (!dateElement) return;
 
-        const date = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        
-        // Menggunakan toLocaleDateString untuk format bahasa Indonesia
-        const formattedDate = date.toLocaleDateString('id-ID', options);
-        
-        dateElement.textContent = formattedDate;
-    };
-    
-    // Panggil fungsi segera setelah halaman dimuat
-    updateDate();
-
-    // 2. JavaScript untuk Animasi Scroll
-    const sections = document.querySelectorAll('.section'); 
-    window.addEventListener('scroll', () => {
-      const triggerBottom = window.innerHeight * 0.85;
-      sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        if(sectionTop < triggerBottom) section.classList.add('visible');
-      });
-    });
-</script>
   <script>
     const sections = document.querySelectorAll('.section');
     window.addEventListener('scroll', () => {
@@ -352,6 +268,5 @@
       });
     });
   </script>
-  </body>
+</body>
 </html>
-
