@@ -124,7 +124,7 @@
     }
     
     .date-display {
-        margin-top: 30px; /* PERBAIKAN: Memberi jarak agar tidak menumpuk */
+        margin-top: 30px; 
         font-size: 1.2em;
         font-weight: bold;
         color: #00FFCC; 
@@ -215,7 +215,7 @@
     
     /* Tombol CTA dan Perbaikan Padding */
     .cta-button {
-        padding: 18px 30px; /* Padding vertikal yang sudah disesuaikan */
+        padding: 18px 30px; 
         border-radius: 50px;
         text-decoration: none;
         font-weight: bold;
@@ -256,6 +256,11 @@
     .bar-item h3 {
         font-size: 1.8em;
         margin-bottom: 5px;
+        /* Tambahan: Agar saldo minus/plus bisa diwarnai */
+        color: #00ff00; 
+    }
+    .bar-item h3.minus {
+        color: #ff6666;
     }
     .bar-item p {
         font-size: 0.9em;
@@ -414,10 +419,34 @@
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
 
-<script>
-    // ==========================================================
-    // 3. FUNGSI OTOMATIS DATA KEUANGAN DARI LOCAL STORAGE
-    // ==========================================================
+
+<script type="module">
+    // =========================================================================
+    // IMPORT SDK MODULAR (Sesuai dengan versi yang Anda gunakan)
+    // =========================================================================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+    // FIREBASE CONFIG & INISIALISASI
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
+        authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
+        projectId: "laporan-keuangan-yayasan",
+        storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
+        messagingSenderId: "616927572689",
+        appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // --- Nama Koleksi ---
+    const FINANCE_COLLECTION = "laporan"; // Pemasukan/Pengeluaran
+    const DONATUR_COLLECTION = "donatur"; // Daftar Donatur
+
+    // =========================================================================
+    // HELPER FUNCTION: Format Rupiah
+    // =========================================================================
     const formatRupiah = (angka) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -426,48 +455,78 @@
         }).format(angka);
     };
 
-    const updateAccountabilityBar = () => {
-        // Mengambil data keuangan dari Local Storage (KEY: keuanganData)
-        // Kunci ini harus sama dengan yang digunakan di laporan.html
-        const data = JSON.parse(localStorage.getItem('keuanganData')) || [];
-
-        // Filter data untuk bulan ini
-        const today = new Date();
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
-
-        const dataBulanIni = data.filter(item => {
-            const itemDate = new Date(item.tanggal);
-            return itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear;
-        });
+    // =========================================================================
+    // MAIN LOGIC: FUNGSI UNTUK MENGAMBIL DAN MENGHITUNG DATA BULANAN (MODULAR)
+    // =========================================================================
+    async function loadMonthlySummary() {
+        const now = new Date();
+        const year = now.getFullYear().toString();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const targetPrefix = `${year}-${month}`; // Contoh: "2025-11"
 
         let totalPemasukan = 0;
         let totalPengeluaran = 0;
-        // Set untuk menghitung jumlah donatur unik (berdasarkan kolom keterangan/nama)
-        let donaturSet = new Set(); 
+        let totalDonatur = 0;
 
-        dataBulanIni.forEach(item => {
-            if (item.tipe === 'Pemasukan') {
-                totalPemasukan += item.nominal;
-                // Kami menggunakan 'keterangan' sebagai nama donatur/sumber dana untuk dihitung unik
-                if(item.keterangan && item.keterangan.trim() !== '') {
-                   donaturSet.add(item.keterangan.trim().toLowerCase()); 
+        // 1. Ambil data LAPORAN KEUANGAN
+        try {
+            // Mengambil semua dokumen lalu memfilternya di browser
+            const laporanSnapshot = await getDocs(collection(db, FINANCE_COLLECTION));
+                                            
+            laporanSnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.tanggal && data.tanggal.startsWith(targetPrefix)) {
+                    // Menggunakan parseInt untuk memastikan perhitungan benar
+                    // Asumsi: field danaMasuk dan danaKeluar disimpan sebagai string angka
+                    const masuk = parseInt(data.danaMasuk) || 0; 
+                    const keluar = parseInt(data.danaKeluar) || 0;
+                    totalPemasukan += masuk;
+                    totalPengeluaran += keluar;
                 }
-            } else if (item.tipe === 'Pengeluaran') {
-                totalPengeluaran += item.nominal;
-            }
-        });
+            });
 
+        } catch (error) {
+            console.error("Error mengambil data Laporan Keuangan. Cek Security Rules Anda!", error);
+        }
+
+        // 2. Ambil data DONATUR
+        try {
+            const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
+
+            donaturSnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.tanggal && data.tanggal.startsWith(targetPrefix)) {
+                    totalDonatur++;
+                }
+            });
+
+        } catch (error) {
+            console.error("Error mengambil data Donatur. Cek Security Rules Anda!", error);
+        }
+
+        // 3. Hitung dan Tampilkan Saldo
         const totalSaldo = totalPemasukan - totalPengeluaran;
-        const totalDonatur = donaturSet.size;
 
-        // Update elemen di Beranda
-        document.getElementById('donaturBulanIni').textContent = totalDonatur;
+        // Update ID Elemen yang Baru
+        document.getElementById('donaturBulanIni').textContent = totalDonatur.toLocaleString('id-ID');
         document.getElementById('pemasukanBulanIni').textContent = formatRupiah(totalPemasukan);
         document.getElementById('pengeluaranBulanIni').textContent = formatRupiah(totalPengeluaran);
-        document.getElementById('saldoBulanIni').textContent = formatRupiah(totalSaldo);
-    };
-    
+        
+        const saldoElement = document.getElementById('saldoBulanIni');
+        saldoElement.textContent = formatRupiah(totalSaldo);
+
+        // Atur warna Saldo berdasarkan nilai (Hijau atau Merah)
+        saldoElement.classList.remove('minus');
+        if (totalSaldo < 0) {
+            saldoElement.classList.add('minus'); // Merah
+        }
+    }
+
+    // Panggil fungsi saat halaman selesai dimuat
+    document.addEventListener('DOMContentLoaded', loadMonthlySummary);
+
+</script>
+<script>
     // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
     const updateDate = () => {
         const dateElement = document.getElementById('currentDate');
@@ -490,12 +549,8 @@
         });
     });
 
-    // Panggil fungsi saat halaman Beranda dimuat
-    document.addEventListener('DOMContentLoaded', () => {
-        updateDate();
-        updateAccountabilityBar();
-    });
+    // Panggil fungsi segera
+    document.addEventListener('DOMContentLoaded', updateDate);
 </script>
-
 </body>
 </html>
