@@ -269,7 +269,7 @@
             cursor: pointer;
             font-weight: bold;
         }
-        .btn {
+         .btn {
             display: inline-block;
             margin-top: 25px;
             padding: 10px 25px;
@@ -328,7 +328,11 @@
             transform: scale(1.05);
             box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
         }
-        
+        /* Warna untuk Dana Masuk: Hijau Muda (#98FB98) */
+.masuk-text {
+    color: #98FB98 !important; 
+    font-weight: bold;
+}
         /* CSS Tambahan untuk Pagination */
         .pagination-controls {
             margin-top: 30px;
@@ -918,7 +922,16 @@
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = no++;
                 row.insertCell(1).textContent = data.tanggal;
-                row.insertCell(2).textContent = data.uraian;
+                // GANTIKAN Baris 925 dengan kode berikut:
+                    const descriptionCell = row.insertCell(2);
+                    let textColor = '';
+                    
+                    // Cek apakah ini transaksi Dana Masuk
+                    if (danaMasuk > 0) { 
+                        textColor = 'masuk-text'; 
+                    } 
+                    // Terapkan Uraian dengan kelas warna (dan biarkan Keluar tetap putih)
+                    descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
                 
                 // Sel Dana Masuk dan Keluar harus rata kanan
                 const masukCell = row.insertCell(3);
@@ -1294,3 +1307,4 @@
 </script>
 </body>
 </html>
+
