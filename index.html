@@ -304,11 +304,11 @@
         .cta-group { flex-direction: column; gap: 10px; }
         .cta-button { width: 100%; }
     }
- /* 1. Styling untuk Kotak Timbul DONASI SEKARANG (Sudah benar) */
+/* Styling untuk Kotak Timbul DONASI SEKARANG */
 .main-actions {
     text-align: center; /* Pastikan tombol di tengah */
     margin-top: 30px; 
-    margin-bottom: 50px; /* Tambahkan jarak ke bawah */
+    margin-bottom: 100px; /* Jarak yang cukup dari footer fixed */
 }
 
 .btn-donasi {
@@ -317,11 +317,11 @@
     font-size: 24px;
     font-weight: bold;
     color: #333; 
-    background-color: #FFEB3B; 
+    background-color: #FFEB3B; /* Kuning Terang */
     border: none;
     border-radius: 12px; 
-    box-shadow: 0 8px 0 #FFC107, 
-                0 15px 30px rgba(0, 0, 0, 0.3); 
+    box-shadow: 0 8px 0 #FFC107, /* Bayangan bawah */
+                0 15px 30px rgba(0, 0, 0, 0.3); /* Bayangan melayang */
     text-decoration: none; 
     transition: all 0.2s ease; 
     cursor: pointer;
@@ -341,24 +341,24 @@
                 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* 2. Styling untuk Kotak Hitam Bawah dan Elemen di dalamnya */
+/* Styling untuk Kotak Hitam Bawah (FOOTER BARU) */
 .footer-live-check {
-    /* Ini adalah styling untuk membuat kotak hitam */
-    position: fixed; /* Membuatnya tetap di bawah layar */
-    bottom: 0;
+    /* Perbaikan Krusial: Gunakan !important jika ada CSS lain yang menimpa */
+    position: fixed !important; 
+    bottom: 0 !important;
     left: 0;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Latar belakang hitam transparan */
+    background-color: rgba(0, 0, 0, 0.9); /* Hitam pekat */
     padding: 15px 10px;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5); /* Bayangan di atas kotak */
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5); 
     text-align: center;
-    z-index: 1000; /* Pastikan dia di atas elemen lain */
+    z-index: 9999; /* Pastikan dia di atas elemen apa pun */
 }
 
 .footer-live-check .date-info {
     font-size: 16px;
-    color: #ccc; /* Warna teks yang lebih lembut */
-    margin-bottom: 10px; /* Jarak antara tanggal dan link cek transaksi */
+    color: #ccc; 
+    margin-bottom: 5px; /* Jarak antara tanggal dan link cek transaksi */
 }
 
 .footer-live-check .cek-transaksi-live {
@@ -366,7 +366,7 @@
     color: #9C27B0; /* Warna ungu */
     text-decoration: none;
     font-weight: bold;
-    display: block; /* Agar menempati lebar penuh di dalam footer */
+    display: block; 
 }
 
 .footer-live-check .cek-transaksi-live:hover {
@@ -375,7 +375,7 @@
 
 /* Tambahkan padding di bagian bawah body agar konten tidak tertutup footer fixed */
 body {
-    padding-bottom: 90px; /* Sesuaikan angka ini jika kotak bawah terlalu tinggi/pendek */
+    padding-bottom: 90px; /* Jarak aman agar konten terakhir terlihat di atas footer */
 }
 /* Styling untuk CEK TRANSAKSI LIVE (Link biasa yang agak menonjol) */
 .cek-transaksi-live {
@@ -448,16 +448,19 @@ body {
             <h1>Wujudkan Masa Depan Cemerlang Generasi Islami di Pati.</h1>
             <p class="subtitle">15 Tahun Legalitas Kuat. Kini Kami Hadir dengan Amanah 100%. Donasi Anda, Laporan Kami.</p>
             
-              <div class="main-actions">
-                  <a href="#" class="btn-donasi">DONASI SEKARANG</a>
-              </div>
-              
-              <div class="footer-live-check">
-                  <div class="date-info">
-                      <p class="today-date">Hari ini: <span id="currentDate">Memuat tanggal...</span></p>
-                  </div>
-                  <a href="#" class="cek-transaksi-live">CEK TRANSAKSI LIVE</a>
-              </div>
+              <div class="accountability-summary section">
+    </div>
+
+<div class="main-actions section">
+    <a href="#" class="btn-donasi">DONASI SEKARANG</a>
+</div>
+
+<div class="footer-live-check">
+    <div class="date-info">
+        <p class="today-date">Hari ini: <span id="currentDate">Memuat tanggal...</span></p>
+    </div>
+    <a href="#" class="cek-transaksi-live">CEK TRANSAKSI LIVE</a>
+</div>
     </section>
 
     <div class="accountability-bar section visible"> 
@@ -701,6 +704,7 @@ body {
 </script>
 </body>
 </html>
+
 
 
 
