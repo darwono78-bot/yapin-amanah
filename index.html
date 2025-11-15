@@ -419,7 +419,10 @@
     <a href="mailto:info@yayasannurulhuda.or.id" class="email">✉️ Kirim Email</a>
   </div>
 <script type="module">
-    // ... (Bagian import dan konfigurasi Firebase SAMA) ...
+    <script type="module">
+    // =========================================================================
+    // IMPORT SDK MODULAR
+    // =========================================================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
@@ -452,7 +455,7 @@
         
         const targetMonthsDonatur = [];
         
-        // 1. Tentukan rentang 3 bulan (M, M-1, M-2)
+        // 1. Tentukan rentang 3 bulan (M, M-1, M-2) untuk Donatur
         for (let i = 0; i < 3; i++) {
             const date = new Date(yearNow, now.getMonth() - i, 1); 
             const year = date.getFullYear().toString();
@@ -462,7 +465,7 @@
         
         const currentMonthPrefix = targetMonthsDonatur[0];
         
-        // 2. Buat label rentang bulan (SAMA)
+        // 2. Buat label rentang bulan
         const endMonthName = now.toLocaleDateString('id-ID', { month: 'short' });
         const startOfMonth = new Date(yearNow, now.getMonth() - 2, 1);
         const startMonthName = startOfMonth.toLocaleDateString('id-ID', { month: 'short' });
@@ -471,7 +474,8 @@
 
         let totalPemasukan = 0;
         let totalPengeluaran = 0;
-        let totalDonatur = 0;
+        // NILAI DONATUR KITA UBAH MENJADI AKUMULATOR UANG (default 0)
+        let totalUangDonasi = 0; 
 
         // 3. Ambil data LAPORAN KEUANGAN (Hanya 1 Bulan) - SAMA
         try {
@@ -487,46 +491,38 @@
             console.error("Error mengambil data Laporan Keuangan:", error);
         }
 
-        // 4. Ambil data DONATUR (Filter 3 Bulan)
+        // 4. Ambil data DONATUR (Filter 3 Bulan, hitung JUMLAH UANG)
         try {
             const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
             
-            console.log(`[DONATUR VERIFIKASI]: Total Dokumen ditemukan: ${donaturSnapshot.size}`);
-            
             donaturSnapshot.forEach((doc) => {
                 const data = doc.data();
-                
-                // === LOKASI DEBUG TERKUAT ===
-                if (data.tanggal) { 
-                    console.log(`[DONATUR VERIFIKASI]: Isi objek 'tanggal' pada dokumen ${doc.id}:`, data.tanggal);
-                }
-                // ==========================
-
                 let docDateString = null;
                 
-                if (!data.tanggal) return;
+                // Pastikan Field 'tanggal' ada (huruf kecil)
+                if (!data.tanggal) return; 
 
-                // Cek Tipe Data dan konversi ke String YYYY-MM-DD
+                // Ambil string tanggal (logic yang sudah kita perbaiki)
                 if (typeof data.tanggal.toDate === 'function') {
-                    // Kasus A: Objek Timestamp (Dikonversi ke Date dan diambil YYYY-MM-DD-nya)
                     docDateString = data.tanggal.toDate().toISOString().substring(0, 10).trim(); 
                 } 
                 else if (typeof data.tanggal === 'string') {
-                    // Kasus B: String (Diambil YYYY-MM-DD-nya)
                     docDateString = data.tanggal.substring(0, 10).trim(); 
                 } else {
                     return;
                 }
                 
-                // Lakukan Pengecekan Filter
+                // Cek Filter 3 Bulan
                 const isMatch = targetMonthsDonatur.some(prefix => docDateString.startsWith(prefix));
                 
                 if (isMatch) { 
-                    totalDonatur++;
+                    // === PERUBAHAN KRUSIAL DI SINI ===
+                    // Ambil nilai dari field 'jumlah' dan tambahkan ke total
+                    const jumlahDonasi = parseInt(data.jumlah) || 0; 
+                    totalUangDonasi += jumlahDonasi;
+                    // ================================
                 }
             });
-            
-            console.log(`[DONATUR VERIFIKASI]: TOTAL AKHIR DONATUR: ${totalDonatur}`);
             
         } catch (error) {
             console.error("Error fatal saat memproses Donatur:", error);
@@ -536,8 +532,10 @@
         // 5. Hitung dan Tampilkan Hasil
         const totalSaldo = totalPemasukan - totalPengeluaran;
 
+        // Update ID Elemen di HTML: Menampilkan UANG DONASI
         document.getElementById('donaturRangeInfo').textContent = monthRangeLabel;
-        document.getElementById('donaturBulanIni').textContent = totalDonatur.toLocaleString('id-ID'); 
+        document.getElementById('donaturBulanIni').textContent = formatRupiah(totalUangDonasi); 
+        
         document.getElementById('pemasukanBulanIni').textContent = formatRupiah(totalPemasukan);
         document.getElementById('pengeluaranBulanIni').textContent = formatRupiah(totalPengeluaran);
         
@@ -552,6 +550,8 @@
 
     document.addEventListener('DOMContentLoaded', loadMonthlySummary);
 
+</script>
+Simpan kode ini dan muat ulang halaman. Sekarang, kolom "Total Donatur" akan menampilkan **Total Uang Donasi (Rp.)** selama periode 3 bulan terakhir!
 </script>
 Mohon kembali ke Konsol browser (F12) setelah memuat ulang halaman dengan kode ini, dan kirimkan **semua output** yang diawali **`[DONATUR VERIFIKASI]:`**. Ini akan menunjukkan kita data *mentah* dari `tanggal` Anda.
 </script>
@@ -593,6 +593,7 @@ Jika masih belum muncul, **tolong cek lagi Konsol Browser (F12) Anda** dan lihat
 </script>
 </body>
 </html>
+
 
 
 
