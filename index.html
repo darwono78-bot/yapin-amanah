@@ -304,14 +304,11 @@
         .cta-group { flex-direction: column; gap: 10px; }
         .cta-button { width: 100%; }
     }
-    /* Styling untuk Kotak Timbul DONASI SEKARANG */
+ /* 1. Styling untuk Kotak Timbul DONASI SEKARANG (Sudah benar) */
 .main-actions {
-    display: flex;
-    justify-content: center; /* Posisikan di tengah horizontal */
-    align-items: center; /* Posisikan di tengah vertikal */
-    margin-top: 30px; /* Jarak dari elemen di atasnya */
-    flex-wrap: wrap; /* Agar bisa ke baris baru di layar kecil */
-    gap: 20px; /* Jarak antar tombol */
+    text-align: center; /* Pastikan tombol di tengah */
+    margin-top: 30px; 
+    margin-bottom: 50px; /* Tambahkan jarak ke bawah */
 }
 
 .btn-donasi {
@@ -319,31 +316,67 @@
     padding: 15px 40px;
     font-size: 24px;
     font-weight: bold;
-    color: #333; /* Warna teks gelap untuk kontras */
-    background-color: #FFEB3B; /* Kuning terang */
+    color: #333; 
+    background-color: #FFEB3B; 
     border: none;
-    border-radius: 12px; /* Sudut lebih membulat */
-    box-shadow: 0 8px 0 #FFC107, /* Bayangan bawah yang lebih gelap untuk efek timbul */
-                0 15px 30px rgba(0, 0, 0, 0.3); /* Bayangan lembut untuk efek melayang */
-    text-decoration: none; /* Hilangkan garis bawah link */
-    transition: all 0.2s ease; /* Transisi untuk efek hover */
+    border-radius: 12px; 
+    box-shadow: 0 8px 0 #FFC107, 
+                0 15px 30px rgba(0, 0, 0, 0.3); 
+    text-decoration: none; 
+    transition: all 0.2s ease; 
     cursor: pointer;
     text-align: center;
-    min-width: 200px; /* Lebar minimum tombol */
+    min-width: 200px; 
 }
 
 .btn-donasi:hover {
-    transform: translateY(-3px); /* Sedikit naik saat di-hover */
+    transform: translateY(-3px); 
     box-shadow: 0 10px 0 #FFC107,
                 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .btn-donasi:active {
-    transform: translateY(5px); /* Menekan ke bawah saat di-klik */
+    transform: translateY(5px); 
     box-shadow: 0 3px 0 #FFC107,
                 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* 2. Styling untuk Kotak Hitam Bawah dan Elemen di dalamnya */
+.footer-live-check {
+    /* Ini adalah styling untuk membuat kotak hitam */
+    position: fixed; /* Membuatnya tetap di bawah layar */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Latar belakang hitam transparan */
+    padding: 15px 10px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5); /* Bayangan di atas kotak */
+    text-align: center;
+    z-index: 1000; /* Pastikan dia di atas elemen lain */
+}
+
+.footer-live-check .date-info {
+    font-size: 16px;
+    color: #ccc; /* Warna teks yang lebih lembut */
+    margin-bottom: 10px; /* Jarak antara tanggal dan link cek transaksi */
+}
+
+.footer-live-check .cek-transaksi-live {
+    font-size: 18px;
+    color: #9C27B0; /* Warna ungu */
+    text-decoration: none;
+    font-weight: bold;
+    display: block; /* Agar menempati lebar penuh di dalam footer */
+}
+
+.footer-live-check .cek-transaksi-live:hover {
+    color: #E040FB; 
+}
+
+/* Tambahkan padding di bagian bawah body agar konten tidak tertutup footer fixed */
+body {
+    padding-bottom: 90px; /* Sesuaikan angka ini jika kotak bawah terlalu tinggi/pendek */
+}
 /* Styling untuk CEK TRANSAKSI LIVE (Link biasa yang agak menonjol) */
 .cek-transaksi-live {
     font-size: 18px;
@@ -415,13 +448,16 @@
             <h1>Wujudkan Masa Depan Cemerlang Generasi Islami di Pati.</h1>
             <p class="subtitle">15 Tahun Legalitas Kuat. Kini Kami Hadir dengan Amanah 100%. Donasi Anda, Laporan Kami.</p>
             
-                <div class="main-actions">
-                    <a href="kontak.html" class="btn-donasi">DONASI SEKARANG</a>
-                    <a href="donatur-yapin.html" class="cek-transaksi-live">CEK TRANSAKSI LIVE</a>
-                </div>
-                <div class="date-info">
-                    <p class="today-date">Hari ini: <span id="currentDate">Memuat tanggal...</span></p>
-                </div>
+              <div class="main-actions">
+                  <a href="#" class="btn-donasi">DONASI SEKARANG</a>
+              </div>
+              
+              <div class="footer-live-check">
+                  <div class="date-info">
+                      <p class="today-date">Hari ini: <span id="currentDate">Memuat tanggal...</span></p>
+                  </div>
+                  <a href="#" class="cek-transaksi-live">CEK TRANSAKSI LIVE</a>
+              </div>
     </section>
 
     <div class="accountability-bar section visible"> 
@@ -613,15 +649,23 @@
     document.addEventListener('DOMContentLoaded', loadMonthlySummary);
 // ... (kode di atas) ...
 
-    // FUNGSI UNTUK MENAMPILKAN TANGGAL HARI INI SECARA DINAMIS
+   <script>
+    // FUNGSI BARU UNTUK MENAMPILKAN TANGGAL HARI INI SECARA DINAMIS
     function displayCurrentDate() {
         const dateElement = document.getElementById('currentDate');
         if (dateElement) {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            dateElement.textContent = now.toLocaleDateString('id-ID', options);
+            // Menggunakan ID 'currentDate' yang ada di HTML baru Anda
+            dateElement.textContent = now.toLocaleDateString('id-ID', options); 
         }
     }
+
+    // Panggil fungsi displayCurrentDate() segera setelah halaman dimuat
+    document.addEventListener('DOMContentLoaded', displayCurrentDate);
+
+    // ... (Sisa kode JS lama Anda, seperti animasi scroll) ...
+</script>
 
     // Panggil fungsi displayCurrentDate() saat halaman selesai dimuat
     document.addEventListener('DOMContentLoaded', () => {
@@ -630,7 +674,7 @@
     });
 </script>
 
-    // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
+// 1. Fungsi untuk mengaktifkan Tanggal Otomatis
     const updateDate = () => {
         const dateElement = document.getElementById('currentDate');
         const date = new Date();
@@ -657,6 +701,7 @@
 </script>
 </body>
 </html>
+
 
 
 
