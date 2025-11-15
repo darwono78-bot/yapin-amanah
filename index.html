@@ -421,6 +421,8 @@
 
 
 // ... (Bagian import dan konfigurasi Firebase SAMA) ...
+    <script type="module">
+    // ... (Bagian import dan konfigurasi Firebase SAMA) ...
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
@@ -453,7 +455,7 @@
         
         const targetMonthsDonatur = [];
         
-        // 1. Tentukan rentang 3 bulan (M, M-1, M-2) untuk Donatur
+        // 1. Tentukan rentang 3 bulan (M, M-1, M-2)
         for (let i = 0; i < 3; i++) {
             const date = new Date(yearNow, now.getMonth() - i, 1); 
             const year = date.getFullYear().toString();
@@ -463,7 +465,7 @@
         
         const currentMonthPrefix = targetMonthsDonatur[0];
         
-        // 2. Buat label rentang bulan
+        // 2. Buat label rentang bulan (SAMA)
         const endMonthName = now.toLocaleDateString('id-ID', { month: 'short' });
         const startOfMonth = new Date(yearNow, now.getMonth() - 2, 1);
         const startMonthName = startOfMonth.toLocaleDateString('id-ID', { month: 'short' });
@@ -492,22 +494,30 @@
         try {
             const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
             
-            donaturSnapshot.forEach((doc, index) => {
+            console.log(`[DONATUR VERIFIKASI]: Total Dokumen ditemukan: ${donaturSnapshot.size}`);
+            
+            donaturSnapshot.forEach((doc) => {
                 const data = doc.data();
+                
+                // === LOKASI DEBUG TERKUAT ===
+                if (data.tanggal) { 
+                    console.log(`[DONATUR VERIFIKASI]: Isi objek 'tanggal' pada dokumen ${doc.id}:`, data.tanggal);
+                }
+                // ==========================
+
                 let docDateString = null;
                 
-                // --- PERUBAHAN KRUSIAL DI SINI: MENGGUNAKAN 'tanggal' (huruf kecil) ---
                 if (!data.tanggal) return;
 
-                // Cek Tipe Data dan pastikan hasilnya bersih dari spasi (.trim())
-                // Menggunakan data.tanggal (huruf kecil)
+                // Cek Tipe Data dan konversi ke String YYYY-MM-DD
                 if (typeof data.tanggal.toDate === 'function') {
+                    // Kasus A: Objek Timestamp (Dikonversi ke Date dan diambil YYYY-MM-DD-nya)
                     docDateString = data.tanggal.toDate().toISOString().substring(0, 10).trim(); 
                 } 
                 else if (typeof data.tanggal === 'string') {
+                    // Kasus B: String (Diambil YYYY-MM-DD-nya)
                     docDateString = data.tanggal.substring(0, 10).trim(); 
                 } else {
-                    console.error(`[DONATUR DEBUG]: Dokumen #${index + 1} Tanggal memiliki tipe data tidak dikenal:`, typeof data.tanggal);
                     return;
                 }
                 
@@ -516,10 +526,10 @@
                 
                 if (isMatch) { 
                     totalDonatur++;
-                    // Pesan debug yang sukses:
-                    console.log(`[DONATUR DEBUG]: 🔥 SUKSES COCOK! Tanggal yang dibaca: ${docDateString}`);
                 }
             });
+            
+            console.log(`[DONATUR VERIFIKASI]: TOTAL AKHIR DONATUR: ${totalDonatur}`);
             
         } catch (error) {
             console.error("Error fatal saat memproses Donatur:", error);
@@ -546,6 +556,7 @@
     document.addEventListener('DOMContentLoaded', loadMonthlySummary);
 
 </script>
+Mohon kembali ke Konsol browser (F12) setelah memuat ulang halaman dengan kode ini, dan kirimkan **semua output** yang diawali **`[DONATUR VERIFIKASI]:`**. Ini akan menunjukkan kita data *mentah* dari `tanggal` Anda.
 Silakan coba muat ulang halaman dengan kode di atas. Karena pesan Konsol sudah menunjukkan `2025-09-15` (yang berada dalam target), penambahan `.trim()` seharusnya menyelesaikan masalah ini!
 ## 🔍 Langkah Terakhir: Cek Konsol
 
@@ -583,6 +594,7 @@ Jika masih belum muncul, **tolong cek lagi Konsol Browser (F12) Anda** dan lihat
 </script>
 </body>
 </html>
+
 
 
 
