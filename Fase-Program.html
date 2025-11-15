@@ -82,6 +82,7 @@
       transform: scale(1.05);
     }
 
+     /* SECTION UTAMA */
     .section {
       background: rgba(0, 45, 0, 0.93);
       margin: 50px auto;
@@ -94,7 +95,7 @@
         0 0 25px rgba(255, 215, 0, 0.4),
         0 0 35px rgba(255, 215, 0, 0.2),
         inset 0 0 25px rgba(255, 215, 0, 0.25);
-      text-align: left;
+      text-align: center;
       opacity: 0;
       transform: translateY(40px);
       transition: all 1s ease;
@@ -107,61 +108,77 @@
 
     h2 {
       color: #ffd700;
-      margin-bottom: 20px;
-      font-size: 1.8em;
-      text-align: center;
-      text-shadow:
-        0 0 8px rgba(255, 215, 0, 0.7),
-        0 0 14px rgba(255, 215, 0, 0.4);
+      margin-bottom: 25px; /* Tambahan spacing */
+      font-size: 1.7em;
+      text-shadow: 0 0 10px rgba(248, 215, 123, 0.6);
     }
 
     p {
       font-size: 1.05em;
-      line-height: 1.8em;
-      color: #fffdee;
+      line-height: 1.9em; /* Ditingkatkan untuk spacing antar baris */
+      color: #fdfdfd;
       text-align: justify;
-      margin-bottom: 15px;
+      margin-bottom: 18px; /* Tambahan spacing */
     }
 
-    .program-list {
-      margin-top: 15px;
-      margin-left: 25px;
+    /* PROGRAM SPESIFIK */
+    .program-card-container {
+      display: flex;
+      flex-direction: column;
+      gap: 35px; /* Tambahan spacing antar card */
+      margin-top: 35px; /* Tambahan spacing */
     }
 
-    .program-list li {
-      margin-bottom: 10px;
-      line-height: 1.7em;
-      color: #fff;
-    }
-
-.btn {
-  display: block;
-  margin: 30px auto 0 auto;
-  text-align: center;
-  width: fit-content;
-  padding: 12px 30px;
-  background: #ffd700;
-  color: #004000;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: 600;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  background: #fff799;
-  transform: scale(1.05);
-  box-shadow: 0 0 18px rgba(255, 215, 0, 0.8);
-}
-
-    .btn:hover {
-      background: #fff799;
-      transform: scale(1.05);
-    }
-
-    footer {
+    .program-card {
       background: rgba(0, 70, 0, 0.9);
+      border-radius: 15px;
+      padding: 30px; /* Tambahan padding di dalam card */
+      border-left: 6px solid #ffd700; /* Ditebalkan */
+      text-align: left;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .program-card h3 {
+      color: #00FFCC;
+      font-size: 1.6em; /* Ditingkatkan */
+      margin-bottom: 15px; /* Tambahan spacing */
+      border-bottom: 2px solid rgba(0, 255, 204, 0.4);
+      padding-bottom: 8px; /* Tambahan spacing */
+    }
+
+    .program-card h4 {
+      color: #f8d77b;
+      font-size: 1.3em; /* Ditingkatkan */
+      margin-top: 20px; /* Tambahan spacing */
+      margin-bottom: 10px; /* Tambahan spacing */
+      font-weight: 700;
+    }
+
+    .program-card ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .program-card ul li {
+      margin-bottom: 15px; /* Ditingkatkan untuk spacing antar item list */
+      padding-left: 25px;
+      position: relative;
+      line-height: 1.6em; /* Untuk item list */
+    }
+
+    .program-card ul li:before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #ffd700;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+
+    /* FOOTER (Reused from user's file) */
+    footer {
+      background: rgba(0, 60, 0, 0.85);
       text-align: center;
       padding: 20px 10px;
       color: #fff;
@@ -170,63 +187,67 @@
       border-top: 1.5px solid rgba(248, 215, 123, 0.3);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+    /* FLOATING BUTTONS (Reused from user's file) */
+    .floating-buttons {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
     }
 
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
+    .floating-buttons a {
+      background: linear-gradient(135deg, #009900, #00cc00);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 25px;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+      font-weight: 600;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
     }
 
+    .floating-buttons a.email {
+      background: linear-gradient(135deg, #e6b800, #ffcc00);
+      color: #004000;
+    }
+
+    .floating-buttons a:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
+    }
+
+    /* MEDIA QUERY untuk Responsif */
     @media (max-width: 768px) {
-      header h1 { font-size: 1.4em; }
-      nav a { padding: 6px 14px; font-size: 0.95em; }
-      .section { padding: 25px; margin: 30px auto; }
+      header h1 {
+        font-size: 1.5em;
+      }
+      .section {
+        margin: 30px auto;
+        padding: 30px 20px;
+      }
+      h2 {
+        font-size: 1.5em;
+      }
+      nav a {
+        padding: 6px 12px;
+        font-size: 0.85em;
+      }
+      header .ornamen {
+        width: 100px;
+      }
+      .floating-buttons {
+        bottom: 15px;
+        right: 15px;
+      }
+      .program-card {
+          padding: 20px;
+      }
     }
-/* --- Tombol Melayang WhatsApp & Email (Posisi Kanan Bawah FIX) --- */
-.floating-buttons {
-  position: fixed !important;
-  bottom: 25px !important;
-  right: 25px !important;
-  left: auto !important;
-  top: auto !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-end !important;
-  gap: 10px !important;
-  z-index: 9999 !important;
-}
 
-.floating-buttons a {
-  display: inline-block;
-  text-align: center;
-  padding: 10px 20px;
-  font-weight: 600;
-  font-size: 0.95em;
-  text-decoration: none;
-  border-radius: 25px;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
-  transition: all 0.3s ease;
-}
-
-.floating-buttons a:first-child {
-  background: linear-gradient(135deg, #009900, #00cc00);
-  color: #fff;
-}
-
-.floating-buttons a.email {
-  background: linear-gradient(135deg, #e6b800, #ffcc00);
-  color: #002800;
-  text-shadow: 0 0 2px rgba(255,255,255,0.8);
-  border: 1px solid rgba(0,50,0,0.3);
-}
-
-.floating-buttons a:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 18px rgba(255, 215, 0, 0.9);
-}
    /* ========================================================================= */
 /* STYLING DROPDOWN NAVIGASI (KOREKSI UNTUK FLEX LAYOUT) */
 /* ========================================================================= */
@@ -517,4 +538,5 @@
 </body>
 
 </html>
+
 
