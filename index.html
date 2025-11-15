@@ -17,6 +17,7 @@
     }
 
     body {
+      /* Latar belakang lebih gelap dan kuat */
       background: linear-gradient(rgba(0, 40, 0, 0.95), rgba(0, 40, 0, 0.95)),
                   url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
       background-size: cover;
@@ -415,8 +416,6 @@
             const formattedDate = date.toLocaleDateString('id-ID', options);
             dateElement.textContent = formattedDate;
         }
-
-        // Anda tidak memiliki elemen currentYear di footer, tetapi kode ini tetap aman
     };
     
     updateDate();
@@ -428,7 +427,6 @@
         sections.forEach(section => {
             const sectionTop = section.getBoundingClientRect().top;
             if(sectionTop < triggerBottom) section.classList.add('visible');
-            // Menghapus else section.classList.remove('visible') agar elemen tetap terlihat saat sudah muncul
         });
     });
 </script>
