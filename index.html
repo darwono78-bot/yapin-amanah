@@ -500,22 +500,16 @@
                 const data = doc.data();
                 let docDateString = null;
                 
-                // Cek apakah field 'Tanggal' ada
-                if (!data.Tanggal) {
-                    console.warn(`[DONATUR DEBUG]: Dokumen ${index + 1} TIDAK memiliki field 'Tanggal'`);
-                    return; // Lewati dokumen ini
-                }
+                if (!data.Tanggal) return;
 
-                // Cek Tipe Data
+                // Cek Tipe Data dan pastikan hasilnya bersih dari spasi (.trim())
                 if (typeof data.Tanggal.toDate === 'function') {
-                    // Kasus A: Timestamp Firestore
-                    docDateString = data.Tanggal.toDate().toISOString().substring(0, 10);
+                    docDateString = data.Tanggal.toDate().toISOString().substring(0, 10).trim(); 
                 } 
                 else if (typeof data.Tanggal === 'string') {
-                    // Kasus B: String (ambil 10 karakter pertama)
-                    docDateString = data.Tanggal.substring(0, 10); 
+                    // Cek jika ada spasi di awal/akhir string
+                    docDateString = data.Tanggal.substring(0, 10).trim(); 
                 } else {
-                     // Kasus C: Tipe data lain yang tidak terduga
                     console.error(`[DONATUR DEBUG]: Dokumen ${index + 1} Tanggal memiliki tipe data tidak dikenal:`, typeof data.Tanggal);
                     return;
                 }
@@ -530,6 +524,8 @@
                     console.log(`[DONATUR DEBUG]: TIDAK COCOK. Tanggal dibaca: ${docDateString}`);
                 }
             });
+            
+            console.log(`[DONATUR DEBUG]: TOTAL AKHIR DONATUR: ${totalDonatur}`);
             
         } catch (error) {
             console.error("Error fatal saat memproses Donatur:", error);
@@ -556,6 +552,7 @@
     document.addEventListener('DOMContentLoaded', loadMonthlySummary);
 
 </script>
+Silakan coba muat ulang halaman dengan kode di atas. Karena pesan Konsol sudah menunjukkan `2025-09-15` (yang berada dalam target), penambahan `.trim()` seharusnya menyelesaikan masalah ini!
 ## 🔍 Langkah Terakhir: Cek Konsol
 
 Setelah Anda mengganti kode ini, silakan muat ulang halaman dan periksa **Console** browser Anda (**F12**).
@@ -592,6 +589,7 @@ Jika masih belum muncul, **tolong cek lagi Konsol Browser (F12) Anda** dan lihat
 </script>
 </body>
 </html>
+
 
 
 
