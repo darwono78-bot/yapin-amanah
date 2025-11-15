@@ -441,8 +441,8 @@
     const db = getFirestore(app);
 
     // --- Nama Koleksi ---
-    const FINANCE_COLLECTION = "laporan"; // Pemasukan/Pengeluaran
-    const DONATUR_COLLECTION = "donatur"; // Daftar Donatur
+    const FINANCE_COLLECTION = "laporan";
+    const DONATUR_COLLECTION = "donatur";
 
     // =========================================================================
     // HELPER FUNCTION: Format Rupiah
@@ -456,7 +456,7 @@
     };
 
     // =========================================================================
-    // MAIN LOGIC: FUNGSI UNTUK MENGAMBIL DAN MENGHITUNG DATA BULANAN (MODULAR)
+    // MAIN LOGIC: FUNGSI UNTUK MENGAMBIL DAN MENGHITUNG DATA BULANAN
     // =========================================================================
     async function loadMonthlySummary() {
         const now = new Date();
@@ -468,57 +468,53 @@
         let totalPengeluaran = 0;
         let totalDonatur = 0;
 
-        // 1. Ambil data LAPORAN KEUANGAN
+        // 1. Ambil data LAPORAN KEUANGAN (Menggunakan field 'tanggal' huruf kecil)
         try {
-            // Mengambil semua dokumen lalu memfilternya di browser
             const laporanSnapshot = await getDocs(collection(db, FINANCE_COLLECTION));
-                                            
             laporanSnapshot.forEach(doc => {
                 const data = doc.data();
                 if (data.tanggal && data.tanggal.startsWith(targetPrefix)) {
-                    // Menggunakan parseInt untuk memastikan perhitungan benar
-                    // Asumsi: field danaMasuk dan danaKeluar disimpan sebagai string angka
                     const masuk = parseInt(data.danaMasuk) || 0; 
                     const keluar = parseInt(data.danaKeluar) || 0;
                     totalPemasukan += masuk;
                     totalPengeluaran += keluar;
                 }
             });
-
         } catch (error) {
-            console.error("Error mengambil data Laporan Keuangan. Cek Security Rules Anda!", error);
+            console.error("Error mengambil data Laporan Keuangan:", error);
         }
 
-        // 2. Ambil data DONATUR
+        // 2. Ambil data DONATUR (MENGGUNAKAN field 'Tanggal' huruf Kapital)
         try {
             const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
 
             donaturSnapshot.forEach(doc => {
                 const data = doc.data();
-                if (data.tanggal && data.tanggal.startsWith(targetPrefix)) {
+                
+                // PERBAIKAN: Menggunakan 'Tanggal' sesuai screenshot
+                if (data.Tanggal && data.Tanggal.startsWith(targetPrefix)) { 
                     totalDonatur++;
-                }
+                } 
             });
-
         } catch (error) {
-            console.error("Error mengambil data Donatur. Cek Security Rules Anda!", error);
+            console.error("Error mengambil data Donatur:", error);
         }
 
         // 3. Hitung dan Tampilkan Saldo
         const totalSaldo = totalPemasukan - totalPengeluaran;
 
-        // Update ID Elemen yang Baru
-        document.getElementById('donaturBulanIni').textContent = totalDonatur.toLocaleString('id-ID');
+        // Update ID Elemen di HTML
+        document.getElementById('donaturBulanIni').textContent = totalDonatur.toLocaleString('id-ID'); 
         document.getElementById('pemasukanBulanIni').textContent = formatRupiah(totalPemasukan);
         document.getElementById('pengeluaranBulanIni').textContent = formatRupiah(totalPengeluaran);
         
         const saldoElement = document.getElementById('saldoBulanIni');
         saldoElement.textContent = formatRupiah(totalSaldo);
 
-        // Atur warna Saldo berdasarkan nilai (Hijau atau Merah)
+        // Atur warna Saldo
         saldoElement.classList.remove('minus');
         if (totalSaldo < 0) {
-            saldoElement.classList.add('minus'); // Merah
+            saldoElement.classList.add('minus');
         }
     }
 
@@ -554,3 +550,4 @@
 </script>
 </body>
 </html>
+
