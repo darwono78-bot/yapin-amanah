@@ -427,7 +427,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    // FIREBASE CONFIG & INISIALISASI (Sudah Sesuai API Key Anda)
+    // FIREBASE CONFIG & INISIALISASI
     const firebaseConfig = {
         apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
         authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
@@ -460,12 +460,14 @@
     // =========================================================================
     async function loadMonthlySummary() {
         const now = new Date();
+        const yearNow = now.getFullYear();
+        
         const targetMonthsDonatur = [];
         
         // 1. Tentukan rentang 3 bulan (M, M-1, M-2) untuk Donatur
         for (let i = 0; i < 3; i++) {
             // Kita hitung dari bulan sekarang (i=0) mundur 2 bulan
-            const date = new Date(now.getFullYear(), now.getMonth() - i, 1); 
+            const date = new Date(yearNow, now.getMonth() - i, 1); 
             const year = date.getFullYear().toString();
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             targetMonthsDonatur.push(`${year}-${month}`);
@@ -473,10 +475,10 @@
         
         // Target bulan untuk Pemasukan/Pengeluaran (Hanya bulan ini)
         const currentMonthPrefix = targetMonthsDonatur[0];
-
+        
         // 2. Buat label rentang bulan untuk ditampilkan di HTML
         const endMonthName = now.toLocaleDateString('id-ID', { month: 'short' });
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+        const startOfMonth = new Date(yearNow, now.getMonth() - 2, 1);
         const startMonthName = startOfMonth.toLocaleDateString('id-ID', { month: 'short' });
         const yearLabel = startOfMonth.getFullYear();
         const monthRangeLabel = `(${startMonthName} - ${endMonthName} ${yearLabel})`;
@@ -490,7 +492,6 @@
             const laporanSnapshot = await getDocs(collection(db, FINANCE_COLLECTION));
             laporanSnapshot.forEach(doc => {
                 const data = doc.data();
-                // Filter HANYA berdasarkan bulan ini (currentMonthPrefix)
                 if (data.tanggal && data.tanggal.startsWith(currentMonthPrefix)) { 
                     const masuk = parseInt(data.danaMasuk) || 0; 
                     const keluar = parseInt(data.danaKeluar) || 0;
@@ -506,24 +507,28 @@
         try {
             const donaturSnapshot = await getDocs(collection(db, DONATUR_COLLECTION));
             
+            console.log(`[DONATUR]: Target 3 bulan: ${targetMonthsDonatur.join(', ')}`);
+            
             donaturSnapshot.forEach(doc => {
                 const data = doc.data();
                 let docDateString = null;
                 
                 if (data.Tanggal) { // Gunakan 'Tanggal' Kapital
-                    // Cek jika ini adalah Firestore Timestamp
+                    // Jika itu objek Timestamp
                     if (typeof data.Tanggal.toDate === 'function') {
                         docDateString = data.Tanggal.toDate().toISOString().substring(0, 10);
                     } 
-                    // Cek jika ini adalah String biasa
+                    // Jika itu String (termasuk format ISO yang panjang seperti '2025-11-15T...')
                     else if (typeof data.Tanggal === 'string') {
-                        docDateString = data.Tanggal;
+                        // Ambil 10 karakter pertama ('YYYY-MM-DD')
+                        docDateString = data.Tanggal.substring(0, 10); 
                     }
                 }
                 
                 // Cek apakah tanggal dokumen cocok dengan SALAH SATU dari 3 bulan target
                 if (docDateString && targetMonthsDonatur.some(prefix => docDateString.startsWith(prefix))) { 
                     totalDonatur++;
+                    console.log(`[DONATUR]: Dokumen Cocok. Tanggal: ${docDateString}`);
                 }
             });
             
@@ -555,6 +560,9 @@
     document.addEventListener('DOMContentLoaded', loadMonthlySummary);
 
 </script>
+Setelah Anda mengganti kode ini dan memastikan struktur HTML sudah benar, Total Donatur harusnya tampil dengan jumlah yang benar untuk September, Oktober, dan November 2025!
+
+Jika masih belum muncul, **tolong cek lagi Konsol Browser (F12) Anda** dan lihat pesan `[DONATUR]: Target 3 bulan: ...` dan `[DONATUR]: Dokumen Cocok...` untuk melihat apakah *script* menemukan data.
 <script>
     // 1. Fungsi untuk mengaktifkan Tanggal Otomatis
     const updateDate = () => {
@@ -583,6 +591,7 @@
 </script>
 </body>
 </html>
+
 
 
 
