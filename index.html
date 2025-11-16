@@ -227,16 +227,22 @@
         border: none;
     }
 
-    .primary-cta {
-        background: linear-gradient(45deg, #FFD700, #FFC000);
-        color: #004d00;
-        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.8);
-    }
-    
-    .primary-cta:hover {
-        transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 12px 30px rgba(255, 215, 0, 1);
-    }
+    /* === Tambahkan Blok CSS Hijau Khusus === */
+.green-cta {
+    /* GAYA TOMBOL HIJAU */
+    background: linear-gradient(45deg, #00B300, #007700); 
+    color: #fff;
+    /* Efek 3D Timbul Hijau */
+    box-shadow: 0 8px 0 0 #005500, /* Bayangan 3D solid Hijau Tua */
+                0 8px 25px rgba(0, 150, 0, 0.8); /* Glow Hijau */
+}
+
+.green-cta:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 4px 0 0 #005500, /* Bayangan 3D mengecil */
+                0 12px 30px rgba(0, 200, 0, 1);
+}
+  
     
     /* Live Accountability Bar */
     .accountability-bar {
@@ -763,6 +769,7 @@
 
 </body>
 </html>
+
 
 
 
