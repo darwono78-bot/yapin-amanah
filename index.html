@@ -375,6 +375,12 @@
     margin-top: 5px;
 }
 
+/* KODE BARU UNTUK WARNA MERAH */
+.card-value.negative {
+    color: #FF5252; /* Merah cerah */
+}
+
+
 .card-info {
     font-size: 14px;
     color: #A5D6A7;
@@ -603,7 +609,7 @@
        /* Opsional: Tambahkan bayangan (shadow) sederhana jika efek 3D hilang */
        box-shadow: 0 4px 8px rgba(175, 255, 51, 0.9);
    ">
-    MONGGO DI BANTU UNTUK BISA MELAKUKAN KEGIATAN BELAJAR MENGAJAR YANG BERKUALITAS
+    MONGGO DI BANTU UNTUK BISA MELAKUKAN KEGIATAN BELAJAR DAN MENGAJAR YANG BERKUALITAS
 </a>
     </div>
     
@@ -744,15 +750,22 @@
         document.getElementById('donaturRangeInfo').textContent = monthRangeLabel;
         document.getElementById('donaturBulanIni').textContent = formatRupiah(totalUangDonasi); 
         document.getElementById('pemasukanBulanIni').textContent = formatRupiah(totalPemasukan);
-        document.getElementById('pengeluaranBulanIni').textContent = formatRupiah(totalPengeluaran);
         
+        // PERUBAHAN DI SINI: WARNA MERAH UNTUK PENGELUARAN
+        const pengeluaranElement = document.getElementById('pengeluaranBulanIni');
+        pengeluaranElement.textContent = formatRupiah(totalPengeluaran);
+        // Tambahkan CSS class 'negative' yang berwarna merah
+        pengeluaranElement.classList.add('negative'); 
+
         const saldoElement = document.getElementById('saldoBulanIni');
         saldoElement.textContent = formatRupiah(totalSaldo);
 
-        // Jika Anda ingin mengubah warna saldo menjadi merah jika minus:
+        // Jika Saldo Minus, ubah warnanya juga menjadi merah
         if (totalSaldo < 0) {
-            saldoElement.style.color = '#FF5252'; 
+            saldoElement.classList.add('negative'); 
         } else {
+             // Jika tidak minus, pastikan warnanya kembali normal (kuning)
+            saldoElement.classList.remove('negative');
             saldoElement.style.color = '#FFD700'; 
         }
     }
@@ -779,4 +792,3 @@
 
 </body>
 </html>
-
