@@ -1464,10 +1464,48 @@
 
 
    // =========================================================================
-    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - VERSI FINAL FILE-BASED
+    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK (FIX FINAL)
     // =========================================================================
     
     // ... (Fungsi aggregateData() tidak berubah) ...
+    async function aggregateData() {
+        // ... (biarkan fungsi ini sama seperti sebelumnya) ...
+        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+        
+        let masukSummary = {};
+        let keluarSummary = {};
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+
+        KATEGORI_MASUK.forEach(cat => masukSummary[cat] = 0);
+        KATEGORI_KELUAR.forEach(cat => keluarSummary[cat] = 0);
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const kategori = data.kategori || 'Lain-lain';
+            const danaMasuk = data.danaMasuk || 0;
+            const danaKeluar = data.danaKeluar || 0;
+
+            if (KATEGORI_MASUK.includes(kategori)) {
+                masukSummary[kategori] += danaMasuk;
+                totalMasuk += danaMasuk;
+            } else if (KATEGORI_KELUAR.includes(kategori)) {
+                keluarSummary[kategori] += danaKeluar;
+                totalKeluar += danaKeluar;
+            }
+        });
+
+        const filteredMasuk = Object.keys(masukSummary)
+            .filter(key => masukSummary[key] > 0)
+            .map(key => ({kategori: key, jumlah: masukSummary[key]}));
+            
+        const filteredKeluar = Object.keys(keluarSummary)
+            .filter(key => keluarSummary[key] > 0)
+            .map(key => ({kategori: key, jumlah: keluarSummary[key]}));
+
+        return { totalMasuk, totalKeluar, filteredMasuk, filteredKeluar };
+    }
+
 
     window.downloadSummaryPDF = async function() {
         try {
@@ -1477,7 +1515,7 @@
             
             const currentDate = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
 
-            // --- NAMA FILE (Harus sesuai: header.png dan ttd_ketua.png) ---
+            // --- NAMA FILE BARU (Penting: harus sesuai dengan nama di folder Anda) ---
             const HEADER_IMAGE_FILENAME = "header.png"; 
             const TT_KETUA_IMAGE_FILENAME = "ttd_ketua.png";
 
@@ -1493,7 +1531,7 @@
                 </div>
             `;
 
-            // --- 2. REKAPITULASI DETAIL DANA MASUK (Tidak Berubah) ---
+            // --- 2. REKAPITULASI DETAIL DANA MASUK ---
             let masukTableHTML = `
                 <div style="margin-bottom: 30px;">
                     <h4 style="font-size: 13px; text-align: left; margin-bottom: 10px; color: #008000;">A. Rincian Dana Masuk:</h4>
@@ -1516,6 +1554,7 @@
                     </tr>
                 `;
             });
+            // Total Baris Dana Masuk
             masukTableHTML += `
                 <tr style="background-color: #c6f6c6; font-weight: bold;">
                     <td colspan="2" style="padding: 8px; text-align: right;">TOTAL DANA MASUK</td>
@@ -1526,7 +1565,7 @@
                 </div>
             `;
             
-            // --- 3. REKAPITULASI DETAIL DANA KELUAR (Tidak Berubah) ---
+            // --- 3. REKAPITULASI DETAIL DANA KELUAR ---
             let keluarTableHTML = `
                 <div style="margin-bottom: 30px;">
                     <h4 style="font-size: 13px; text-align: left; margin-bottom: 10px; color: #cc0000;">B. Rincian Dana Keluar:</h4>
@@ -1549,6 +1588,7 @@
                     </tr>
                 `;
             });
+            // Total Baris Dana Keluar
             keluarTableHTML += `
                 <tr style="background-color: #f6c6c6; font-weight: bold;">
                     <td colspan="2" style="padding: 8px; text-align: right;">TOTAL DANA KELUAR</td>
@@ -1560,7 +1600,7 @@
             `;
 
 
-            // --- 4. RINGKASAN AKHIR (TOTAL SALDO) (Tidak Berubah) ---
+            // --- 4. RINGKASAN AKHIR (TOTAL SALDO) ---
             const ringkasanAkhir = `
                 <div style="width: 90%; margin: 40px auto 20px auto; font-size: 12px; padding: 15px; border: 2px solid #ffd700; border-radius: 8px; background-color: #fff8e1;">
                     <h4 style="margin: 0 0 15px 0; font-size: 14px; text-align: center; color: #b8860b;">C. SALDO AKHIR PERIODE INI</h4>
@@ -1581,14 +1621,14 @@
                 </div>
             `;
             
-            // --- 5. TANDA TANGAN (TTD Ketua sudah disenterkan ke -60px) ---
+            // --- 5. TANDA TANGAN (Menggunakan nama file ttd_ketua.png) ---
             const tandaTanganHTML = `
                 <div style="width: 100%; margin-top: 50px; text-align: center; padding-bottom: 25px;">
                     <div style="width: 45%; float: left; margin-left: 20px;">
                         <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
                         <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
-                        <img src="${TT_KETUA_IMAGE_FILENAME}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -60px;"> 
+                        <img src="${TT_KETUA_IMAGE_FILENAME}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;"> 
                         <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
                     </div>
                     <div style="width: 45%; float: right; margin-right: 20px;">
@@ -1602,56 +1642,50 @@
             `;
 
             const content = document.createElement('div');
-            // Jarak atas halaman
-            content.style.cssText = "padding-top: 10px; padding-bottom: 15px;"; 
+            // Tambahkan padding di div konten utama sebagai safety margin
+            content.style.cssText = "padding-top: 15px; padding-bottom: 15px;"; 
             // Gabungkan semua bagian
             content.innerHTML = headerHTML + masukTableHTML + keluarTableHTML + ringkasanAkhir + '<div style="clear: both;"></div>' + tandaTanganHTML;
             
-            // ... (Kode Style tidak berubah) ...
-
+            // Buat style khusus agar PDF terlihat bersih dan hitam
             const style = document.createElement('style');
             style.textContent = `
                 body, html { margin: 0; padding: 0; }
                 
+                /* PASTIKAN SEMUA TEKS BERWARNA HITAM KECUALI YANG DITENTUKAN OLEH LOGIKA WARNA */
                 p, h1, h2, h3, h4, table, td, th, span { 
                     color: black !important; 
                     font-family: sans-serif; 
                 }
                 
+                /* Override untuk warna spesifik di tabel ringkasan */
                 .masuk-text-color { color: #008000 !important; }
                 .keluar-text-color { color: #cc0000 !important; }
                 
+                /* KRITIKAL: Pastikan konten utama adalah block level */
                 #pdf-content { display: block; }
             `;
 
             const element = document.createElement('div');
+            // Beri ID pada element konten yang akan di render
             element.id = 'pdf-content'; 
             element.appendChild(style);
             element.appendChild(content);
 
 
             html2pdf(element, {
-                // Margin PDF minimal (5mm)
-                margin: [25, 10, 5, 10], 
+                // Margin yang aman: 15mm atas/bawah, 10mm kiri/kanan
+                margin: [15, 10, 15, 10], // top, left, bottom, right
                 filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { 
-                    scale: 3, 
-                    logging: false, 
-                    // Pengaturan agresif untuk mengatasi masalah file lokal
-                    useCORS: false, 
-                    allowTaint: true, 
-                    imageTimeout: 5000 // Beri waktu 5 detik untuk memuat gambar
-                }, 
+                html2canvas: { scale: 3, logging: false, useCORS: true }, 
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                // Tambahkan delay agar gambar sempat dimuat
-                delay: 500,
                 pagebreak: { mode: ['css', 'legacy'] }
             });
 
         } catch (error) {
             console.error("Error generating Summary PDF:", error);
-            alert("Gagal membuat PDF Ringkasan. Untuk mengatasi masalah gambar, Anda harus menjalankan file ini melalui server lokal (Live Server/XAMPP).");
+            alert("Gagal membuat PDF Ringkasan. Pastikan file gambar Anda sudah diganti namanya menjadi 'header.png' dan 'ttd_ketua.png' dan terletak di folder yang sama. Cek konsol browser untuk detail error.");
         }
     }
 
@@ -1700,6 +1734,7 @@
 </script>
 </body>
 </html>
+
 
 
 
