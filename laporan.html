@@ -1628,7 +1628,7 @@
                         <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
                         <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
-                        <img src="${TT_KETUA_IMAGE_FILENAME}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;"> 
+                        <img src="${TT_KETUA_IMAGE_FILENAME}" style="width: 150px; height: auto; position: absolute; margin-top: -50px; margin-left: -75px;"> 
                         <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
                     </div>
                     <div style="width: 45%; float: right; margin-right: 20px;">
@@ -1675,7 +1675,7 @@
 
            html2pdf(element, {
                 // KRUSIAL: Meningkatkan margin atas ke 25mm
-                margin: [25, 10, 15, 10], // top: 25mm, left: 10mm, bottom: 15mm, right: 10mm
+                margin: [15, 10, 15, 10], // top: 25mm, left: 10mm, bottom: 15mm, right: 10mm
                 filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
@@ -1733,6 +1733,7 @@
 </script>
 </body>
 </html>
+
 
 
 
