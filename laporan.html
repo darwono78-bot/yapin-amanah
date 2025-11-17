@@ -1495,7 +1495,6 @@
             }
         });
 
-        // Filter kategori yang totalnya 0 (opsional, agar ringkas)
         const filteredMasuk = Object.keys(masukSummary)
             .filter(key => masukSummary[key] > 0)
             .map(key => ({kategori: key, jumlah: masukSummary[key]}));
@@ -1598,7 +1597,7 @@
 
             // --- 4. RINGKASAN AKHIR (TOTAL SALDO) ---
             const ringkasanAkhir = `
-                <div style="width: 90%; margin: 40px auto; font-size: 12px; padding: 15px; border: 2px solid #ffd700; border-radius: 8px; background-color: #fff8e1;">
+                <div style="width: 90%; margin: 40px auto 20px auto; font-size: 12px; padding: 15px; border: 2px solid #ffd700; border-radius: 8px; background-color: #fff8e1;">
                     <h4 style="margin: 0 0 15px 0; font-size: 14px; text-align: center; color: #b8860b;">C. SALDO AKHIR PERIODE INI</h4>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                         <tr>
@@ -1621,8 +1620,9 @@
             const tt_ketua_image = "image002-removebg-preview (3).png";
             const tt_bendahara_placeholder = "image003-removebg-preview.png";
 
+            // Tambahkan div pembungkus yang jelas dan padding/margin yang cukup
             const tandaTanganHTML = `
-                <div style="width: 100%; margin-top: 50px; text-align: center;">
+                <div style="width: 100%; margin-top: 50px; text-align: center; padding-bottom: 25px;">
                     <div style="width: 45%; float: left; margin-left: 20px;">
                         <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
@@ -1660,19 +1660,27 @@
                 /* Override untuk warna spesifik di tabel ringkasan */
                 .masuk-text-color { color: #008000 !important; }
                 .keluar-text-color { color: #cc0000 !important; }
+                
+                /* KRITIKAL: Pastikan konten utama adalah block level */
+                #pdf-content { display: block; }
             `;
 
             const element = document.createElement('div');
+            // Beri ID pada element konten yang akan di render
+            element.id = 'pdf-content'; 
             element.appendChild(style);
             element.appendChild(content);
 
 
             html2pdf(element, {
+                // KRITIKAL: Mengembalikan margin atas ke 15mm (margin default yang aman)
                 margin: [15, 10, 15, 10], // top, left, bottom, right
                 filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                // Tambahkan Pagebreak mode agar lebih akurat memecah halaman jika konten panjang
+                pagebreak: { mode: ['css', 'legacy'] }
             });
 
         } catch (error) {
@@ -1680,8 +1688,6 @@
             alert("Gagal membuat PDF Ringkasan. Cek konsol browser untuk detail error.");
         }
     }
-
-
     // =========================================================================
     // 6. INISIALISASI
     // =========================================================================
@@ -1727,3 +1733,4 @@
 </script>
 </body>
 </html>
+
