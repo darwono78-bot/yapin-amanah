@@ -1464,9 +1464,9 @@
 
 
    // =========================================================================
-    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - REVISI AKHIR TATA LETAK
+    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - VERSI FINAL FILE-BASED
     // =========================================================================
-
+    
     // ... (Fungsi aggregateData() tidak berubah) ...
 
     window.downloadSummaryPDF = async function() {
@@ -1477,11 +1477,14 @@
             
             const currentDate = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
 
-            // --- 1. HEADER PDF (Teks Saja) ---
+            // --- NAMA FILE (Harus sesuai: header.png dan ttd_ketua.png) ---
+            const HEADER_IMAGE_FILENAME = "header.png"; 
+            const TT_KETUA_IMAGE_FILENAME = "ttd_ketua.png";
+
+            // --- 1. HEADER PDF ---
             const headerHTML = `
-                <div style="text-align: center; margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 5px;">
-                    <h1 style="font-size: 18px; margin-top: 5px; margin-bottom: 5px;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>
-                    <p style="font-size: 10px; margin: 0;">Jl. Raya Pati-Juwana KM 5, Pati, Jawa Tengah</p>
+                <div style="text-align: center; margin-bottom: 5px;">
+                    <img src="${HEADER_IMAGE_FILENAME}" style="width: 100%; height: auto; max-width: 180mm; display: block; margin: 0 auto; border-bottom: 3px solid black; padding-bottom: 5px;">
                 </div>
                 
                 <div style="text-align: center; margin-bottom: 20px;">
@@ -1578,24 +1581,28 @@
                 </div>
             `;
             
-            // --- 5. TANDA TANGAN (Tanpa Gambar TTD, Tanggal di Kanan) ---
+            // --- 5. TANDA TANGAN (TTD Ketua sudah disenterkan ke -60px) ---
             const tandaTanganHTML = `
                 <div style="width: 100%; margin-top: 50px; text-align: center; padding-bottom: 25px;">
                     <div style="width: 45%; float: left; margin-left: 20px;">
-                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p> <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
-                        <p style="margin-bottom: 100px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
+                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
+                        <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
+                        <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
+                        <img src="${TT_KETUA_IMAGE_FILENAME}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -60px;"> 
                         <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
                     </div>
                     <div style="width: 45%; float: right; margin-right: 20px;">
-                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">Pati, ${currentDate}</p> <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Hormat Kami,</p>
-                        <p style="margin-bottom: 100px; font-weight: bold; font-size: 12px;">Bendahara Yayasan,</p>
+                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">Pati, ${currentDate}</p>
+                        <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Hormat Kami,</p>
+                        <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Bendahara Yayasan,</p>
+                        <p style="color: #ccc; font-size: 10px; margin-top: -80px; margin-bottom: 60px;">( TEMPEL TTD BENDAHARA DI SINI )</p>
                         <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block; margin-top: 0px;">( Nama Bendahara Yayasan )</p>
                     </div>
                 </div>
             `;
 
             const content = document.createElement('div');
-            // Jarak atas halaman diatur (padding-top 10px)
+            // Jarak atas halaman
             content.style.cssText = "padding-top: 10px; padding-bottom: 15px;"; 
             // Gabungkan semua bagian
             content.innerHTML = headerHTML + masukTableHTML + keluarTableHTML + ringkasanAkhir + '<div style="clear: both;"></div>' + tandaTanganHTML;
@@ -1625,21 +1632,29 @@
 
             html2pdf(element, {
                 // Margin PDF minimal (5mm)
-                margin: [5, 10, 5, 10], 
+                margin: [25, 10, 5, 10], 
                 filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                // html2canvas kembali ke setting dasar, tanpa workarounds CORS
-                html2canvas: { scale: 3, logging: false }, 
+                html2canvas: { 
+                    scale: 3, 
+                    logging: false, 
+                    // Pengaturan agresif untuk mengatasi masalah file lokal
+                    useCORS: false, 
+                    allowTaint: true, 
+                    imageTimeout: 5000 // Beri waktu 5 detik untuk memuat gambar
+                }, 
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                // Tambahkan delay agar gambar sempat dimuat
+                delay: 500,
                 pagebreak: { mode: ['css', 'legacy'] }
             });
 
         } catch (error) {
             console.error("Error generating Summary PDF:", error);
-            // Alert disederhanakan karena masalah gambar sudah hilang
-            alert("Gagal membuat PDF Ringkasan. Cek konsol browser untuk detail error.");
+            alert("Gagal membuat PDF Ringkasan. Untuk mengatasi masalah gambar, Anda harus menjalankan file ini melalui server lokal (Live Server/XAMPP).");
         }
     }
+
     // =========================================================================
     // 6. INISIALISASI
     // =========================================================================
@@ -1685,6 +1700,7 @@
 </script>
 </body>
 </html>
+
 
 
 
