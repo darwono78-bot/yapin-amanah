@@ -201,6 +201,12 @@
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
+        /* === PERUBAHAN BARU: Kolom URAIAN (Kolom ke-3) dibuat rata kiri === */
+        #finance-table td:nth-child(3) {
+            text-align: left;
+        }
+        /* =============================================================== */
 
         #finance-table th {
             background: rgba(255, 215, 0, 0.2);
@@ -987,8 +993,10 @@
             const totalKeluarCell = footerRow.insertCell(2);
             totalKeluarCell.textContent = formatRupiah(totalKeluar);
             totalKeluarCell.style.textAlign = 'right';
-            // === PERUBAHAN: Kasih warna merah pada Total Dana Keluar ===
-            totalKeluarCell.style.color = '#FF4136'; // Merah Cerah
+            
+            // === PERUBAHAN: Kasih warna MERAH VIBRANT (Lebih Jelas) pada Total Dana Keluar ===
+            // Saran: Menggunakan warna #FF4136 (Vibrant Red) dengan glow yang lebih halus agar angka lebih jelas
+            totalKeluarCell.style.color = '#FF4136'; 
             totalKeluarCell.style.textShadow = '0 0 5px #FF4136';
             // ==========================================================
 
@@ -1216,6 +1224,11 @@
                 color: #333;
             }
             
+            /* Kolom Uraian Rata Kiri di PDF */
+            #finance-table td:nth-child(3) {
+                text-align: left; 
+            }
+
             /* Aturan Footer Total */
             .total-row td {
                 font-weight: bold;
@@ -1311,5 +1324,3 @@
 </script>
 </body>
 </html>
-
-
