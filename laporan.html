@@ -507,20 +507,19 @@
         /* GANTI/TAMBAHKAN PROPERTI INI: */
         top: 95%; /* Pastikan kotak muncul di bawah link utama */
         padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
-        /* ... CSS sebelumnya ... */
-
-/* NEW: Koreksi Warna Teks di Opsi Dropdown (Kategori) agar terlihat di latar putih default browser */
-#input-kategori option, #edit-kategori option,
-#input-kategori optgroup, #edit-kategori optgroup {
-    /* Set warna teks menjadi gelap agar terlihat di background dropdown putih */
-    color: #004000; 
-    /* Pastikan background opsi juga putih */
-    background-color: white; 
-}
-#input-kategori optgroup, #edit-kategori optgroup {
-    font-weight: bold;
-    color: #006400; /* Warna hijau sedikit lebih gelap untuk label group */
-}
+        
+        /* Koreksi Warna Teks di Opsi Dropdown (Kategori) agar terlihat di latar putih default browser */
+        #input-kategori option, #edit-kategori option,
+        #input-kategori optgroup, #edit-kategori optgroup {
+            /* Set warna teks menjadi gelap agar terlihat di background dropdown putih */
+            color: #004000; 
+            /* Pastikan background opsi juga putih */
+            background-color: white; 
+        }
+        #input-kategori optgroup, #edit-kategori optgroup {
+            font-weight: bold;
+            color: #006400; /* Warna hijau sedikit lebih gelap untuk label group */
+        }
     </style>
 </head>
 <body>
@@ -635,10 +634,6 @@
         
         <p style="text-align: right;">Selamat datang, Bendahara! <button onclick="logout()" style="background-color: #dc3545">Logout</button></p>
 
-        <div class="actions" style="text-align: left; margin-bottom: 20px;">
-            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545;">Reset Data (Ganti Bulan)</button>
-        </div>
-
         <div id="input-form">
             <h3>Input Transaksi Baru</h3>
             <input type="date" id="input-tanggal" required>
@@ -663,6 +658,10 @@
             </div>
 
             <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
+        </div>
+        
+        <div class="actions" style="text-align: center; margin-top: 20px;">
+            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545; width: 80%;">⚠️ RESET DATA BULANAN (HAPUS SEMUA DATA)</button>
         </div>
     </div>
    </section>
@@ -1236,11 +1235,16 @@
             return;
         }
 
-        if (!confirm("PERINGATAN! Ini akan menghapus SEMUA data laporan keuangan (Reset Bulanan). Pastikan Anda sudah mengunduh laporannya. Lanjutkan?")) {
+        // PERBAIKAN KRITIS: Minta konfirmasi yang ketat
+        const confirmation = prompt("PERINGATAN KERAS! Ini akan menghapus SELURUH data laporan keuangan secara PERMANEN. Ketik kata 'SAYA YAKIN HAPUS' (tanpa tanda kutip) untuk melanjutkan penghapusan:");
+
+        if (confirmation !== "SAYA YAKIN HAPUS") {
+            document.getElementById('auth-status').textContent = "Pembatalan reset data.";
+            document.getElementById('auth-status').style.color = 'orange';
             return;
         }
 
-        // Menjalankan Batch Delete (Cara efisien hapus banyak data di Firestore)
+        // Lanjutkan dengan proses Batch Delete
         db.collection(FINANCE_COLLECTION).get().then((snapshot) => {
             const batch = db.batch();
             snapshot.docs.forEach((doc) => {
@@ -1249,7 +1253,7 @@
 
             return batch.commit();
         }).then(() => {
-            document.getElementById('auth-status').textContent = "Semua data laporan berhasil direset (dihapus).";
+            document.getElementById('auth-status').textContent = "SEMUA DATA LAPORAN BERHASIL DIRESET. Silakan input Saldo Awal bulan baru.";
             document.getElementById('auth-status').style.color = 'lime';
         }).catch((error) => {
             document.getElementById('auth-status').textContent = "Gagal mereset data: " + error.message;
@@ -1258,10 +1262,12 @@
     }
 
     // =========================================================================
-    // 4. FUNGSI UNDUH PDF #1: DETAIL/LAMPIRAN (LANDSCAPE)
+    // 4. FUNGSI UNDUH PDF #1: DETAIL/LAMPIRAN (LANDSCAPE) - PUBLIK
     // =========================================================================
 
     async function generatePDFContent() {
+        // HAPUS VALIDASI LOGIN DI SINI
+        
         // Ambil semua data dari Firestore (tanpa pagination)
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
         let dataToPrint = [];
@@ -1335,7 +1341,8 @@
         });
         
         // --- FOOTER TOTAL TABEL ---
-        const finalSaldoColor = totalMasuk - totalKeluar < 0 ? '#cc0000' : '#008000';
+        const finalSaldo = totalMasuk - totalKeluar;
+        const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000';
         tableHTML += `
             <tr style="font-weight: bold; background-color: #f0f0f0;">
                 <td colspan="4" style="text-align: right;">TOTAL AKHIR:</td>
@@ -1379,6 +1386,12 @@
         return content;
     }
 
+    window.downloadPDF = async function() {
+        // HAPUS VALIDASI LOGIN DI SINI
+        
+        try {
+            const content = await generatePDFContent();
+            
             // Aturan CSS Khusus untuk html2pdf (untuk mengatasi masalah styling)
             const style = document.createElement('style');
             style.textContent = `
@@ -1431,11 +1444,25 @@
 
 
     // =========================================================================
-    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT)
+    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK
     // =========================================================================
+
+    window.downloadSummaryPDF = async function() {
+        // HAPUS VALIDASI LOGIN DI SINI
+
+        try {
+            // Ambil semua data dari Firestore untuk menghitung total
+            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                totalMasuk += data.danaMasuk || 0;
+                totalKeluar += data.danaKeluar || 0;
+            });
             
             const finalSaldo = totalMasuk - totalKeluar;
-            const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000';
             const finalSaldoTextColor = finalSaldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
             
             // --- 1. HEADER PDF ---
@@ -1569,5 +1596,3 @@
 </script>
 </body>
 </html>
-
-
