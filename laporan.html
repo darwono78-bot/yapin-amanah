@@ -1464,11 +1464,12 @@
 
 
    // =========================================================================
-    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK (LOGIKA FINAL)
+    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK (FIX FINAL)
     // =========================================================================
     
-    // Fungsi bantuan untuk mengelompokkan data
+    // ... (Fungsi aggregateData() tidak berubah) ...
     async function aggregateData() {
+        // ... (biarkan fungsi ini sama seperti sebelumnya) ...
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
         
         let masukSummary = {};
@@ -1476,7 +1477,6 @@
         let totalMasuk = 0;
         let totalKeluar = 0;
 
-        // Inisialisasi summary dengan 0
         KATEGORI_MASUK.forEach(cat => masukSummary[cat] = 0);
         KATEGORI_KELUAR.forEach(cat => keluarSummary[cat] = 0);
 
@@ -1515,9 +1515,11 @@
             
             const currentDate = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
 
-            // --- 1. HEADER PDF (Menggunakan Gambar Penuh yang di-upload: Header-LPJ.png) ---
-            const HEADER_IMAGE_FILENAME = "Header-LPJ.png"; 
+            // --- NAMA FILE BARU (Penting: harus sesuai dengan nama di folder Anda) ---
+            const HEADER_IMAGE_FILENAME = "header.png"; 
+            const TT_KETUA_IMAGE_FILENAME = "ttd_ketua.png";
 
+            // --- 1. HEADER PDF ---
             const headerHTML = `
                 <div style="text-align: center; margin-bottom: 5px;">
                     <img src="${HEADER_IMAGE_FILENAME}" style="width: 100%; height: auto; max-width: 180mm; display: block; margin: 0 auto; border-bottom: 3px solid black; padding-bottom: 5px;">
@@ -1619,32 +1621,29 @@
                 </div>
             `;
             
-            // --- 5. TANDA TANGAN (Menggunakan nama file baru: tanda-tangan-ketua-yayasan.png) ---
-            const tt_ketua_image = "tanda-tangan-ketua-yayasan.png"; // Nama file baru dari user
-            const tt_bendahara_placeholder = "image003-removebg-preview.png"; // Nama file bendahara lama
-
+            // --- 5. TANDA TANGAN (Menggunakan nama file ttd_ketua.png) ---
             const tandaTanganHTML = `
                 <div style="width: 100%; margin-top: 50px; text-align: center; padding-bottom: 25px;">
                     <div style="width: 45%; float: left; margin-left: 20px;">
                         <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
                         <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
-                        <img src="${tt_ketua_image}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;"> 
+                        <img src="${TT_KETUA_IMAGE_FILENAME}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;"> 
                         <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
                     </div>
                     <div style="width: 45%; float: right; margin-right: 20px;">
                         <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">Pati, ${currentDate}</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Hormat Kami,</p>
                         <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Bendahara Yayasan,</p>
-                        <div style="width: 150px; height: 70px; margin: auto; position: absolute; margin-top: -80px; margin-left: 20px;">
-                            <img src="${tt_bendahara_placeholder}" style="width: 100%; opacity: 0.1;">
-                        </div>
-                        <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Bendahara Yayasan )</p>
+                        <p style="color: #ccc; font-size: 10px; margin-top: -80px; margin-bottom: 60px;">( TEMPEL TTD BENDAHARA DI SINI )</p>
+                        <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block; margin-top: 0px;">( Nama Bendahara Yayasan )</p>
                     </div>
                 </div>
             `;
 
             const content = document.createElement('div');
+            // Tambahkan padding di div konten utama sebagai safety margin
+            content.style.cssText = "padding-top: 15px; padding-bottom: 15px;"; 
             // Gabungkan semua bagian
             content.innerHTML = headerHTML + masukTableHTML + keluarTableHTML + ringkasanAkhir + '<div style="clear: both;"></div>' + tandaTanganHTML;
             
@@ -1675,7 +1674,7 @@
 
 
             html2pdf(element, {
-                // Margin aman: 15mm atas/bawah, 10mm kiri/kanan
+                // Margin yang aman: 15mm atas/bawah, 10mm kiri/kanan
                 margin: [15, 10, 15, 10], // top, left, bottom, right
                 filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
@@ -1686,7 +1685,7 @@
 
         } catch (error) {
             console.error("Error generating Summary PDF:", error);
-            alert("Gagal membuat PDF Ringkasan. Cek konsol browser untuk detail error.");
+            alert("Gagal membuat PDF Ringkasan. Pastikan file gambar Anda sudah diganti namanya menjadi 'header.png' dan 'ttd_ketua.png' dan terletak di folder yang sama. Cek konsol browser untuk detail error.");
         }
     }
     // =========================================================================
@@ -1734,6 +1733,7 @@
 </script>
 </body>
 </html>
+
 
 
 
