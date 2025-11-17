@@ -1266,8 +1266,6 @@
     // =========================================================================
 
     async function generatePDFContent() {
-        // HAPUS VALIDASI LOGIN DI SINI
-        
         // Ambil semua data dari Firestore (tanpa pagination)
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
         let dataToPrint = [];
@@ -1331,7 +1329,7 @@
                 <tr>
                     <td>${item.no}</td>
                     <td>${item.tanggal}</td>
-                    <td style="text-align: left;"><span style="${colorStyle}">${item.uraian}</span></td>
+                    <td style="text-align: left;"><span class="pdf-description-text" style="${colorStyle}">${item.uraian}</span></td>
                     <td>${item.kategori}</td>
                     <td style="text-align: right;">${item.danaMasuk}</td>
                     <td style="text-align: right;">${item.danaKeluar}</td>
@@ -1387,7 +1385,7 @@
     }
 
     window.downloadPDF = async function() {
-        // HAPUS VALIDASI LOGIN DI SINI
+        // Tidak ada validasi login, akses publik
         
         try {
             const content = await generatePDFContent();
@@ -1396,7 +1394,12 @@
             const style = document.createElement('style');
             style.textContent = `
                 body, html { margin: 0; padding: 0; }
-                p, h1, h2, h3, h4 { color: black; font-family: sans-serif; }
+                
+                /* PERBAIKAN KRITIS: PASTIKAN SEMUA TEKS BERWARNA HITAM */
+                p, h1, h2, h3, h4, table, td, span { 
+                    color: black !important; 
+                    font-family: sans-serif; 
+                }
 
                 #pdf-finance-table {
                     width: 100%;
@@ -1407,21 +1410,36 @@
                 #pdf-finance-table th, #pdf-finance-table td {
                     border: 1px solid #ccc;
                     padding: 5px 3px;
+                    color: black !important; /* Memastikan data cell juga hitam */
                 }
                 #pdf-finance-table th {
                     background: #e0e0e0;
-                    color: black;
+                    color: black !important; /* Pastikan Header Hitam */
                 }
                 #pdf-finance-table td:nth-child(5),
                 #pdf-finance-table td:nth-child(6),
                 #pdf-finance-table td:nth-child(7) {
                     text-align: right; 
                 }
+                
+                /* Override untuk warna saldo dan dana masuk */
+                .saldo-minus { color: #cc0000 !important; } 
+                /* Karena di PDF tidak ada class saldo-plus, kita pakai CSS inline di generatePDFContent */
+                
                 /* Mengatasi masalah warna di PDF */
                 .total-row td, #pdf-finance-table tr:last-child td {
                     background-color: #ffffcc !important; 
                     color: black !important;
                 }
+                
+                /* Pastikan teks uraian (span) yang hijau tetap terlihat */
+                .pdf-description-text {
+                    color: black !important; /* Default hitam */
+                }
+                .pdf-description-text[style*="color: #008000"] {
+                     color: #008000 !important; /* Override untuk dana masuk agar hijau */
+                }
+                
             `;
             
             const element = document.createElement('div');
@@ -1448,7 +1466,7 @@
     // =========================================================================
 
     window.downloadSummaryPDF = async function() {
-        // HAPUS VALIDASI LOGIN DI SINI
+        // Tidak ada validasi login, akses publik
 
         try {
             // Ambil semua data dari Firestore untuk menghitung total
@@ -1528,7 +1546,12 @@
             const style = document.createElement('style');
             style.textContent = `
                 body, html { margin: 0; padding: 0; }
-                p, h1, h2, h3, h4 { color: black; font-family: sans-serif; }
+                
+                /* PERBAIKAN KRITIS: PASTIKAN SEMUA TEKS BERWARNA HITAM */
+                p, h1, h2, h3, h4, table, td, span { 
+                    color: black !important; 
+                    font-family: sans-serif; 
+                }
             `;
 
             const element = document.createElement('div');
