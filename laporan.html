@@ -507,6 +507,20 @@
         /* GANTI/TAMBAHKAN PROPERTI INI: */
         top: 95%; /* Pastikan kotak muncul di bawah link utama */
         padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
+        /* ... CSS sebelumnya ... */
+
+/* NEW: Koreksi Warna Teks di Opsi Dropdown (Kategori) agar terlihat di latar putih default browser */
+#input-kategori option, #edit-kategori option,
+#input-kategori optgroup, #edit-kategori optgroup {
+    /* Set warna teks menjadi gelap agar terlihat di background dropdown putih */
+    color: #004000; 
+    /* Pastikan background opsi juga putih */
+    background-color: white; 
+}
+#input-kategori optgroup, #edit-kategori optgroup {
+    font-weight: bold;
+    color: #006400; /* Warna hijau sedikit lebih gelap untuk label group */
+}
     </style>
 </head>
 <body>
@@ -1582,3 +1596,4 @@
 </script>
 </body>
 </html>
+
