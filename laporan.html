@@ -1445,15 +1445,14 @@
             element.appendChild(style);
             element.appendChild(content);
 
-            html2pdf(element, {
-                margin: [21, 10, 15, 10], // top, left, bottom, right
-                filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf',
+html2pdf(element, {
+                margin: [5, 10, 5, 10], 
+                filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                // --- KUNCI PERBAIKAN PAGE BREAK ---
-                pagebreak: { mode: ['css', 'legacy'] } 
-                // ----------------------------------
+                // KRUSIAL: UBAH BAGIAN INI UNTUK MENGATASI CORS DI LOKAL
+                html2canvas: { scale: 3, logging: false, useCORS: false, allowTaint: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
             });
 
         } catch (error) {
@@ -1691,6 +1690,7 @@
 </script>
 </body>
 </html>
+
 
 
 
