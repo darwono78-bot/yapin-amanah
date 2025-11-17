@@ -1379,15 +1379,6 @@
         return content;
     }
 
-    window.downloadPDF = async function() {
-        if (!auth.currentUser) {
-            alert("Anda harus login sebagai admin untuk membuat Laporan PDF.");
-            return;
-        }
-        
-        try {
-            const content = await generatePDFContent();
-            
             // Aturan CSS Khusus untuk html2pdf (untuk mengatasi masalah styling)
             const style = document.createElement('style');
             style.textContent = `
@@ -1442,24 +1433,6 @@
     // =========================================================================
     // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT)
     // =========================================================================
-
-    window.downloadSummaryPDF = async function() {
-        if (!auth.currentUser) {
-            alert("Anda harus login sebagai admin untuk membuat Laporan PDF.");
-            return;
-        }
-
-        try {
-            // Ambil semua data dari Firestore untuk menghitung total
-            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-            let totalMasuk = 0;
-            let totalKeluar = 0;
-
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                totalMasuk += data.danaMasuk || 0;
-                totalKeluar += data.danaKeluar || 0;
-            });
             
             const finalSaldo = totalMasuk - totalKeluar;
             const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000';
@@ -1596,4 +1569,5 @@
 </script>
 </body>
 </html>
+
 
