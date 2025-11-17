@@ -1463,8 +1463,8 @@
     }
 
 
-    // =========================================================================
-    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK (LOGIKA BARU)
+   // =========================================================================
+    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK (LOGIKA FINAL)
     // =========================================================================
     
     // Fungsi bantuan untuk mengelompokkan data
@@ -1515,18 +1515,18 @@
             
             const currentDate = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
 
-            // --- 1. HEADER PDF (Kode diperbaiki) ---
+            // --- 1. HEADER PDF (Menggunakan Gambar Penuh yang di-upload: Header-LPJ.png) ---
+            const HEADER_IMAGE_FILENAME = "Header-LPJ.png"; 
+
             const headerHTML = `
-                <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 5px;">
-                    <img src="logo yayasan.png" style="width: 80px; display: block; margin: 0 auto 10px auto;">
-                    
-                    <h1 style="font-size: 16px; margin: 0;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA (YAPIN)</h1>
-                    <p style="font-size: 10px; margin: 0;">Khodimul Umat Ngablak Cluwak Pati</p>
-                    
-                    <div style="height: 10px;"></div> <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN PERTANGGUNGJAWABAN KEUANGAN (RINGKASAN)</h2>
+                <div style="text-align: center; margin-bottom: 5px;">
+                    <img src="${HEADER_IMAGE_FILENAME}" style="width: 100%; height: auto; max-width: 180mm; display: block; margin: 0 auto; border-bottom: 3px solid black; padding-bottom: 5px;">
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN PERTANGGUNGJAWABAN KEUANGAN (RINGKASAN)</h2>
                     <p style="font-size: 10px; margin: 0; text-align: right; padding-right: 10px;">Tanggal Cetak: ${currentDate}</p>
                 </div>
-                <div style="clear: both; margin-bottom: 20px;"></div>
             `;
 
             // --- 2. REKAPITULASI DETAIL DANA MASUK ---
@@ -1619,18 +1619,17 @@
                 </div>
             `;
             
-            // --- 5. TANDA TANGAN ---
-            const tt_ketua_image = "image002-removebg-preview (3).png";
-            const tt_bendahara_placeholder = "image003-removebg-preview.png";
+            // --- 5. TANDA TANGAN (Menggunakan nama file baru: tanda-tangan-ketua-yayasan.png) ---
+            const tt_ketua_image = "tanda-tangan-ketua-yayasan.png"; // Nama file baru dari user
+            const tt_bendahara_placeholder = "image003-removebg-preview.png"; // Nama file bendahara lama
 
-            // Tambahkan div pembungkus yang jelas dan padding/margin yang cukup
             const tandaTanganHTML = `
                 <div style="width: 100%; margin-top: 50px; text-align: center; padding-bottom: 25px;">
                     <div style="width: 45%; float: left; margin-left: 20px;">
                         <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
                         <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
-                        <img src="${tt_ketua_image}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;">
+                        <img src="${tt_ketua_image}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;"> 
                         <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
                     </div>
                     <div style="width: 45%; float: right; margin-right: 20px;">
@@ -1676,13 +1675,12 @@
 
 
             html2pdf(element, {
-                // KRITIKAL: Mengembalikan margin atas ke 15mm (margin default yang aman)
+                // Margin aman: 15mm atas/bawah, 10mm kiri/kanan
                 margin: [15, 10, 15, 10], // top, left, bottom, right
                 filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                // Tambahkan Pagebreak mode agar lebih akurat memecah halaman jika konten panjang
                 pagebreak: { mode: ['css', 'legacy'] }
             });
 
@@ -1736,5 +1734,6 @@
 </script>
 </body>
 </html>
+
 
 
