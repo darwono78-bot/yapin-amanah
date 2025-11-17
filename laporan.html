@@ -720,7 +720,7 @@
     // =========================================================================
     const firebaseConfig = {
         // PASTIKAN KEY INI SAMA DENGAN KEY FIREBASE ANDA ASLI
-        apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
+        apiKey: "AIzaSyCLFgGblfLTDVploV-tZGYqAajIzT7t0bc",
         authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
         projectId: "laporan-keuangan-yayasan",
         storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
@@ -1307,6 +1307,7 @@
         `;
         
         // --- 2. TABEL DATA ---
+        // Tambahkan class agar baris footer total tidak terpotong di akhir halaman
         let tableHTML = `
             <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
                 <thead>
@@ -1424,7 +1425,6 @@
                 
                 /* Override untuk warna saldo dan dana masuk */
                 .saldo-minus { color: #cc0000 !important; } 
-                /* Karena di PDF tidak ada class saldo-plus, kita pakai CSS inline di generatePDFContent */
                 
                 /* Mengatasi masalah warna di PDF */
                 .total-row td, #pdf-finance-table tr:last-child td {
@@ -1451,7 +1451,10 @@
                 filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                // --- KUNCI PERBAIKAN PAGE BREAK ---
+                pagebreak: { mode: ['css', 'legacy'] } 
+                // ----------------------------------
             });
 
         } catch (error) {
