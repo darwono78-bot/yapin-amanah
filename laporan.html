@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
     <style>
-        /* [ ... STYLE CSS UMUM ANDA TETAP SAMA ... ] */
         * {
             margin: 0;
             padding: 0;
@@ -101,7 +100,7 @@
             background: rgba(0, 45, 0, 0.93);
             margin: 50px auto;
             width: 90%;
-            max-width: 1000px; /* Lebarkan sedikit karena ada kolom baru */
+            max-width: 900px;
             padding: 40px;
             border-radius: 20px;
             border: 1.8px solid rgba(255, 215, 0, 0.6);
@@ -203,10 +202,11 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* Kolom URAIAN (Kolom ke-3) dibuat rata kiri */
+        /* === PERUBAHAN BARU: Kolom URAIAN (Kolom ke-3) dibuat rata kiri === */
         #finance-table td:nth-child(3) {
             text-align: left;
         }
+        /* =============================================================== */
 
         #finance-table th {
             background: rgba(255, 215, 0, 0.2);
@@ -419,8 +419,7 @@
         }
 
         .modal-content input[type="text"],
-        .modal-content input[type="number"],
-        .modal-content select { /* Tambahkan select untuk modal */
+        .modal-content input[type="number"] {
             background-color: rgba(255, 255, 255, 0.15);
             border: 1px solid #777;
             margin-bottom: 15px;
@@ -436,90 +435,77 @@
             width: 100%;
         }
         /* ========================================================================= */
-        /* STYLING DROPDOWN NAVIGASI (KOREKSI UNTUK FLEX LAYOUT) */
-        /* ========================================================================= */
+/* STYLING DROPDOWN NAVIGASI (KOREKSI UNTUK FLEX LAYOUT) */
+/* ========================================================================= */
 
-        .dropdown {
-            position: relative; 
-            /* Penting: Set display ke inline-block agar berbaris horizontal dengan menu lain */
-            display: inline-block; 
-            vertical-align: top; /* Pastikan rata atas dengan menu lain */
-        }
+.dropdown {
+    position: relative; 
+    /* Penting: Set display ke inline-block agar berbaris horizontal dengan menu lain */
+    display: inline-block; 
+    vertical-align: top; /* Pastikan rata atas dengan menu lain */
+}
 
-        /* Gaya Tombol Pemicu Dropdown (Dropbtn) */
-        .dropbtn {
-            background-color: transparent;
-            color: #fff;
-            font-size: 1em; /* Mengikuti font-size dari nav a */
-            font-weight: 600;
-            padding: 8px 18px; /* Mengikuti padding dari nav a */
-            border: none;
-            cursor: pointer;
-            border-radius: 25px; /* Mengikuti border-radius dari nav a */
-            transition: all 0.3s ease;
-        }
+/* Gaya Tombol Pemicu Dropdown (Dropbtn) */
+.dropbtn {
+    background-color: transparent;
+    color: #fff;
+    font-size: 1em; /* Mengikuti font-size dari nav a */
+    font-weight: 600;
+    padding: 8px 18px; /* Mengikuti padding dari nav a */
+    border: none;
+    cursor: pointer;
+    border-radius: 25px; /* Mengikuti border-radius dari nav a */
+    transition: all 0.3s ease;
+}
 
-        /* Tombol Dropdown Aktif/Hover */
-        .dropbtn:hover, .dropbtn.active {
-            background-color: #ffd700;
-            color: #004000;
-            transform: scale(1.05);
-        }
+/* Tombol Dropdown Aktif/Hover */
+.dropbtn:hover, .dropbtn.active {
+    background-color: #ffd700;
+    color: #004000;
+    transform: scale(1.05);
+}
 
-        /* Gaya Konten Dropdown (Kotak yang muncul) */
-        .dropdown-content {
-            display: none; 
-            position: absolute;
-            background-color: rgba(0, 45, 0, 0.95); /* Warna lebih gelap */
-            min-width: 250px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
-            z-index: 100; /* Z-index tinggi agar pasti muncul di atas */
-            border-radius: 8px;
-            margin-top: 0px; 
-            left: 0; 
-            border: 1px solid rgba(255, 215, 0, 0.5); /* Border emas */
-            text-align: left;
-            overflow: hidden; /* Agar border-radius terlihat rapi */
-        }
+/* Gaya Konten Dropdown (Kotak yang muncul) */
+.dropdown-content {
+    display: none; 
+    position: absolute;
+    background-color: rgba(0, 45, 0, 0.95); /* Warna lebih gelap */
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 100; /* Z-index tinggi agar pasti muncul di atas */
+    border-radius: 8px;
+    margin-top: 0px; 
+    left: 0; 
+    border: 1px solid rgba(255, 215, 0, 0.5); /* Border emas */
+    text-align: left;
+    overflow: hidden; /* Agar border-radius terlihat rapi */
+}
 
-        /* Gaya Link di dalam Dropdown */
-        .dropdown-content a {
-            color: #fff;
-            padding: 12px 18px;
-            text-decoration: none;
-            display: block;
-            margin: 0; /* Penting: Hapus margin */
-            transition: background-color 0.2s, color 0.2s;
-            border-radius: 0; /* Hapus border radius */
-        }
+/* Gaya Link di dalam Dropdown */
+.dropdown-content a {
+    color: #fff;
+    padding: 12px 18px;
+    text-decoration: none;
+    display: block;
+    margin: 0; /* Penting: Hapus margin */
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 0; /* Hapus border radius */
+}
 
-        .dropdown-content a:hover {
-            background-color: #ffd700; 
-            color: #004000;
-            transform: none; /* Hilangkan scale 1.05 agar menu tidak bergerak */
-        }
+.dropdown-content a:hover {
+    background-color: #ffd700; 
+    color: #004000;
+    transform: none; /* Hilangkan scale 1.05 agar menu tidak bergerak */
+}
 
-        /* Tampilkan konten dropdown saat mouse berada di atas .dropdown */
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+/* Tampilkan konten dropdown saat mouse berada di atas .dropdown */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
 
-        /* GANTI/TAMBAHKAN PROPERTI INI: */
-        top: 95%; /* Pastikan kotak muncul di bawah link utama */
-        padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
-        
-        /* Koreksi Warna Teks di Opsi Dropdown (Kategori) agar terlihat di latar putih default browser */
-        #input-kategori option, #edit-kategori option,
-        #input-kategori optgroup, #edit-kategori optgroup {
-            /* Set warna teks menjadi gelap agar terlihat di background dropdown putih */
-            color: #004000; 
-            /* Pastikan background opsi juga putih */
-            background-color: white; 
-        }
-        #input-kategori optgroup, #edit-kategori optgroup {
-            font-weight: bold;
-            color: #006400; /* Warna hijau sedikit lebih gelap untuk label group */
-        }
+/* GANTI/TAMBAHKAN PROPERTI INI: */
+    top: 95%; /* Pastikan kotak muncul di bawah link utama */
+    padding-top: 5px; /* Memberi "zona aman" agar mouse bisa bergerak ke sub-menu */
     </style>
 </head>
 <body>
@@ -596,20 +582,19 @@
     <h2>Laporan Pertanggungjawaban Keuangan</h2>
 
     <div class="actions" style="text-align: right; margin-bottom: 20px;">
-        <button onclick="downloadPDF()" style="background-color: #008CBA; margin-right: 10px;">📥 Unduh PDF Lampiran (Detail Transaksi)</button>
-        <button onclick="downloadSummaryPDF()" style="background-color: #00A9A5;">📥 Unduh PDF Global (Ringkasan LPJ)</button>
+        <button onclick="downloadPDF()" style="background-color: #008CBA;">Unduh Laporan PDF (Data Lengkap)</button>
     </div>
+
     <table id="finance-table">
         <thead>
             <tr>
                 <th style="width: 5%;">No</th>
                 <th style="width: 15%;">Tanggal</th>
-                <th style="width: 25%;">Uraian</th>
-                <th style="width: 15%;">Kategori</th>
-                <th style="width: 10%;">Dana Masuk</th>
-                <th style="width: 10%;">Dana Keluar</th>
-                <th style="width: 10%;">Saldo</th>
-                </tr>
+                <th style="width: 35%;">Uraian</th>
+                <th style="width: 15%;">Dana Masuk</th>
+                <th style="width: 15%;">Dana Keluar</th>
+                <th style="width: 15%;">Saldo</th>
+            </tr>
         </thead>
         <tbody id="finance-body">
             
@@ -634,20 +619,15 @@
         
         <p style="text-align: right;">Selamat datang, Bendahara! <button onclick="logout()" style="background-color: #dc3545">Logout</button></p>
 
+        <div class="actions" style="text-align: left; margin-bottom: 20px;">
+            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545;">Reset Data (Ganti Bulan)</button>
+        </div>
+
         <div id="input-form">
             <h3>Input Transaksi Baru</h3>
             <input type="date" id="input-tanggal" required>
             <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
             
-            <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
-            <select id="input-kategori" required>
-                 <option value="" selected disabled>--- Pilih Kategori ---</option>
-                 <optgroup label="Dana Masuk">
-                     </optgroup>
-                 <optgroup label="Dana Keluar">
-                     </optgroup>
-            </select>
-
             <div class="input-group">
                 <div>
                     <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
@@ -659,10 +639,6 @@
 
             <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
         </div>
-        
-        <div class="actions" style="text-align: center; margin-top: 20px;">
-            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545; width: 80%;">⚠️ RESET DATA BULANAN (HAPUS SEMUA DATA)</button>
-        </div>
     </div>
    </section>
     
@@ -673,17 +649,10 @@
         <input type="hidden" id="modal-id">
 
         <label for="edit-tanggal">Tanggal Transaksi</label>
-        <input type="date" id="edit-tanggal" disabled> <label for="edit-uraian">Uraian Transaksi</label>
+        <input type="date" id="edit-tanggal" required>
+        
+        <label for="edit-uraian">Uraian Transaksi</label>
         <input type="text" id="edit-uraian" required>
-
-        <label for="edit-kategori">Kategori Transaksi</label>
-        <select id="edit-kategori" required>
-             <option value="" selected disabled>--- Pilih Kategori ---</option>
-             <optgroup label="Dana Masuk">
-                 </optgroup>
-             <optgroup label="Dana Keluar">
-                 </optgroup>
-        </select>
         
         <div class="input-group">
             <div>
@@ -720,7 +689,7 @@
     // =========================================================================
     const firebaseConfig = {
         // PASTIKAN KEY INI SAMA DENGAN KEY FIREBASE ANDA ASLI
-        apiKey: "AIzaSyCLFgGblfLTDVploV-tZGYqAajIzT7t0bc",
+        apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
         authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
         projectId: "laporan-keuangan-yayasan",
         storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
@@ -741,22 +710,6 @@
     const rowsPerPage = 10; // Batasan baris per halaman
     let allDataRows = [];   // Menyimpan semua elemen <tr> untuk pagination
     let currentPage = 1;    // Halaman yang sedang aktif
-    
-    // KATEGORI DANA (SESUAI LOGIKA DOKUMEN DARI USER)
-    const KATEGORI_MASUK = [
-        "Dana Pemerintah", "Iuran Santri", "Dana Proposal", 
-        "Dana Donatur", "Dana Donatur Jamaah / Masyarakat", 
-        "Dana Kotak Amal", "Hasil Kebun", "Hasil Usaha", 
-        "Dana Iuran Sertivikasi Guru", "Saldo Bulan Lalu"
-    ];
-    
-    const KATEGORI_KELUAR = [
-        "Pengeluaran Pasti (PP)", "Pengeluaran Tidak Pasti (PTP)", 
-        "Pengeluaran Pembangunan & Perawatan Gedung (P3G)", 
-        "Pengeluaran Sosial (PS)", "Pengeluaran Pembiayaan Perawatan Barang (P3B)", 
-        "Pengeluaran PHBI", "Pengeluaran Lain-Lain (PL2)"
-    ];
-
     
     // FUNGSI UTILITY
     function formatRupiah(angka) {
@@ -824,42 +777,6 @@
         // Tampilkan halaman pertama secara default atau halaman terakhir yang dilihat
         displayTablePage(currentPage > totalPages ? 1 : currentPage);
     }
-    
-    // Fungsi untuk mengisi opsi kategori di form input dan modal edit
-    function fillCategoryOptions() {
-        const inputSelect = document.getElementById('input-kategori');
-        const editSelect = document.getElementById('edit-kategori');
-        
-        // Bersihkan opsi lama
-        inputSelect.innerHTML = '<option value="" selected disabled>--- Pilih Kategori ---</option>';
-        editSelect.innerHTML = '<option value="" selected disabled>--- Pilih Kategori ---</option>';
-
-        function createOptions(selectElement) {
-            const masukGroup = document.createElement('optgroup');
-            masukGroup.label = "Dana Masuk";
-            KATEGORI_MASUK.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                masukGroup.appendChild(option);
-            });
-            selectElement.appendChild(masukGroup);
-
-            const keluarGroup = document.createElement('optgroup');
-            keluarGroup.label = "Dana Keluar";
-            KATEGORI_KELUAR.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                keluarGroup.appendChild(option);
-            });
-            selectElement.appendChild(keluarGroup);
-        }
-
-        createOptions(inputSelect);
-        createOptions(editSelect);
-    }
-
 
     // =========================================================================
     // 2. FUNGSI AUTENTIKASI (LOGIN/LOGOUT)
@@ -914,27 +831,16 @@
     window.addTransaction = function() {
         const tanggal = document.getElementById('input-tanggal').value;
         const uraian = document.getElementById('input-uraian').value;
-        const kategori = document.getElementById('input-kategori').value;
         const danaMasuk = parseInt(document.getElementById('input-masuk').value) || 0;
         const danaKeluar = parseInt(document.getElementById('input-keluar').value) || 0;
         const statusText = document.getElementById('auth-status');
 
-        if (!tanggal || !uraian || !kategori || (danaMasuk === 0 && danaKeluar === 0)) {
-            statusText.textContent = "Semua field (Tanggal, Uraian, Kategori, dan Dana) wajib diisi!";
+        if (!tanggal || !uraian || (danaMasuk === 0 && danaKeluar === 0)) {
+            statusText.textContent = "Tanggal dan Uraian wajib diisi, dan salah satu Dana (Masuk atau Keluar) harus diisi!";
             statusText.style.color = 'red';
             return;
         }
-        
-        // Tambahan validasi: Kategori harus sesuai dengan jenis dana yang diisi
-        const isMasukCategory = KATEGORI_MASUK.includes(kategori);
-        const isKeluarCategory = KATEGORI_KELUAR.includes(kategori);
-
-        if ((danaMasuk > 0 && danaKeluar === 0 && !isMasukCategory) || 
-            (danaKeluar > 0 && danaMasuk === 0 && !isKeluarCategory)) {
-            statusText.textContent = `Kategori '${kategori}' tidak cocok dengan jenis transaksi yang Anda input.`;
-            statusText.style.color = 'red';
-            return;
-        }
+        // Tambahan validasi: tidak boleh mengisi keduanya
         if (danaMasuk > 0 && danaKeluar > 0) {
              statusText.textContent = "Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya!";
              statusText.style.color = 'red';
@@ -944,7 +850,6 @@
         db.collection(FINANCE_COLLECTION).add({
             tanggal: tanggal,
             uraian: uraian,
-            kategori: kategori,
             danaMasuk: danaMasuk,
             danaKeluar: danaKeluar,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -953,7 +858,6 @@
             // Bersihkan input setelah disimpan
             document.getElementById('input-tanggal').value = '';
             document.getElementById('input-uraian').value = '';
-            document.getElementById('input-kategori').value = '';
             document.getElementById('input-masuk').value = '';
             document.getElementById('input-keluar').value = '';
             statusText.textContent = "Transaksi berhasil dicatat!";
@@ -1016,7 +920,6 @@
 
                 const danaMasuk = data.danaMasuk || 0;
                 const danaKeluar = data.danaKeluar || 0;
-                const kategori = data.kategori || '-';
 
                 saldo += danaMasuk - danaKeluar;
                 totalMasuk += danaMasuk;
@@ -1025,30 +928,28 @@
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = no++;
                 row.insertCell(1).textContent = data.tanggal;
+                // GANTIKAN Baris 925 dengan kode berikut:
+                    const descriptionCell = row.insertCell(2);
+                    let textColor = '';
+                    
+                    // Cek apakah ini transaksi Dana Masuk
+                    if (danaMasuk > 0) { 
+                        textColor = 'masuk-text'; 
+                    } 
+                    // Terapkan Uraian dengan kelas warna (dan biarkan Keluar tetap putih)
+                    descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
                 
-                // Kolom Uraian (Index 2)
-                const descriptionCell = row.insertCell(2);
-                let textColor = '';
-                if (danaMasuk > 0) { 
-                    textColor = 'masuk-text'; 
-                } 
-                descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
-                
-                // Kolom Kategori (Index 3)
-                row.insertCell(3).textContent = kategori; 
-
-                // Sel Dana Masuk (Index 4)
-                const masukCell = row.insertCell(4);
+                // Sel Dana Masuk dan Keluar harus rata kanan
+                const masukCell = row.insertCell(3);
                 masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
                 masukCell.style.textAlign = 'right';
 
-                // Sel Dana Keluar (Index 5)
-                const keluarCell = row.insertCell(5);
+                const keluarCell = row.insertCell(4);
                 keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
                 keluarCell.style.textAlign = 'right';
 
-                // Sel Saldo (Index 6)
-                const saldoCell = row.insertCell(6);
+                // Sel Saldo harus rata kanan dan berwarna
+                const saldoCell = row.insertCell(5);
                 saldoCell.textContent = formatRupiah(saldo);
                 saldoCell.style.textAlign = 'right';
                 if (saldo < 0) {
@@ -1059,9 +960,9 @@
 
                 // Tambahkan Kolom Aksi HANYA jika pengurus login
                 if (isLoggedIn) {
-                    const actionCell = row.insertCell(7); // Index 7 karena ada 7 kolom data
+                    const actionCell = row.insertCell(6);
                     actionCell.innerHTML = `
-                        <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', '${kategori}', ${danaMasuk}, ${danaKeluar})">Edit</button>
+                        <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', ${danaMasuk}, ${danaKeluar})">Edit</button>
                         <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
                     `;
                 }
@@ -1077,27 +978,29 @@
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
             
-            // Kolom Uraian digabung untuk Label TOTAL (Kolom 0, 1, 2, 3 digabung)
+            // Kolom Uraian digabung untuk Label TOTAL
             const totalLabelCell = footerRow.insertCell(0);
-            totalLabelCell.colSpan = 4; // Gabung No, Tanggal, Uraian, Kategori
+            totalLabelCell.colSpan = 3; 
             totalLabelCell.textContent = 'TOTAL AKHIR:';
             totalLabelCell.style.textAlign = 'right'; 
 
-            // Kolom Total Dana Masuk (Index 4)
+            // Kolom Total Dana Masuk
             const totalMasukCell = footerRow.insertCell(1);
             totalMasukCell.textContent = formatRupiah(totalMasuk);
             totalMasukCell.style.textAlign = 'right';
 
-            // Kolom Total Dana Keluar (Index 5)
+            // Kolom Total Dana Keluar
             const totalKeluarCell = footerRow.insertCell(2);
             totalKeluarCell.textContent = formatRupiah(totalKeluar);
             totalKeluarCell.style.textAlign = 'right';
             
-            // Menggunakan warna MERAH VIBRANT (Lebih Jelas) pada Total Dana Keluar
+            // === PERUBAHAN: Kasih warna MERAH VIBRANT (Lebih Jelas) pada Total Dana Keluar ===
+            // Saran: Menggunakan warna #FF4136 (Vibrant Red) dengan glow yang lebih halus agar angka lebih jelas
             totalKeluarCell.style.color = '#FF4136'; 
             totalKeluarCell.style.textShadow = '0 0 5px #FF4136';
+            // ==========================================================
 
-            // Kolom Saldo Akhir (Index 6)
+            // Kolom Saldo Akhir
             const finalSaldoCell = footerRow.insertCell(3);
             finalSaldoCell.textContent = formatRupiah(saldo);
             finalSaldoCell.style.textAlign = 'right';
@@ -1139,7 +1042,7 @@
     let currentEditingId = null; 
 
     // Fungsi untuk menampilkan modal dan mengisi data (PENGGANTI PROMPT)
-    window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
+    window.editTransactionPrompt = function(id, tanggal, uraian, masuk, keluar) {
         if (!auth.currentUser) {
              alert("Anda harus login sebagai admin untuk mengedit data.");
              return;
@@ -1147,11 +1050,8 @@
         
         currentEditingId = id; // Simpan ID transaksi yang sedang diedit
         
-        document.getElementById('modal-id').value = id; // Simpan ID di hidden input
-        document.getElementById('edit-tanggal').value = tanggal;
+        document.getElementById('modal-id').textContent = `ID Transaksi: ${id}`;
         document.getElementById('edit-uraian').value = uraian;
-        document.getElementById('edit-kategori').value = kategori; // Set kategori yang tersimpan
-        
         // Isi input dengan nilai, jika 0 tampilkan kosong agar user mudah input baru
         document.getElementById('edit-masuk').value = masuk > 0 ? masuk : ''; 
         document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
@@ -1164,9 +1064,7 @@
     function saveEditChanges() {
         if (!currentEditingId) return;
 
-        const id = document.getElementById('modal-id').value;
         const newUraian = document.getElementById('edit-uraian').value.trim();
-        const newKategori = document.getElementById('edit-kategori').value;
         const newMasukValue = document.getElementById('edit-masuk').value.trim();
         const newKeluarValue = document.getElementById('edit-keluar').value.trim();
         
@@ -1174,8 +1072,8 @@
         const finalKeluar = parseInt(newKeluarValue) || 0;
         const modalStatus = document.getElementById('modal-status');
 
-        if (!newUraian || !newKategori) {
-            modalStatus.textContent = "Uraian dan Kategori tidak boleh kosong!";
+        if (!newUraian) {
+            modalStatus.textContent = "Uraian tidak boleh kosong!";
             return;
         }
 
@@ -1187,27 +1085,15 @@
             modalStatus.textContent = "Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya.";
             return;
         }
-        
-        // Tambahan validasi: Kategori harus sesuai dengan jenis dana yang diisi
-        const isMasukCategory = KATEGORI_MASUK.includes(newKategori);
-        const isKeluarCategory = KATEGORI_KELUAR.includes(newKategori);
-
-        if ((finalMasuk > 0 && finalKeluar === 0 && !isMasukCategory) || 
-            (finalKeluar > 0 && finalMasuk === 0 && !isKeluarCategory)) {
-            modalStatus.textContent = `Kategori '${newKategori}' tidak cocok dengan jenis dana yang Anda input.`;
-            return;
-        }
-
 
         modalStatus.textContent = 'Menyimpan...';
-        updateTransaction(id, newUraian, newKategori, finalMasuk, finalKeluar);
+        updateTransaction(currentEditingId, newUraian, finalMasuk, finalKeluar);
     }
     
-    async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
+    async function updateTransaction(id, uraian, danaMasuk, danaKeluar) {
         try {
             await db.collection(FINANCE_COLLECTION).doc(id).update({
                 uraian: uraian,
-                kategori: kategori,
                 danaMasuk: danaMasuk,
                 danaKeluar: danaKeluar
             });
@@ -1235,16 +1121,11 @@
             return;
         }
 
-        // PERBAIKAN KRITIS: Minta konfirmasi yang ketat
-        const confirmation = prompt("PERINGATAN KERAS! Ini akan menghapus SELURUH data laporan keuangan secara PERMANEN. Ketik kata 'SAYA YAKIN HAPUS' (tanpa tanda kutip) untuk melanjutkan penghapusan:");
-
-        if (confirmation !== "SAYA YAKIN HAPUS") {
-            document.getElementById('auth-status').textContent = "Pembatalan reset data.";
-            document.getElementById('auth-status').style.color = 'orange';
+        if (!confirm("PERINGATAN! Ini akan menghapus SEMUA data laporan keuangan (Reset Bulanan). Pastikan Anda sudah mengunduh laporannya. Lanjutkan?")) {
             return;
         }
 
-        // Lanjutkan dengan proses Batch Delete
+        // Menjalankan Batch Delete (Cara efisien hapus banyak data di Firestore)
         db.collection(FINANCE_COLLECTION).get().then((snapshot) => {
             const batch = db.batch();
             snapshot.docs.forEach((doc) => {
@@ -1253,7 +1134,7 @@
 
             return batch.commit();
         }).then(() => {
-            document.getElementById('auth-status').textContent = "SEMUA DATA LAPORAN BERHASIL DIRESET. Silakan input Saldo Awal bulan baru.";
+            document.getElementById('auth-status').textContent = "Semua data laporan berhasil direset (dihapus).";
             document.getElementById('auth-status').style.color = 'lime';
         }).catch((error) => {
             document.getElementById('auth-status').textContent = "Gagal mereset data: " + error.message;
@@ -1262,429 +1143,136 @@
     }
 
     // =========================================================================
-    // 4. FUNGSI UNDUH PDF #1: DETAIL/LAMPIRAN (LANDSCAPE) - PUBLIK
+    // 4. FUNGSI UNDUH PDF
     // =========================================================================
 
-    async function generatePDFContent() {
-        // Ambil semua data dari Firestore (tanpa pagination)
-        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-        let dataToPrint = [];
-        let saldo = 0;
-        let totalMasuk = 0;
-        let totalKeluar = 0;
-        let no = 1;
-
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            const danaMasuk = data.danaMasuk || 0;
-            const danaKeluar = data.danaKeluar || 0;
-            
-            saldo += danaMasuk - danaKeluar;
-            totalMasuk += danaMasuk;
-            totalKeluar += danaKeluar;
-            
-            dataToPrint.push({
-                no: no++,
-                tanggal: data.tanggal,
-                uraian: data.uraian,
-                kategori: data.kategori || '-',
-                danaMasuk: formatRupiah(danaMasuk),
-                danaKeluar: formatRupiah(danaKeluar),
-                saldo: formatRupiah(saldo),
-                isDanaMasuk: danaMasuk > 0
-            });
-        });
-
-        // --- 1. HEADER PDF ---
-        const headerHTML = `
-            <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 10px;">
-                <img src="logo yayasan.png" style="width: 80px; float: left; margin-right: 15px; margin-left: 20px;">
-                <h1 style="font-size: 16px; margin: 0; padding-top: 5px;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA (YAPIN)</h1>
-                <p style="font-size: 10px; margin: 0;">Khodimul Umat Ngablak Cluwak Pati</p>
-                <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN KAS MASUK/KELUAR DETAIL (LAMPIRAN)</h2>
-                <p style="font-size: 10px; margin: 0; text-align: right;">Tanggal Cetak: ${new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}</p>
-            </div>
-        `;
-        
-        // --- 2. TABEL DATA ---
-        let tableHTML = `
-            <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
-                <thead>
-                    <tr>
-                        <th style="width: 3%;">No</th>
-                        <th style="width: 12%;">Tanggal</th>
-                        <th style="width: 25%;">Uraian</th>
-                        <th style="width: 15%;">Kategori</th>
-                        <th style="width: 15%; text-align: right;">Dana Masuk</th>
-                        <th style="width: 15%; text-align: right;">Dana Keluar</th>
-                        <th style="width: 15%; text-align: right;">Saldo</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-        
-        dataToPrint.forEach(item => {
-            const colorStyle = item.isDanaMasuk ? 'color: #008000; font-weight: bold;' : '';
-            tableHTML += `
-                <tr>
-                    <td>${item.no}</td>
-                    <td>${item.tanggal}</td>
-                    <td style="text-align: left;"><span class="pdf-description-text" style="${colorStyle}">${item.uraian}</span></td>
-                    <td>${item.kategori}</td>
-                    <td style="text-align: right;">${item.danaMasuk}</td>
-                    <td style="text-align: right;">${item.danaKeluar}</td>
-                    <td style="text-align: right;">${item.saldo}</td>
-                </tr>
-            `;
-        });
-        
-        // --- FOOTER TOTAL TABEL ---
-        const finalSaldo = totalMasuk - totalKeluar;
-        const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000';
-        tableHTML += `
-            <tr style="font-weight: bold; background-color: #f0f0f0;">
-                <td colspan="4" style="text-align: right;">TOTAL AKHIR:</td>
-                <td style="text-align: right; color: #008000;">${formatRupiah(totalMasuk)}</td>
-                <td style="text-align: right; color: #cc0000;">${formatRupiah(totalKeluar)}</td>
-                <td style="text-align: right; color: ${finalSaldoColor};">${formatRupiah(finalSaldo)}</td>
-            </tr>
-                </tbody>
-            </table>
-        `;
-
-        // --- 3. TANDA TANGAN ---
-        const tt_ketua_image = "image002-removebg-preview (3).png"; // Tanda Tangan Ketua
-        const tt_bendahara_placeholder = "image003-removebg-preview.png"; // Placeholder TTD Bendahara
-
-        const tandaTanganHTML = `
-            <div style="width: 100%; margin-top: 50px; text-align: center;">
-                <div style="width: 45%; float: left;">
-                    <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
-                    <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
-                    <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
-                    <img src="${tt_ketua_image}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;">
-                    <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
-                </div>
-                <div style="width: 45%; float: right;">
-                    <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">Pati, ${new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}</p>
-                    <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Hormat Kami,</p>
-                    <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Bendahara Yayasan,</p>
-                    <div style="width: 150px; height: 70px; margin: auto; position: absolute; margin-top: -80px; margin-left: 20px;">
-                        <img src="${tt_bendahara_placeholder}" style="width: 100%; opacity: 0.1;">
-                    </div>
-                    <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Bendahara Yayasan )</p>
-                </div>
-            </div>
-        `;
-        
-        // --- KONTEN AKHIR ---
-        const content = document.createElement('div');
-        content.innerHTML = headerHTML + tableHTML + '<div style="clear: both;"></div>' + tandaTanganHTML;
-        
-        return content;
-    }
-
-    window.downloadPDF = async function() {
-        // Tidak ada validasi login, akses publik
-        
-        try {
-            const content = await generatePDFContent();
-            
-            // Aturan CSS Khusus untuk html2pdf (untuk mengatasi masalah styling)
-            const style = document.createElement('style');
-            style.textContent = `
-                body, html { margin: 0; padding: 0; }
-                
-                /* PERBAIKAN KRITIS: PASTIKAN SEMUA TEKS BERWARNA HITAM */
-                p, h1, h2, h3, h4, table, td, span { 
-                    color: black !important; 
-                    font-family: sans-serif; 
-                }
-
-                #pdf-finance-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    border: 1px solid #666; 
-                    margin-top: 10px;
-                }
-                #pdf-finance-table th, #pdf-finance-table td {
-                    border: 1px solid #ccc;
-                    padding: 5px 3px;
-                    color: black !important; /* Memastikan data cell juga hitam */
-                }
-                #pdf-finance-table th {
-                    background: #e0e0e0;
-                    color: black !important; /* Pastikan Header Hitam */
-                }
-                #pdf-finance-table td:nth-child(5),
-                #pdf-finance-table td:nth-child(6),
-                #pdf-finance-table td:nth-child(7) {
-                    text-align: right; 
-                }
-                
-                /* Override untuk warna saldo dan dana masuk */
-                .saldo-minus { color: #cc0000 !important; } 
-                
-                /* Mengatasi masalah warna di PDF */
-                .total-row td, #pdf-finance-table tr:last-child td {
-                    background-color: #ffffcc !important; 
-                    color: black !important;
-                }
-                
-                /* Pastikan teks uraian (span) yang hijau tetap terlihat */
-                .pdf-description-text {
-                    color: black !important; /* Default hitam */
-                }
-                .pdf-description-text[style*="color: #008000"] {
-                     color: #008000 !important; /* Override untuk dana masuk agar hijau */
-                }
-                
-            `;
-            
-            const element = document.createElement('div');
-            element.appendChild(style);
-            element.appendChild(content);
-
-            html2pdf(element, {
-                margin: [15, 10, 15, 10], // top, left, bottom, right
-                filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                // --- KUNCI PERBAIKAN PAGE BREAK ---
-                pagebreak: { mode: ['css', 'legacy'] } 
-                // ----------------------------------
-            });
-
-        } catch (error) {
-            console.error("Error generating PDF:", error);
-            alert("Gagal membuat PDF Lampiran. Cek konsol browser untuk detail error.");
+    window.downloadPDF = function() {
+        if(allDataRows.length === 0){
+             alert("Tidak ada data untuk dibuat laporan PDF.");
+             return;
         }
-    }
-
-
-    // =========================================================================
-    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK (LOGIKA BARU)
-    // =========================================================================
-    
-    // Fungsi bantuan untuk mengelompokkan data
-    async function aggregateData() {
-        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
         
-        let masukSummary = {};
-        let keluarSummary = {};
-        let totalMasuk = 0;
-        let totalKeluar = 0;
+        const isPaginationActive = allDataRows.length > rowsPerPage;
+        const originalCurrentPage = currentPage; 
+        
+        // --- Langkah 1: Paksa Semua Baris Tampil untuk PDF ---
+        if (isPaginationActive) {
+            allDataRows.forEach(row => row.style.display = ''); 
+        }
+        
+        const tableToPrint = document.getElementById('finance-table').cloneNode(true);
 
-        // Inisialisasi summary dengan 0
-        KATEGORI_MASUK.forEach(cat => masukSummary[cat] = 0);
-        KATEGORI_KELUAR.forEach(cat => keluarSummary[cat] = 0);
+        // --- Langkah 3: Kembalikan Tampilan Pagination ke halaman sebelumnya ---
+        if (isPaginationActive) {
+            displayTablePage(originalCurrentPage); 
+        }
+        
+        // 4. Proses pembersihan kolom Aksi pada tabel clone
+        const actionIndex = 6; 
+        const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
+        
+        if (isActionColumnPresent) {
+            // A. Hapus Header 'Aksi'
+            tableToPrint.querySelector('thead tr th:last-child').remove();
+            
+            // B. Hapus sel 'Aksi' di baris-baris data (tbody)
+            tableToPrint.querySelectorAll('tbody tr').forEach(row => {
+                if (row.cells.length > actionIndex) { 
+                    row.cells[actionIndex].remove();
+                }
+            });
 
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            const kategori = data.kategori || 'Lain-lain';
-            const danaMasuk = data.danaMasuk || 0;
-            const danaKeluar = data.danaKeluar || 0;
-
-            if (KATEGORI_MASUK.includes(kategori)) {
-                masukSummary[kategori] += danaMasuk;
-                totalMasuk += danaMasuk;
-            } else if (KATEGORI_KELUAR.includes(kategori)) {
-                keluarSummary[kategori] += danaKeluar;
-                totalKeluar += danaKeluar;
+            // C. Hapus sel kosong di footer (sel terakhir)
+            const footerRow = tableToPrint.querySelector('tfoot .total-row');
+            if (footerRow) {
+                const emptyActionCell = footerRow.querySelector('td:last-child');
+                if(emptyActionCell && emptyActionCell.textContent.trim() === ''){
+                    emptyActionCell.remove();
+                }
             }
-        });
-
-        // Filter kategori yang totalnya 0 (opsional, agar ringkas)
-        const filteredMasuk = Object.keys(masukSummary)
-            .filter(key => masukSummary[key] > 0)
-            .map(key => ({kategori: key, jumlah: masukSummary[key]}));
-            
-        const filteredKeluar = Object.keys(keluarSummary)
-            .filter(key => keluarSummary[key] > 0)
-            .map(key => ({kategori: key, jumlah: keluarSummary[key]}));
-
-        return { totalMasuk, totalKeluar, filteredMasuk, filteredKeluar };
-    }
-
-
-    window.downloadSummaryPDF = async function() {
-        try {
-            const { totalMasuk, totalKeluar, filteredMasuk, filteredKeluar } = await aggregateData();
-            const finalSaldo = totalMasuk - totalKeluar;
-            const finalSaldoTextColor = finalSaldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
-            
-            const currentDate = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
-
-            // --- 1. HEADER PDF ---
-            const headerHTML = `
-                <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 20px;">
-                    <img src="logo yayasan.png" style="width: 80px; float: left; margin-right: 15px; margin-left: 20px;">
-                    <h1 style="font-size: 16px; margin: 0; padding-top: 5px;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA (YAPIN)</h1>
-                    <p style="font-size: 10px; margin: 0;">Khodimul Umat Ngablak Cluwak Pati</p>
-                    <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN PERTANGGUNGJAWABAN KEUANGAN (RINGKASAN)</h2>
-                    <p style="font-size: 10px; margin: 0; text-align: right;">Tanggal Cetak: ${currentDate}</p>
-                </div>
-            `;
-
-            // --- 2. REKAPITULASI DETAIL DANA MASUK ---
-            let masukTableHTML = `
-                <div style="margin-bottom: 30px;">
-                    <h4 style="font-size: 13px; text-align: left; margin-bottom: 10px; color: #008000;">A. Rincian Dana Masuk:</h4>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #008000;">
-                        <thead>
-                            <tr style="background-color: #e6ffe6;">
-                                <th style="width: 5%; padding: 5px;">No</th>
-                                <th style="width: 65%; padding: 5px; text-align: left;">Kategori Dana Masuk</th>
-                                <th style="width: 30%; padding: 5px; text-align: right;">Jumlah (Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            filteredMasuk.forEach((item, index) => {
-                masukTableHTML += `
-                    <tr>
-                        <td style="padding: 5px; border: 1px solid #ccc; text-align: center;">${index + 1}</td>
-                        <td style="padding: 5px; border: 1px solid #ccc; text-align: left;">${item.kategori}</td>
-                        <td style="padding: 5px; border: 1px solid #ccc; text-align: right;">${formatRupiah(item.jumlah)}</td>
-                    </tr>
-                `;
-            });
-            // Total Baris Dana Masuk
-            masukTableHTML += `
-                <tr style="background-color: #c6f6c6; font-weight: bold;">
-                    <td colspan="2" style="padding: 8px; text-align: right;">TOTAL DANA MASUK</td>
-                    <td style="padding: 8px; text-align: right; color: #006000;">Rp. ${formatRupiah(totalMasuk)}</td>
-                </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            
-            // --- 3. REKAPITULASI DETAIL DANA KELUAR ---
-            let keluarTableHTML = `
-                <div style="margin-bottom: 30px;">
-                    <h4 style="font-size: 13px; text-align: left; margin-bottom: 10px; color: #cc0000;">B. Rincian Dana Keluar:</h4>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #cc0000;">
-                        <thead>
-                            <tr style="background-color: #ffe6e6;">
-                                <th style="width: 5%; padding: 5px;">No</th>
-                                <th style="width: 65%; padding: 5px; text-align: left;">Kategori Dana Keluar</th>
-                                <th style="width: 30%; padding: 5px; text-align: right;">Jumlah (Rp)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            filteredKeluar.forEach((item, index) => {
-                keluarTableHTML += `
-                    <tr>
-                        <td style="padding: 5px; border: 1px solid #ccc; text-align: center;">${index + 1}</td>
-                        <td style="padding: 5px; border: 1px solid #ccc; text-align: left;">${item.kategori}</td>
-                        <td style="padding: 5px; border: 1px solid #ccc; text-align: right;">${formatRupiah(item.jumlah)}</td>
-                    </tr>
-                `;
-            });
-            // Total Baris Dana Keluar
-            keluarTableHTML += `
-                <tr style="background-color: #f6c6c6; font-weight: bold;">
-                    <td colspan="2" style="padding: 8px; text-align: right;">TOTAL DANA KELUAR</td>
-                    <td style="padding: 8px; text-align: right; color: #a00000;">Rp. ${formatRupiah(totalKeluar)}</td>
-                </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
-
-
-            // --- 4. RINGKASAN AKHIR (TOTAL SALDO) ---
-            const ringkasanAkhir = `
-                <div style="width: 90%; margin: 40px auto; font-size: 12px; padding: 15px; border: 2px solid #ffd700; border-radius: 8px; background-color: #fff8e1;">
-                    <h4 style="margin: 0 0 15px 0; font-size: 14px; text-align: center; color: #b8860b;">C. SALDO AKHIR PERIODE INI</h4>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                        <tr>
-                            <td style="padding: 8px; width: 60%; font-weight: bold;">TOTAL DANA MASUK:</td>
-                            <td style="padding: 8px; text-align: right; color: #008000; font-weight: bold;">Rp. ${formatRupiah(totalMasuk)}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px; font-weight: bold;">TOTAL DANA KELUAR:</td>
-                            <td style="padding: 8px; text-align: right; color: #cc0000; font-weight: bold;">Rp. ${formatRupiah(totalKeluar)}</td>
-                        </tr>
-                        <tr style="background-color: #ffedb3; font-size: 1.1em; border-top: 3px double #b8860b;">
-                            <td style="padding: 10px; font-weight: bold;">SALDO AKHIR:</td>
-                            <td style="padding: 10px; text-align: right; font-weight: bold; ${finalSaldoTextColor}">Rp. ${formatRupiah(finalSaldo)}</td>
-                        </tr>
-                    </table>
-                </div>
-            `;
-            
-            // --- 5. TANDA TANGAN ---
-            const tt_ketua_image = "image002-removebg-preview (3).png";
-            const tt_bendahara_placeholder = "image003-removebg-preview.png";
-
-            const tandaTanganHTML = `
-                <div style="width: 100%; margin-top: 50px; text-align: center;">
-                    <div style="width: 45%; float: left; margin-left: 20px;">
-                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
-                        <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
-                        <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Ketua Yayasan,</p>
-                        <img src="${tt_ketua_image}" style="width: 150px; height: auto; position: absolute; margin-top: -80px; margin-left: -75px;">
-                        <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
-                    </div>
-                    <div style="width: 45%; float: right; margin-right: 20px;">
-                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">Pati, ${currentDate}</p>
-                        <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Hormat Kami,</p>
-                        <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Bendahara Yayasan,</p>
-                        <div style="width: 150px; height: 70px; margin: auto; position: absolute; margin-top: -80px; margin-left: 20px;">
-                            <img src="${tt_bendahara_placeholder}" style="width: 100%; opacity: 0.1;">
-                        </div>
-                        <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Bendahara Yayasan )</p>
-                    </div>
-                </div>
-            `;
-
-            const content = document.createElement('div');
-            // Gabungkan semua bagian
-            content.innerHTML = headerHTML + masukTableHTML + keluarTableHTML + ringkasanAkhir + '<div style="clear: both;"></div>' + tandaTanganHTML;
-            
-            // Buat style khusus agar PDF terlihat bersih dan hitam
-            const style = document.createElement('style');
-            style.textContent = `
-                body, html { margin: 0; padding: 0; }
-                
-                /* PASTIKAN SEMUA TEKS BERWARNA HITAM KECUALI YANG DITENTUKAN OLEH LOGIKA WARNA */
-                p, h1, h2, h3, h4, table, td, th, span { 
-                    color: black !important; 
-                    font-family: sans-serif; 
-                }
-                
-                /* Override untuk warna spesifik di tabel ringkasan */
-                .masuk-text-color { color: #008000 !important; }
-                .keluar-text-color { color: #cc0000 !important; }
-            `;
-
-            const element = document.createElement('div');
-            element.appendChild(style);
-            element.appendChild(content);
-
-
-            html2pdf(element, {
-                margin: [15, 10, 15, 10], // top, left, bottom, right
-                filename: 'Laporan_Keuangan_GLOBAL_' + new Date().toLocaleDateString('id-ID') + '.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-            });
-
-        } catch (error) {
-            console.error("Error generating Summary PDF:", error);
-            alert("Gagal membuat PDF Ringkasan. Cek konsol browser untuk detail error.");
         }
+        
+        // --- Perbaikan CSS khusus untuk PDF (lanjutan) ---
+        const style = document.createElement('style');
+        style.textContent = `
+            /* Aturan Umum */
+            body, html { margin: 0; padding: 0; }
+            h2, p { color: black; font-family: sans-serif; }
+            h2 { text-align: center; margin-bottom: 5px; font-size: 16px; }
+            p { text-align: right; font-size: 12px; margin: 3px 0; }
+
+            /* Aturan Tabel */
+            #finance-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                color: black; 
+                font-size: 10px;
+                border: 1px solid #333; 
+            }
+
+            #finance-table th, #finance-table td {
+                padding: 6px 3px;
+                text-align: center;
+                border: 1px solid #666; 
+                background: white; 
+            }
+
+            #finance-table th {
+                background: #f0f0f0; 
+                font-weight: bold;
+                color: #333;
+            }
+            
+            /* Kolom Uraian Rata Kiri di PDF */
+            #finance-table td:nth-child(3) {
+                text-align: left; 
+            }
+
+            /* Aturan Footer Total */
+            .total-row td {
+                font-weight: bold;
+                background-color: #ffffcc !important; 
+                color: black;
+                border-top: 2px solid #333;
+            }
+            .total-row td:first-child {
+                text-align: right;
+            }
+            /* Kolom nominal harus rata kanan */
+            #finance-table td:nth-child(4),
+            #finance-table td:nth-child(5),
+            #finance-table td:nth-child(6) {
+                text-align: right; 
+            }
+
+            .saldo-minus { color: #cc0000 !important; font-weight: bold; }
+            .saldo-plus { color: #009900 !important; font-weight: bold; }
+        `;
+
+        // 5. Tambahkan judul dan informasi tanggal
+        const header = document.createElement('h2');
+        header.textContent = 'LAPORAN PERTANGGUNGJAWABAN KEUANGAN YAYASAN';
+
+        const dateInfo = document.createElement('p');
+        dateInfo.textContent = `Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`;
+
+        // 6. Masukkan semua elemen ke dalam satu kontainer
+        const element = document.createElement('div');
+        element.appendChild(style);
+        element.appendChild(header);
+        element.appendChild(dateInfo);
+        element.appendChild(tableToPrint); 
+
+        // 7. Pengaturan html2pdf
+        html2pdf(element, {
+            margin: 10,
+            filename: 'Laporan_Keuangan_' + new Date().toLocaleDateString('id-ID') + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3, logging: false, useCORS: true }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } // Menggunakan landscape agar kolom lebih lebar
+        });
     }
-
-
-    // =========================================================================
-    // 6. INISIALISASI
-    // =========================================================================
 
     // Fungsi untuk menginisialisasi event listener pada modal
     function setupModalListeners() {
@@ -1692,11 +1280,20 @@
         const closeBtn = document.querySelector('.close-btn');
         const saveBtn = document.getElementById('save-edit-btn');
         
-        closeBtn.onclick = function() { modal.style.display = 'none'; }
-        window.onclick = function(event) { if (event.target == modal) { modal.style.display = 'none'; } }
-        saveBtn.onclick = saveEditChanges;
+        // Tutup saat klik tombol X
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
         
-        fillCategoryOptions(); // Isi opsi kategori saat setup
+        // Tutup saat klik di luar modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Simpan saat klik tombol Simpan
+        saveBtn.onclick = saveEditChanges;
     }
 
 
