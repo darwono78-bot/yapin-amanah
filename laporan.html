@@ -1515,15 +1515,18 @@
             
             const currentDate = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
 
-            // --- 1. HEADER PDF ---
+            // --- 1. HEADER PDF (Kode diperbaiki) ---
             const headerHTML = `
-                <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 20px;">
-                    <img src="logo yayasan.png" style="width: 80px; float: left; margin-right: 15px; margin-left: 20px;">
-                    <h1 style="font-size: 16px; margin: 0; padding-top: 5px;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA (YAPIN)</h1>
+                <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 5px;">
+                    <img src="logo yayasan.png" style="width: 80px; display: block; margin: 0 auto 10px auto;">
+                    
+                    <h1 style="font-size: 16px; margin: 0;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA (YAPIN)</h1>
                     <p style="font-size: 10px; margin: 0;">Khodimul Umat Ngablak Cluwak Pati</p>
-                    <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN PERTANGGUNGJAWABAN KEUANGAN (RINGKASAN)</h2>
-                    <p style="font-size: 10px; margin: 0; text-align: right;">Tanggal Cetak: ${currentDate}</p>
+                    
+                    <div style="height: 10px;"></div> <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN PERTANGGUNGJAWABAN KEUANGAN (RINGKASAN)</h2>
+                    <p style="font-size: 10px; margin: 0; text-align: right; padding-right: 10px;">Tanggal Cetak: ${currentDate}</p>
                 </div>
+                <div style="clear: both; margin-bottom: 20px;"></div>
             `;
 
             // --- 2. REKAPITULASI DETAIL DANA MASUK ---
@@ -1733,4 +1736,5 @@
 </script>
 </body>
 </html>
+
 
