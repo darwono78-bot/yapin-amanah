@@ -1307,7 +1307,6 @@
         `;
         
         // --- 2. TABEL DATA ---
-        // Tambahkan class agar baris footer total tidak terpotong di akhir halaman
         let tableHTML = `
             <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 20px;">
                 <thead>
@@ -1465,64 +1464,165 @@
 
 
     // =========================================================================
-    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK
+    // 5. FUNGSI UNDUH PDF #2: GLOBAL/RINGKASAN (PORTRAIT) - PUBLIK (LOGIKA BARU)
     // =========================================================================
+    
+    // Fungsi bantuan untuk mengelompokkan data
+    async function aggregateData() {
+        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+        
+        let masukSummary = {};
+        let keluarSummary = {};
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+
+        // Inisialisasi summary dengan 0
+        KATEGORI_MASUK.forEach(cat => masukSummary[cat] = 0);
+        KATEGORI_KELUAR.forEach(cat => keluarSummary[cat] = 0);
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const kategori = data.kategori || 'Lain-lain';
+            const danaMasuk = data.danaMasuk || 0;
+            const danaKeluar = data.danaKeluar || 0;
+
+            if (KATEGORI_MASUK.includes(kategori)) {
+                masukSummary[kategori] += danaMasuk;
+                totalMasuk += danaMasuk;
+            } else if (KATEGORI_KELUAR.includes(kategori)) {
+                keluarSummary[kategori] += danaKeluar;
+                totalKeluar += danaKeluar;
+            }
+        });
+
+        // Filter kategori yang totalnya 0 (opsional, agar ringkas)
+        const filteredMasuk = Object.keys(masukSummary)
+            .filter(key => masukSummary[key] > 0)
+            .map(key => ({kategori: key, jumlah: masukSummary[key]}));
+            
+        const filteredKeluar = Object.keys(keluarSummary)
+            .filter(key => keluarSummary[key] > 0)
+            .map(key => ({kategori: key, jumlah: keluarSummary[key]}));
+
+        return { totalMasuk, totalKeluar, filteredMasuk, filteredKeluar };
+    }
+
 
     window.downloadSummaryPDF = async function() {
-        // Tidak ada validasi login, akses publik
-
         try {
-            // Ambil semua data dari Firestore untuk menghitung total
-            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-            let totalMasuk = 0;
-            let totalKeluar = 0;
-
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                totalMasuk += data.danaMasuk || 0;
-                totalKeluar += data.danaKeluar || 0;
-            });
-            
+            const { totalMasuk, totalKeluar, filteredMasuk, filteredKeluar } = await aggregateData();
             const finalSaldo = totalMasuk - totalKeluar;
             const finalSaldoTextColor = finalSaldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
             
+            const currentDate = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
+
             // --- 1. HEADER PDF ---
             const headerHTML = `
-                <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 30px;">
+                <div style="text-align: center; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 20px;">
                     <img src="logo yayasan.png" style="width: 80px; float: left; margin-right: 15px; margin-left: 20px;">
                     <h1 style="font-size: 16px; margin: 0; padding-top: 5px;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA (YAPIN)</h1>
                     <p style="font-size: 10px; margin: 0;">Khodimul Umat Ngablak Cluwak Pati</p>
-                    <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN PERTANGGUNGJAWABAN KEUANGAN GLOBAL</h2>
+                    <h2 style="font-size: 14px; margin-top: 8px; margin-bottom: 5px;">LAPORAN PERTANGGUNGJAWABAN KEUANGAN (RINGKASAN)</h2>
+                    <p style="font-size: 10px; margin: 0; text-align: right;">Tanggal Cetak: ${currentDate}</p>
                 </div>
             `;
 
-            // --- 2. REKAPITULASI UTAMA (Sesuai contoh gambar LPJ Global) ---
-            const rekapHTML = `
-                <div style="width: 80%; margin: 30px auto; font-size: 12px; padding: 20px; border: 2px solid #008000; border-radius: 8px; background-color: #f0fff0;">
-                    <h4 style="margin: 0 0 15px 0; font-size: 14px; text-align: center; color: #004d00;">RINGKASAN KEUANGAN BULAN INI</h4>
+            // --- 2. REKAPITULASI DETAIL DANA MASUK ---
+            let masukTableHTML = `
+                <div style="margin-bottom: 30px;">
+                    <h4 style="font-size: 13px; text-align: left; margin-bottom: 10px; color: #008000;">A. Rincian Dana Masuk:</h4>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #008000;">
+                        <thead>
+                            <tr style="background-color: #e6ffe6;">
+                                <th style="width: 5%; padding: 5px;">No</th>
+                                <th style="width: 65%; padding: 5px; text-align: left;">Kategori Dana Masuk</th>
+                                <th style="width: 30%; padding: 5px; text-align: right;">Jumlah (Rp)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            filteredMasuk.forEach((item, index) => {
+                masukTableHTML += `
+                    <tr>
+                        <td style="padding: 5px; border: 1px solid #ccc; text-align: center;">${index + 1}</td>
+                        <td style="padding: 5px; border: 1px solid #ccc; text-align: left;">${item.kategori}</td>
+                        <td style="padding: 5px; border: 1px solid #ccc; text-align: right;">${formatRupiah(item.jumlah)}</td>
+                    </tr>
+                `;
+            });
+            // Total Baris Dana Masuk
+            masukTableHTML += `
+                <tr style="background-color: #c6f6c6; font-weight: bold;">
+                    <td colspan="2" style="padding: 8px; text-align: right;">TOTAL DANA MASUK</td>
+                    <td style="padding: 8px; text-align: right; color: #006000;">Rp. ${formatRupiah(totalMasuk)}</td>
+                </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // --- 3. REKAPITULASI DETAIL DANA KELUAR ---
+            let keluarTableHTML = `
+                <div style="margin-bottom: 30px;">
+                    <h4 style="font-size: 13px; text-align: left; margin-bottom: 10px; color: #cc0000;">B. Rincian Dana Keluar:</h4>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #cc0000;">
+                        <thead>
+                            <tr style="background-color: #ffe6e6;">
+                                <th style="width: 5%; padding: 5px;">No</th>
+                                <th style="width: 65%; padding: 5px; text-align: left;">Kategori Dana Keluar</th>
+                                <th style="width: 30%; padding: 5px; text-align: right;">Jumlah (Rp)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            filteredKeluar.forEach((item, index) => {
+                keluarTableHTML += `
+                    <tr>
+                        <td style="padding: 5px; border: 1px solid #ccc; text-align: center;">${index + 1}</td>
+                        <td style="padding: 5px; border: 1px solid #ccc; text-align: left;">${item.kategori}</td>
+                        <td style="padding: 5px; border: 1px solid #ccc; text-align: right;">${formatRupiah(item.jumlah)}</td>
+                    </tr>
+                `;
+            });
+            // Total Baris Dana Keluar
+            keluarTableHTML += `
+                <tr style="background-color: #f6c6c6; font-weight: bold;">
+                    <td colspan="2" style="padding: 8px; text-align: right;">TOTAL DANA KELUAR</td>
+                    <td style="padding: 8px; text-align: right; color: #a00000;">Rp. ${formatRupiah(totalKeluar)}</td>
+                </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+
+            // --- 4. RINGKASAN AKHIR (TOTAL SALDO) ---
+            const ringkasanAkhir = `
+                <div style="width: 90%; margin: 40px auto; font-size: 12px; padding: 15px; border: 2px solid #ffd700; border-radius: 8px; background-color: #fff8e1;">
+                    <h4 style="margin: 0 0 15px 0; font-size: 14px; text-align: center; color: #b8860b;">C. SALDO AKHIR PERIODE INI</h4>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                         <tr>
-                            <td style="padding: 8px; border-bottom: 1px dashed #ccc; width: 60%;">TOTAL PEMASUKAN DANA:</td>
-                            <td style="padding: 8px; border-bottom: 1px dashed #ccc; text-align: right; color: #008000; font-weight: bold;">Rp. ${formatRupiah(totalMasuk)}</td>
+                            <td style="padding: 8px; width: 60%; font-weight: bold;">TOTAL DANA MASUK:</td>
+                            <td style="padding: 8px; text-align: right; color: #008000; font-weight: bold;">Rp. ${formatRupiah(totalMasuk)}</td>
                         </tr>
                         <tr>
-                            <td style="padding: 8px; border-bottom: 1px dashed #ccc;">TOTAL PENGELUARAN DANA:</td>
-                            <td style="padding: 8px; border-bottom: 1px dashed #ccc; text-align: right; color: #cc0000; font-weight: bold;">Rp. ${formatRupiah(totalKeluar)}</td>
+                            <td style="padding: 8px; font-weight: bold;">TOTAL DANA KELUAR:</td>
+                            <td style="padding: 8px; text-align: right; color: #cc0000; font-weight: bold;">Rp. ${formatRupiah(totalKeluar)}</td>
                         </tr>
-                        <tr style="background-color: #e6ffe6; font-size: 1.1em;">
+                        <tr style="background-color: #ffedb3; font-size: 1.1em; border-top: 3px double #b8860b;">
                             <td style="padding: 10px; font-weight: bold;">SALDO AKHIR:</td>
                             <td style="padding: 10px; text-align: right; font-weight: bold; ${finalSaldoTextColor}">Rp. ${formatRupiah(finalSaldo)}</td>
                         </tr>
                     </table>
                 </div>
             `;
-
-            // --- 3. TANDA TANGAN ---
+            
+            // --- 5. TANDA TANGAN ---
             const tt_ketua_image = "image002-removebg-preview (3).png";
             const tt_bendahara_placeholder = "image003-removebg-preview.png";
 
             const tandaTanganHTML = `
-                <div style="width: 100%; margin-top: 70px; text-align: center;">
+                <div style="width: 100%; margin-top: 50px; text-align: center;">
                     <div style="width: 45%; float: left; margin-left: 20px;">
                         <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">&nbsp;</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Mengetahui,</p>
@@ -1531,7 +1631,7 @@
                         <p style="font-weight: bold; font-size: 12px; border-bottom: 1px solid black; display: inline-block;">( Nama Ketua Yayasan )</p>
                     </div>
                     <div style="width: 45%; float: right; margin-right: 20px;">
-                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">Pati, ${new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'})}</p>
+                        <p style="margin-bottom: 50px; font-weight: bold; font-size: 12px;">Pati, ${currentDate}</p>
                         <p style="margin-bottom: 5px; font-weight: bold; font-size: 12px;">Hormat Kami,</p>
                         <p style="margin-bottom: 80px; font-weight: bold; font-size: 12px;">Bendahara Yayasan,</p>
                         <div style="width: 150px; height: 70px; margin: auto; position: absolute; margin-top: -80px; margin-left: 20px;">
@@ -1543,18 +1643,23 @@
             `;
 
             const content = document.createElement('div');
-            content.innerHTML = headerHTML + rekapHTML + '<div style="clear: both;"></div>' + tandaTanganHTML;
+            // Gabungkan semua bagian
+            content.innerHTML = headerHTML + masukTableHTML + keluarTableHTML + ringkasanAkhir + '<div style="clear: both;"></div>' + tandaTanganHTML;
             
-            // Buat style khusus agar PDF terlihat bersih
+            // Buat style khusus agar PDF terlihat bersih dan hitam
             const style = document.createElement('style');
             style.textContent = `
                 body, html { margin: 0; padding: 0; }
                 
-                /* PERBAIKAN KRITIS: PASTIKAN SEMUA TEKS BERWARNA HITAM */
-                p, h1, h2, h3, h4, table, td, span { 
+                /* PASTIKAN SEMUA TEKS BERWARNA HITAM KECUALI YANG DITENTUKAN OLEH LOGIKA WARNA */
+                p, h1, h2, h3, h4, table, td, th, span { 
                     color: black !important; 
                     font-family: sans-serif; 
                 }
+                
+                /* Override untuk warna spesifik di tabel ringkasan */
+                .masuk-text-color { color: #008000 !important; }
+                .keluar-text-color { color: #cc0000 !important; }
             `;
 
             const element = document.createElement('div');
