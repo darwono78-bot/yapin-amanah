@@ -931,17 +931,48 @@
         });
     }
 
-    // Cek Status Login Saat Memuat Halaman & Perubahan Status
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('input-control-container').style.display = 'block';
-        } else {
-            document.getElementById('login-container').style.display = 'block';
-            document.getElementById('input-control-container').style.display = 'none';
-        }
-        loadData(); // Selalu muat ulang data saat status auth berubah
-    });
+   // =========================================================================
+// FIREBASE AUTH STATE LISTENER (PENTING: Pastikan auth sudah diinisialisasi)
+// =========================================================================
+
+// Ambil referensi elemen DOM yang mungkin berubah berdasarkan status login
+const adminControls = document.getElementById('admin-controls'); // Kontainer tombol Tambah/Hapus/Reset/Unduh PDF admin
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const loginSection = document.getElementById('login-section'); // Asumsi ada bagian login
+
+auth.onAuthStateChanged((user) => {
+    // Baris baru: Mendapatkan status login (true jika ada user, false jika null)
+    const isLoggedIn = !!user; 
+
+    // Logika menampilkan/menyembunyikan kontrol admin
+    if (user) {
+        // USER TELAH LOGIN (Admin View)
+        if (adminControls) adminControls.style.display = 'block';
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (logoutBtn) logoutBtn.style.display = 'block';
+        if (loginSection) loginSection.style.display = 'none';
+        
+        // Optional: Tampilkan sapaan admin
+        // const userNameElement = document.getElementById('admin-name');
+        // if (userNameElement) {
+        //     userNameElement.textContent = `Selamat datang, Admin (${user.email})!`;
+        // }
+    } else {
+        // USER BELUM LOGIN (Public View)
+        if (adminControls) adminControls.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'block';
+        if (logoutBtn) logoutBtn.style.display = 'none';
+        if (loginSection) loginSection.style.display = 'block';
+    }
+
+    // Baris baru: Mengatur tampilan header Kategori/aksi (Langkah 2)
+    // Fungsi ini harus mengontrol tampilan kolom 'Kategori' dan kolom 'Aksi' di tabel utama.
+    toggleKategoriHeader(isLoggedIn); 
+
+    // Selalu muat data setelah status autentikasi diverifikasi
+    loadData(); // Biarkan ini tetap loadData() tanpa parameter!
+});
 
     // =========================================================================
     // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
@@ -1350,7 +1381,7 @@
                         <th style="width: 3%;">No</th>
                         <th style="width: 12%;">Tanggal</th>
                         <th style="width: 25%;">Uraian</th>
-                        <th style="width: 15%;">Kategori</th>
+                        <th id="header-kategori" style="width: 15%; display: none;">Kategori</th>
                         <th style="width: 15%; text-align: right;">Dana Masuk</th>
                         <th style="width: 15%; text-align: right;">Dana Keluar</th>
                         <th style="width: 15%; text-align: right;">Saldo</th>
@@ -1725,7 +1756,13 @@
     // =========================================================================
     // 6. INISIALISASI
     // =========================================================================
-
+    // Fungsi untuk mengontrol visibilitas header kolom Kategori
+    function toggleKategoriHeader(isLoggedIn) {
+        const header = document.getElementById('header-kategori');
+        if (header) {
+            header.style.display = isLoggedIn ? '' : 'none';
+        }
+    }
     // Fungsi untuk menginisialisasi event listener pada modal
     function setupModalListeners() {
         const modal = document.getElementById('editModal');
@@ -1753,6 +1790,324 @@
     window.deleteTransaction = deleteTransaction; 
 
 </script>
+    <script>
+    // =========================================================================
+    // 0. INISIALISASI VARIABEL & KONSTANTA (Sesuaikan dengan setup Firebase Anda)
+    // =========================================================================
+    
+    // --- FIREBASE PLACEHOLDERS ---
+    // Pastikan Anda sudah menginisialisasi Firebase di sini (atau di <head>)
+    // const db = firebase.firestore();
+    // const auth = firebase.auth(); 
+    const FINANCE_COLLECTION = "keuangan"; 
+
+    // --- VARIABEL GLOBAL UTAMA ---
+    const tableBody = document.getElementById('table-body');
+    const tableFooter = document.getElementById('table-footer');
+    const adminControls = document.getElementById('admin-controls'); // Asumsi ID untuk div kontrol admin
+    const loginBtn = document.getElementById('login-btn'); // Asumsi ID tombol login
+    const logoutBtn = document.getElementById('logout-btn'); // Asumsi ID tombol logout
+    let allDataRows = []; // Untuk Pagination
+
+    // --- KATEGORI ---
+    const KATEGORI_MASUK = ["Infaq", "Sumbangan", "Donasi", "Iuran Santri", "Lain-lain Masuk"];
+    const KATEGORI_KELUAR = ["Gaji", "Operasional", "Perawatan", "Pembangunan", "Lain-lain Keluar"];
+
+
+    // =========================================================================
+    // 1. FUNGSI HELPER
+    // =========================================================================
+
+    // Format Rupiah (Indonesia)
+    function formatRupiah(angka) {
+        if (typeof angka !== 'number') angka = parseFloat(angka) || 0;
+        return Math.abs(angka).toLocaleString('id-ID');
+    }
+
+    // Fungsi untuk mengisi opsi kategori di modal edit/tambah
+    function fillCategoryOptions() {
+        const selectElement = document.getElementById('edit-kategori');
+        if (!selectElement) return;
+
+        // Kosongkan opsi yang ada
+        selectElement.innerHTML = '';
+        
+        // Buat opsi default
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Pilih Kategori';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        selectElement.appendChild(defaultOption);
+
+        // Group Dana Masuk
+        const optgroupMasuk = document.createElement('optgroup');
+        optgroupMasuk.label = 'Dana Masuk';
+        KATEGORI_MASUK.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            optgroupMasuk.appendChild(option);
+        });
+        selectElement.appendChild(optgroupMasuk);
+
+        // Group Dana Keluar
+        const optgroupKeluar = document.createElement('optgroup');
+        optgroupKeluar.label = 'Dana Keluar';
+        KATEGORI_KELUAR.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            optgroupKeluar.appendChild(option);
+        });
+        selectElement.appendChild(optgroupKeluar);
+    }
+    
+    // FUNGSI BARU: Mengatur tampilan header Kolom Kategori dan Aksi
+    function toggleKategoriHeader(isLoggedIn) {
+        const kategoriHeader = document.getElementById('header-kategori');
+        const aksiHeader = document.getElementById('header-aksi');
+
+        if (kategoriHeader) {
+            kategoriHeader.style.display = isLoggedIn ? '' : 'none';
+        }
+        if (aksiHeader) {
+            aksiHeader.style.display = isLoggedIn ? '' : 'none';
+        }
+    }
+
+    // =========================================================================
+    // 2. FUNGSI MEMUAT DATA UTAMA (LOAD DATA) - Sudah Termasuk Logika Kondisional
+    // =========================================================================
+    
+    // Fungsi formatRupiah, setupPagination, dan auth, db harus sudah terdefinisi
+    async function loadData() {
+        let no = 1;
+        let saldo = 0;
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+        
+        // Reset tabel dan array pagination
+        tableBody.innerHTML = '';
+        tableFooter.innerHTML = '';
+        allDataRows = [];
+
+        try {
+            // Cek status login
+            const isLoggedIn = !!auth.currentUser;
+            
+            // 1. Ambil data dari Firestore
+            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+
+            // 2. Iterasi dan Isi Tabel
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const id = doc.id;
+
+                const danaMasuk = data.danaMasuk || 0;
+                const danaKeluar = data.danaKeluar || 0;
+                const kategori = data.kategori || '-';
+
+                saldo += danaMasuk - danaKeluar;
+                totalMasuk += danaMasuk;
+                totalKeluar += danaKelar;
+
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = no++;
+                row.insertCell(1).textContent = data.tanggal;
+                
+                // Kolom Uraian (Index 2)
+                const descriptionCell = row.insertCell(2);
+                let textColor = '';
+                if (danaMasuk > 0) { 
+                    textColor = 'masuk-text'; // Asumsi class ini berwarna hijau
+                } 
+                descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
+                
+                // Kolom Kategori (Index 3) - HANYA JIKA LOGIN
+                if (isLoggedIn) {
+                    const kategoriCell = row.insertCell(3);
+                    kategoriCell.textContent = kategori; 
+                    kategoriCell.style.textAlign = 'center';
+                }
+
+                // Perhitungan index kolom yang fleksibel
+                const offset = isLoggedIn ? 0 : -1;
+
+                // Sel Dana Masuk (Original Index 4) -> 4 + offset
+                const masukCell = row.insertCell(4 + offset);
+                masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
+                masukCell.style.textAlign = 'right';
+
+                // Sel Dana Keluar (Original Index 5) -> 5 + offset
+                const keluarCell = row.insertCell(5 + offset);
+                keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
+                keluarCell.style.textAlign = 'right';
+
+                // Sel Saldo (Original Index 6) -> 6 + offset
+                const saldoCell = row.insertCell(6 + offset);
+                saldoCell.textContent = formatRupiah(saldo);
+                saldoCell.style.textAlign = 'right';
+                if (saldo < 0) {
+                    saldoCell.className = 'saldo-minus'; // Asumsi class ini berwarna merah
+                } else if (saldo > 0) {
+                    saldoCell.className = 'saldo-plus'; // Asumsi class ini berwarna hijau/netral
+                }
+
+                // Kolom Aksi (Original Index 7) - HANYA JIKA LOGIN
+                if (isLoggedIn) {
+                    const actionCell = row.insertCell(7 + offset); // Index 7 karena ada 7 kolom data saat login
+                    actionCell.innerHTML = `
+                        <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', '${kategori}', ${danaMasuk}, ${danaKeluar})">Edit</button>
+                        <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
+                    `;
+                    actionCell.style.textAlign = 'center';
+                }
+                
+                allDataRows.push(row);
+            });
+            
+            // Panggil Pagination (Jika fungsi ini sudah Anda buat)
+            if (typeof setupPagination === 'function') {
+                setupPagination();
+            }
+
+            // 3. Tampilkan Total Laporan di Footer
+            const footerRow = tableFooter.insertRow();
+            footerRow.className = 'total-row';
+            
+            // Kolom Uraian digabung untuk Label TOTAL
+            // Colspan 4 jika Kategori ada, Colspan 3 jika Kategori tidak ada
+            const colspanValue = isLoggedIn ? 4 : 3; 
+            
+            const totalLabelCell = footerRow.insertCell(0);
+            totalLabelCell.colSpan = colspanValue; 
+            totalLabelCell.textContent = 'TOTAL AKHIR:';
+            totalLabelCell.style.textAlign = 'right'; 
+
+            // Kolom Total Dana Masuk (Index 4 -> Index 1 di footer)
+            const totalMasukCell = footerRow.insertCell(1);
+            totalMasukCell.textContent = formatRupiah(totalMasuk);
+            totalMasukCell.style.textAlign = 'right';
+
+            // Kolom Total Dana Keluar (Index 5 -> Index 2 di footer)
+            const totalKeluarCell = footerRow.insertCell(2);
+            totalKeluarCell.textContent = formatRupiah(totalKeluar);
+            totalKeluarCell.style.textAlign = 'right';
+            totalKeluarCell.style.color = '#FF4136'; 
+
+            // Kolom Saldo Akhir (Index 6 -> Index 3 di footer)
+            const finalSaldoCell = footerRow.insertCell(3);
+            finalSaldoCell.textContent = formatRupiah(saldo);
+            finalSaldoCell.style.textAlign = 'right';
+            if (saldo < 0) {
+                finalSaldoCell.className = 'saldo-minus';
+            } else if (saldo > 0) {
+                finalSaldoCell.className = 'saldo-plus';
+            }
+
+            // Jika admin login, perlu satu sel kosong lagi untuk kolom Aksi
+            if (isLoggedIn) {
+                const emptyActionCell = footerRow.insertCell(4);
+                emptyActionCell.textContent = '';
+            }
+
+        } catch (error) {
+            console.error("Error loading data:", error);
+            alert("Gagal memuat data keuangan. Cek konsol browser untuk detail error.");
+        }
+    }
+    
+    // =========================================================================
+    // 3. FUNGSI AUTENTIKASI (Menggunakan kode sebelumnya)
+    // =========================================================================
+    
+    // Asumsi fungsi login, logout, addTransaction, editTransactionPrompt, 
+    // deleteTransaction, resetData, saveEditChanges sudah didefinisikan di sini.
+    // ... (Definisi fungsi-fungsi CRUD dan Auth Anda) ...
+    
+    // Placeholder untuk fungsi CRUD dan Auth yang harus Anda miliki
+    async function login() { /* ... */ }
+    async function logout() { /* ... */ }
+    async function addTransaction() { /* ... */ }
+    function deleteTransaction(id) { /* ... */ }
+    function editTransactionPrompt(id, tanggal, uraian, kategori, danaMasuk, danaKeluar) { /* ... */ }
+    function saveEditChanges() { /* ... */ }
+    function resetData() { /* ... */ }
+    
+    // =========================================================================
+    // 4. LISTENER PERUBAHAN STATUS AUTENTIKASI (Wajib)
+    // =========================================================================
+    
+    // PENTING: Pastikan ini adalah bagian dari setup Firebase Anda
+    // Asumsi variabel 'auth' sudah terinisialisasi
+    auth.onAuthStateChanged((user) => {
+        const isLoggedIn = !!user; // Baris baru untuk mendapatkan status login
+        
+        // Logika tampilan kontrol login/logout/admin
+        if (user) {
+            if (adminControls) adminControls.style.display = 'block';
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (logoutBtn) logoutBtn.style.display = 'block';
+        } else {
+            if (adminControls) adminControls.style.display = 'none';
+            if (loginBtn) loginBtn.style.display = 'block';
+            if (logoutBtn) logoutBtn.style.display = 'none';
+        }
+        
+        // Baris baru: Mengatur tampilan header Kategori dan Aksi
+        toggleKategoriHeader(isLoggedIn); 
+        
+        loadData(); // Memuat ulang data dengan tampilan yang sesuai
+    });
+
+
+    // =========================================================================
+    // 5. FUNGSI UNDUH PDF (Fungsi-fungsi ini harus disesuaikan dengan logika kolom baru)
+    // =========================================================================
+    
+    // Di sini Anda perlu menaruh fungsi-fungsi PDF Anda (downloadAttachmentPDF, downloadSummaryPDF)
+    // Pastikan logika generatePDFContent Anda juga menggunakan 'isLoggedIn' untuk kolom Kategori dan Aksi
+    
+    // ... (Fungsi aggregateData() dan downloadSummaryPDF) ...
+    // ... (Fungsi generatePDFContent() dan downloadAttachmentPDF) ...
+    
+
+    // =========================================================================
+    // 6. INISIALISASI
+    // =========================================================================
+
+    // Fungsi untuk menginisialisasi event listener pada modal
+    function setupModalListeners() {
+        const modal = document.getElementById('editModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const saveBtn = document.getElementById('save-edit-btn');
+        
+        closeBtn.onclick = function() { modal.style.display = 'none'; }
+        window.onclick = function(event) { if (event.target == modal) { modal.style.display = 'none'; } }
+        saveBtn.onclick = saveEditChanges;
+        
+        fillCategoryOptions(); // Isi opsi kategori saat setup
+    }
+
+
+    // Panggil fungsi setupModalListeners saat dokumen siap
+    document.addEventListener('DOMContentLoaded', setupModalListeners);
+
+
+    // Expose fungsi ke window agar dapat dipanggil dari HTML (penting untuk tombol di HTML)
+    window.login = login;
+    window.logout = logout;
+    window.addTransaction = addTransaction;
+    window.resetData = resetData;
+    window.deleteTransaction = deleteTransaction; 
+    window.editTransactionPrompt = editTransactionPrompt;
+    
+    // Expose fungsi PDF Anda ke window
+    // window.downloadAttachmentPDF = downloadAttachmentPDF;
+    // window.downloadSummaryPDF = downloadSummaryPDF;
+
+</script>
 <script>
     // Script untuk Animasi Scroll Anda
     const sections = document.querySelectorAll('.section');
@@ -1767,3 +2122,4 @@
 </script>
 </body>
 </html>
+
