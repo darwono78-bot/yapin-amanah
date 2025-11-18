@@ -1052,7 +1052,52 @@
     // 6. FUNGSI UNDUH PDF (DETAIL TANPA TANDA TANGAN, RINGKASAN DENGAN TANDA TANGAN)
     // =========================================================================
 
-    // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN - SEKARANG ADA TANDA TANGAN)
+    async function aggregateDataByCategory() {
+        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+        const aggregated = {};
+        let totalMasukGlobal = 0;
+        let totalKeluarGlobal = 0;
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const kategori = data.kategori || 'Lain-lain';
+            const danaMasuk = data.danaMasuk || 0;
+            const danaKeluar = data.danaKeluar || 0;
+            
+            if (!aggregated[kategori]) {
+                aggregated[kategori] = { masuk: 0, keluar: 0 };
+            }
+            
+            aggregated[kategori].masuk += danaMasuk;
+            aggregated[kategori].keluar += danaKeluar;
+            
+            totalMasukGlobal += danaMasuk;
+            totalKeluarGlobal += danaKeluar;
+        });
+
+        const summaryMasuk = [];
+        const summaryKeluar = [];
+
+        KATEGORI_MASUK.forEach(cat => {
+            if (aggregated[cat] && aggregated[cat].masuk > 0) {
+                summaryMasuk.push({ kategori: cat, jumlah: aggregated[cat].masuk, isMasuk: true });
+            }
+        });
+        KATEGORI_KELUAR.forEach(cat => {
+            if (aggregated[cat] && aggregated[cat].keluar > 0) {
+                summaryKeluar.push({ kategori: cat, jumlah: aggregated[cat].keluar, isMasuk: false });
+            }
+        });
+
+        return {
+            summaryMasuk,
+            summaryKeluar,
+            totalMasukGlobal,
+            totalKeluarGlobal
+        };
+    }
+    
+    // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN - TANPA TANDA TANGAN)
     async function generatePDFContent(isSummary = false) { 
         
         const isLoggedIn = !!auth.currentUser;
@@ -1141,27 +1186,11 @@
         <div style="text-align: right; margin-top: 20px; font-size: 10px; color: black;">
             <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
         </div>
-        
-        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; color: black;">
-            <tr>
-                <td style="width: 50%; text-align: center; padding: 10px;">
-                    <p>Mengetahui,</p>
-                    <p>Ketua Yayasan</p>
-                    <br><br><br><br>
-                    <p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP KETUA]</p>
-                </td>
-                <td style="width: 50%; text-align: center; padding: 10px;">
-                    <p>Hormat Kami,</p>
-                    <p>Bendahara</p>
-                    <br><br><br><br>
-                    <p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP BENDAHARA]</p>
-                </td>
-            </tr>
-        </table>
-        `; 
+        `;
 
         return headerHTML + tableHTML;
     }
+
     // Fungsi Pembantu: Menghasilkan konten PDF Ringkasan (Tanda Tangan Tetap Ada)
     async function generateSummaryPDFContent() {
         const aggregated = await aggregateDataByCategory();
