@@ -293,36 +293,7 @@
             background: #fff799;
             transform: scale(1.05);
         }
-/* ======================================================= */
-/* GLONDONGAN 1: CSS BARU UNTUK TOMBOL RESET KECIL & AMAN */
-/* ======================================================= */
-.reset-btn {
-    padding: 5px 10px; /* Membuat tombol kecil: Reset Data */
-    font-size: 14px;
-    background-color: #dc3545; /* Warna merah untuk reset */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    float: left; /* Menempatkan di kanan atas */
-    margin-bottom: 15px; /* Memberi jarak dari kotak input di bawahnya */
-    margin-right: 10px; /* Jarak dari sisi kanan container */
-    font-weight: bold;
-    text-shadow: 0 0 3px rgba(0,0,0,0.5);
-}
 
-.reset-btn:hover {
-    background-color: #c82333;
-}
-        /* Tambahkan di dalam tag <style> Anda, bersama CSS .reset-btn */
-.control-container-flex {
-    display: flex;
-    flex-direction: column; /* Mengatur konten berbaris dari atas ke bawah */
-    align-items: flex-start; /* Memastikan konten dimulai dari kiri/atas */
-    width: 100%; /* Memastikan kontainer mengambil lebar penuh */
-}
-/* ======================================================= */
         footer {
             background: rgba(0, 60, 0, 0.85);
             text-align: center;
@@ -629,19 +600,23 @@
         <button onclick="downloadSummaryPDF()" style="background-color: #00A9A5;">📥 Unduh PDF Global (Ringkasan LPJ)</button>
     </div>
     <table id="finance-table">
-     <thead>
-    <tr>
-        <th style="width: 5%;">No</th>
-        <th style="width: 15%;">Tanggal</th>
-        <th style="width: 25%;">Uraian</th>
-        
-        <th id="header-kategori" style="width: 15%; display: none;">Kategori</th>
-        
-        <th style="width: 10%;">Dana Masuk</th>
-        <th style="width: 10%;">Dana Keluar</th>
-        <th style="width: 10%;">Saldo</th>
-    </tr>
-</thead>
+        <thead>
+            <tr>
+                <th style="width: 5%;">No</th>
+                <th style="width: 15%;">Tanggal</th>
+                <th style="width: 25%;">Uraian</th>
+                <th style="width: 15%;">Kategori</th>
+                <th style="width: 10%;">Dana Masuk</th>
+                <th style="width: 10%;">Dana Keluar</th>
+                <th style="width: 10%;">Saldo</th>
+                </tr>
+        </thead>
+        <tbody id="finance-body">
+            
+        </tbody>
+        <tfoot id="finance-footer">
+            </tfoot>
+    </table>
     
     <div id="pagination-controls" class="pagination-controls">
         </div>
@@ -655,45 +630,40 @@
         <p id="auth-status" style="color: red;"></p>
     </div>
 
-<div id="input-control-container" style="display: none;" class="control-container-flex">
-    
-    <div style="width: 100%; margin-bottom: 25px;">
-        <button type="button" onclick="resetData()" class="reset-btn" style="float: left;">Reset Data</button> 
+    <div id="input-control-container" style="display: none;">
         
-        <p style="text-align: right; margin: 0;">
-            Selamat datang, Bendahara! 
-            <button onclick="logout()" style="background-color: #dc3545">Logout</button>
-        </p>
-    </div>
-    
-    <div id="input-form" style="width: 100%;">
-        <h3>Input Transaksi Baru</h3>
-        <input type="date" id="input-tanggal" required>
-        <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
-        
-        <div id="input-kategori-container" style="display: none;">
-    <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
-    <select id="input-kategori" required>
-         <option value="" selected disabled>--- Pilih Kategori ---</option>
-         <optgroup label="Dana Masuk">
-             </optgroup>
-         <optgroup label="Dana Keluar">
-             </optgroup>
-    </select>
-</div>
+        <p style="text-align: right;">Selamat datang, Bendahara! <button onclick="logout()" style="background-color: #dc3545">Logout</button></p>
 
-        <div class="input-group">
-            <div>
-                <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
+        <div id="input-form">
+            <h3>Input Transaksi Baru</h3>
+            <input type="date" id="input-tanggal" required>
+            <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
+            
+            <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
+            <select id="input-kategori" required>
+                 <option value="" selected disabled>--- Pilih Kategori ---</option>
+                 <optgroup label="Dana Masuk">
+                     </optgroup>
+                 <optgroup label="Dana Keluar">
+                     </optgroup>
+            </select>
+
+            <div class="input-group">
+                <div>
+                    <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
+                </div>
+                <div>
+                    <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
+                </div>
             </div>
-            <div>
-                <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
-            </div>
+
+            <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
         </div>
-
-        <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
+        
+        <div class="actions" style="text-align: center; margin-top: 20px;">
+            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545; width: 80%;">⚠️ RESET DATA BULANAN (HAPUS SEMUA DATA)</button>
+        </div>
     </div>
-</div>
    </section>
     
 <div id="editModal" class="modal">
@@ -1761,12 +1731,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
