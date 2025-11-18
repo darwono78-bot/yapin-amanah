@@ -1278,11 +1278,67 @@
     }
 
   // =========================================================================
-    // 6. FUNGSI UNDUH PDF (TELAH DIFIXING TOTAL DAN WARNA TULISAN)
+    // 6. FUNGSI UNDUH PDF (RINGKASAN LPJ DITAMBAH)
     // =========================================================================
 
-    // Fungsi Pembantu: Hanya untuk menghasilkan konten PDF
+    // Fungsi baru untuk mengelompokkan data berdasarkan Kategori
+    async function aggregateDataByCategory() {
+        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+        const aggregated = {};
+        let totalMasukGlobal = 0;
+        let totalKeluarGlobal = 0;
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const kategori = data.kategori || 'Lain-lain';
+            const danaMasuk = data.danaMasuk || 0;
+            const danaKeluar = data.danaKeluar || 0;
+            
+            if (!aggregated[kategori]) {
+                aggregated[kategori] = { masuk: 0, keluar: 0 };
+            }
+            
+            aggregated[kategori].masuk += danaMasuk;
+            aggregated[kategori].keluar += danaKeluar;
+            
+            totalMasukGlobal += danaMasuk;
+            totalKeluarGlobal += danaKeluar;
+        });
+
+        // Struktur data ringkasan untuk memisahkan Masuk dan Keluar (sesuai format LPJ)
+        const summaryMasuk = [];
+        const summaryKeluar = [];
+
+        // Filter dan pisahkan kategori masuk dan keluar
+        KATEGORI_MASUK.forEach(cat => {
+            if (aggregated[cat] && aggregated[cat].masuk > 0) {
+                 // Ambil total masuk (kolom keluar harus 0)
+                summaryMasuk.push({ kategori: cat, jumlah: aggregated[cat].masuk, isMasuk: true });
+            }
+        });
+        KATEGORI_KELUAR.forEach(cat => {
+            if (aggregated[cat] && aggregated[cat].keluar > 0) {
+                 // Ambil total keluar (kolom masuk harus 0)
+                summaryKeluar.push({ kategori: cat, jumlah: aggregated[cat].keluar, isMasuk: false });
+            }
+        });
+
+        return {
+            summaryMasuk,
+            summaryKeluar,
+            totalMasukGlobal,
+            totalKeluarGlobal
+        };
+    }
+    
+    // Fungsi Pembantu: Menghasilkan konten PDF Detail (tetap sama)
     async function generatePDFContent(isSummary = false) { 
+        // Logika Detail (Lampiran) tetap sama persis seperti sebelumnya
+        // ... (Kode generatePDFContent yang panjang) ... 
+
+        // KARENA KODE generatePDFContent SUDAH PANJANG DAN BENAR,
+        // UNTUK EFISIENSI HANYA DI TAMPILKAN KODE generateSummaryPDFContent
+        
         const isLoggedIn = !!auth.currentUser;
         
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
@@ -1322,13 +1378,12 @@
             <h2 style="font-size: 14px; text-align: center; margin: 15px 0;">LAPORAN KEUANGAN (${isSummary ? 'RINGKASAN GLOBAL' : 'LAMPIRAN DETAIL'})</h2>
         `;
         
-        // Penentuan lebar kolom untuk mode Landscape:
         const widthUraian = showKategoriInPDF ? '30%' : '40%';
         const pdfColspan = showKategoriInPDF ? 4 : 3;
         
         let tableHTML = `
             <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 9.5px; color: black;">
-            <thead>
+                <thead>
                     <tr style="background-color: #f0f0f0;">
                         <th style="width: 5%; padding: 8px; border: 1px solid #ddd;">No</th>
                         <th style="width: 12%; border: 1px solid #ddd;">Tanggal</th>
@@ -1343,7 +1398,6 @@
         `;
 
         dataToPrint.forEach(item => { 
-            // Pastikan Uraian selalu hitam untuk keterbacaan
             tableHTML += ` 
                 <tr> 
                     <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${item.no}</td> 
@@ -1372,15 +1426,160 @@
             </tbody> 
         </table> 
         <div style="text-align: right; margin-top: 20px; font-size: 10px; color: black;">
-        <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+            <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
         </div>
         `;
 
         return headerHTML + tableHTML;
     }
 
+    // Fungsi Pembantu: Menghasilkan konten PDF Ringkasan
+    async function generateSummaryPDFContent() {
+        const aggregated = await aggregateDataByCategory();
+        const { summaryMasuk, summaryKeluar, totalMasukGlobal, totalKeluarGlobal } = aggregated;
+        let no = 1;
+        
+        const headerHTML = `
+            <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 5px;">
+                <h1 style="font-size: 16px; margin: 0;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>
+                <p style="font-size: 10px; margin: 0;">Khodimul Umat Ngablak Cluwak Pati</p>
+            </div>
+            <h2 style="font-size: 14px; text-align: center; margin: 15px 0;">LAPORAN PERTANGGUNGJAWABAN (LPJ) RINGKASAN GLOBAL</h2>
+        `;
+        
+        let tableHTML = '';
+        
+        // =================================================================
+        // 1. TABEL DANA MASUK
+        // =================================================================
+        tableHTML += `
+            <h3 style="font-size: 12px; margin-top: 20px; margin-bottom: 5px; color: black;">A. Dana Masuk</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">
+                <thead>
+                    <tr style="background-color: #e6ffe6;">
+                        <th style="width: 5%; padding: 6px; border: 1px solid #ddd;">No</th>
+                        <th style="width: 55%; text-align: left; border: 1px solid #ddd;">Kategori</th>
+                        <th style="width: 20%; border: 1px solid #ddd;">Debit (Rp)</th>
+                        <th style="width: 20%; border: 1px solid #ddd;">Kredit (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        summaryMasuk.forEach(item => {
+            tableHTML += ` 
+                <tr> 
+                    <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${no++}</td> 
+                    <td style="text-align: left; border: 1px solid #ddd;">${item.kategori}</td> 
+                    <td style="text-align: right; color: #008000; border: 1px solid #ddd;">${formatRupiah(item.jumlah)}</td> 
+                    <td style="text-align: right; border: 1px solid #ddd;">-</td> 
+                </tr> 
+            `; 
+        });
 
-    // FUNGSI UTAMA DOWNLOAD LAMPIRAN (Detail Transaksi)
+        tableHTML += ` 
+            <tr style="font-weight: bold; background-color: #ccffcc; border-top: 1px solid black;"> 
+                <td colspan="2" style="text-align: right; padding: 6px; border: 1px solid black;">TOTAL DANA MASUK:</td> 
+                <td style="text-align: right; color: #008000; border: 1px solid black;">${formatRupiah(totalMasukGlobal)}</td> 
+                <td style="text-align: right; border: 1px solid black;">-</td> 
+            </tr> 
+            </tbody> 
+        </table> 
+        `;
+
+        // Reset nomor urut untuk tabel selanjutnya
+        no = 1;
+
+        // =================================================================
+        // 2. TABEL DANA KELUAR
+        // =================================================================
+        tableHTML += `
+            <h3 style="font-size: 12px; margin-top: 25px; margin-bottom: 5px; color: black;">B. Dana Keluar</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">
+                <thead>
+                    <tr style="background-color: #ffe6e6;">
+                        <th style="width: 5%; padding: 6px; border: 1px solid #ddd;">No</th>
+                        <th style="width: 55%; text-align: left; border: 1px solid #ddd;">Kategori</th>
+                        <th style="width: 20%; border: 1px solid #ddd;">Debit (Rp)</th>
+                        <th style="width: 20%; border: 1px solid #ddd;">Kredit (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        summaryKeluar.forEach(item => {
+            tableHTML += ` 
+                <tr> 
+                    <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${no++}</td> 
+                    <td style="text-align: left; border: 1px solid #ddd;">${item.kategori}</td> 
+                    <td style="text-align: right; border: 1px solid #ddd;">-</td> 
+                    <td style="text-align: right; color: #cc0000; border: 1px solid #ddd;">${formatRupiah(item.jumlah)}</td> 
+                </tr> 
+            `; 
+        });
+
+        tableHTML += ` 
+            <tr style="font-weight: bold; background-color: #ffcccc; border-top: 1px solid black;"> 
+                <td colspan="2" style="text-align: right; padding: 6px; border: 1px solid black;">TOTAL DANA KELUAR:</td> 
+                <td style="text-align: right; border: 1px solid black;">-</td> 
+                <td style="text-align: right; color: #cc0000; border: 1px solid black;">${formatRupiah(totalKeluarGlobal)}</td> 
+            </tr> 
+            </tbody> 
+        </table> 
+        `;
+
+        // =================================================================
+        // 3. REKAPITULASI AKHIR
+        // =================================================================
+        const finalSaldo = totalMasukGlobal - totalKeluarGlobal; 
+        const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000'; 
+        
+        tableHTML += `
+            <h3 style="font-size: 12px; margin-top: 25px; margin-bottom: 5px; color: black;">C. Rekapitulasi Akhir</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">
+                <tr>
+                    <td style="width: 60%; padding: 6px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f0f0f0;">TOTAL DEBIT (DANA MASUK)</td>
+                    <td style="width: 40%; padding: 6px; border: 1px solid #ddd; text-align: right; color: #008000; font-weight: bold;">${formatRupiah(totalMasukGlobal)}</td>
+                </tr>
+                <tr>
+                    <td style="width: 60%; padding: 6px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f0f0f0;">TOTAL KREDIT (DANA KELUAR)</td>
+                    <td style="width: 40%; padding: 6px; border: 1px solid #ddd; text-align: right; color: #cc0000; font-weight: bold;">${formatRupiah(totalKeluarGlobal)}</td>
+                </tr>
+                <tr style="border-top: 2px solid black; background-color: #ffffcc;">
+                    <td style="width: 60%; padding: 6px; border: 1px solid black; text-align: right; font-weight: bold;">SALDO AKHIR</td>
+                    <td style="width: 40%; padding: 6px; border: 1px solid black; text-align: right; color: ${finalSaldoColor}; font-weight: bold;">${formatRupiah(finalSaldo)}</td>
+                </tr>
+            </table>
+        `;
+        
+        // Tanda tangan (placeholder)
+        tableHTML += `
+        <div style="text-align: right; margin-top: 30px; font-size: 10px; color: black;">
+            <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; color: black;">
+            <tr>
+                <td style="width: 50%; text-align: center; padding: 10px;">
+                    <p>Mengetahui,</p>
+                    <p>Ketua Yayasan</p>
+                    <br><br><br><br>
+                    <p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP KETUA]</p>
+                </td>
+                <td style="width: 50%; text-align: center; padding: 10px;">
+                    <p>Hormat Kami,</p>
+                    <p>Bendahara</p>
+                    <br><br><br><br>
+                    <p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP BENDAHARA]</p>
+                </td>
+            </tr>
+        </table>
+        `;
+
+        return headerHTML + tableHTML;
+    }
+
+
+    // FUNGSI UTAMA DOWNLOAD LAMPIRAN (Detail Transaksi - tetap sama)
     window.downloadPDF = async function() { 
         try {
             const content = await generatePDFContent(false);
@@ -1394,10 +1593,7 @@
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
-
-            // PEMANGGILAN html2pdf YANG DIPERBAIKI (metode from().set().save())
             html2pdf().from(element).set(opt).save(); 
-
         } catch (error) { 
             console.error("Error generating PDF (downloadPDF):", error); 
             alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
@@ -1407,7 +1603,7 @@
     // FUNGSI UTAMA DOWNLOAD GLOBAL (Ringkasan LPJ)
     window.downloadSummaryPDF = async function() { 
         try {
-            const content = await generatePDFContent(true); // true = Ringkasan
+            const content = await generateSummaryPDFContent(); // Panggil fungsi Ringkasan baru
             const element = document.createElement('div');
             element.innerHTML = content;
             
@@ -1416,21 +1612,21 @@
                 filename: 'Laporan_Keuangan_RINGKASAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
                 image: { type: 'jpeg', quality: 0.98 }, 
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
+                // Orientasi Portrait karena ini Ringkasan (tabel lebih sempit)
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
             };
 
-            // PEMANGGILAN html2pdf YANG DIPERBAIKI
             html2pdf().from(element).set(opt).save(); 
 
         } catch (error) { 
             console.error("Error generating Summary PDF:", error); 
-            alert("Fungsi Unduh PDF Ringkasan Gagal. Cek Konsol Browser (F12) untuk detail error."); 
+            alert("Gagal membuat PDF Ringkasan. Cek Konsol Browser (F12) untuk detail error."); 
         } 
     }
     
     // Fungsi aggregateData (placeholder)
     async function aggregateData() { 
-        // ... (Logika aggregateData jika ada) ...
+        // Fungsi ini tidak dipakai lagi, digantikan oleh aggregateDataByCategory
         return {}; 
     }
     // =========================================================================
@@ -1511,4 +1707,5 @@
 </body>
 </html>
 file unduhannya blm jadi
+
 
