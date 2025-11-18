@@ -1353,7 +1353,37 @@
         // ... (Logika aggregateData) ...
         return {}; 
     }
+// FUNGSI UTAMA DOWNLOAD - Didefinisikan langsung ke window untuk menghindari ReferenceError
+    window.downloadPDF = async function() { 
+        try {
+            // Kolom Kategori tampil di Lampiran hanya jika admin login.
+            const content = await generatePDFContent(false); 
+            const element = document.createElement('div');
+            element.innerHTML = content;
+            
+            // Konfigurasi html2pdf (Sama seperti sebelumnya)
+            const opt = { 
+                margin: [10, 10, 10, 10], 
+                filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
+                image: { type: 'jpeg', quality: 0.98 }, 
+                html2canvas: { scale: 3, logging: false, useCORS: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
 
+            // ❗ PERBAIKAN KRITIS: Menggunakan html2pdf().from(element).set(opt).save();
+            // Metode ini lebih aman dan sesuai standar pemanggilan library
+            html2pdf().from(element).set(opt).save(); 
+
+        } catch (error) { 
+            console.error("Error generating PDF (downloadPDF):", error); 
+            alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
+        } 
+    }
+
+    // FUNGSI UTAMA DOWNLOAD RINGKASAN (Jika ada, ganti juga)
+    window.downloadSummaryPDF = async function() { 
+        alert("Fungsi Unduh PDF Ringkasan sedang dikembangkan...");
+    }
     // =========================================================================
     // 7. LISTENER PERUBAHAN STATUS AUTENTIKASI (Wajib)
     // =========================================================================
@@ -1429,6 +1459,7 @@
 </script>
 </body>
 </html>
+
 
 
 
