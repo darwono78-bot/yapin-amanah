@@ -256,46 +256,42 @@
                     let no = 1;
             
                     snapshot.forEach((doc) => {
-                        const data = doc.data();
-                        const docId = doc.id;
-            
-                        // PASTIKAN DATA DICONVERT DARI STRING FIREBASE KE ANGKA (FIX FINAL)
-                        const rawDanaMasuk = data.dana_masuk || 0; 
-                        const rawDanaKeluar = data.dana_keluar || 0;
-            
-                        // Konversi Agresif (yang tidak menyebabkan SyntaxError):
-                        const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^\d]/g, '')) || 0;
-                        const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^\d]/g, '')) || 0;
-            
-                        // Ini akan menghapus titik/koma/Rp dan mengubah "500.000" menjadi 500000
-                        const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^0-9]/g, '')) || 0;
-                        const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^0-9]/g, '')) || 0;
-            
-                        saldo += danaMasuk - danaKeluar;
-                        totalMasuk += danaMasuk;
-                        totalKeluar += danaKeluar;
-            
-                        const saldoColor = saldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
-            
-                        const kategoriCell = '<td class="kategori-cell">' + (data.kategori || '-') + '</td>';
-                        const aksiCell = 
-                            '<td class="aksi-cell">' +
-                                '<button onclick="editTransactionPrompt(\'' + docId + '\')" class="edit-btn">Edit</button>' +
-                                '<button onclick="deleteTransaction(\'' + docId + '\')" class="delete-btn">Hapus</button>' +
-                            '</td>';
-            
-                        html += 
-                            '<tr>' +
-                                '<td>' + no++ + '</td>' +
-                                '<td>' + data.tanggal + '</td>' +
-                                '<td style="text-align: left;">' + data.uraian + '</td>' +
-                                kategoriCell +
-                                '<td class="dana-masuk">' + formatRupiah(danaMasuk) + '</td>' +
-                                '<td class="dana-keluar">' + formatRupiah(danaKeluar) + '</td>' +
-                                '<td style="' + saldoColor + '">' + formatRupiah(saldo) + '</td>' +
-                                aksiCell +
-                            '</tr>';
-                    });
+                            const data = doc.data();
+                            const docId = doc.id;
+                    
+                            // PASTIKAN DATA DICONVERT DARI STRING FIREBASE KE ANGKA (FIX FINAL)
+                            const rawDanaMasuk = data.dana_masuk || 0; 
+                            const rawDanaKeluar = data.dana_keluar || 0;
+                    
+                            // Konversi Agresif:
+                            const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^\d]/g, '')) || 0;
+                            const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^\d]/g, '')) || 0;
+                    
+                            saldo += danaMasuk - danaKeluar;
+                            totalMasuk += danaMasuk;
+                            totalKeluar += danaKeluar;
+                    
+                            const saldoColor = saldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
+                    
+                            const kategoriCell = '<td class="kategori-cell">' + (data.kategori || '-') + '</td>';
+                            const aksiCell = 
+                                '<td class="aksi-cell">' +
+                                    '<button onclick="editTransactionPrompt(\'' + docId + '\')" class="edit-btn">Edit</button>' +
+                                    '<button onclick="deleteTransaction(\'' + docId + '\')" class="delete-btn">Hapus</button>' +
+                                '</td>';
+                    
+                            html += 
+                                '<tr>' +
+                                    '<td>' + no++ + '</td>' +
+                                    '<td>' + data.tanggal + '</td>' +
+                                    '<td style="text-align: left;">' + data.uraian + '</td>' +
+                                    kategoriCell +
+                                    '<td class="dana-masuk">' + formatRupiah(danaMasuk) + '</td>' +
+                                    '<td class="dana-keluar">' + formatRupiah(danaKeluar) + '</td>' +
+                                    '<td style="' + saldoColor + '">' + formatRupiah(saldo) + '</td>' +
+                                    aksiCell +
+                                '</tr>';
+                        }); // Hentikan di sini, Lanjutkan dengan if (html === '') di kode lama Kakak
             
                     if (html === '') {
                         html = '<tr><td colspan="8" style="text-align: center;">Belum ada transaksi yang tercatat.</td></tr>';
@@ -885,6 +881,7 @@
 
 </body>
 </html>
+
 
 
 
