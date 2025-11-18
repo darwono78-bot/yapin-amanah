@@ -1278,112 +1278,174 @@
     }
 
    // =========================================================================
-    // 6. FUNGSI UNDUH PDF (Definisi Fungsi diubah agar terjamin terekspos)
+    // 4. FUNGSI UNDUH PDF
     // =========================================================================
 
-    // Fungsi Pembantu: Hanya untuk menghasilkan konten PDF (generatePDFContent tetap sama)
-    async function generatePDFContent(isSummary = false) { 
-        // Cek status login saat membuat PDF untuk menentukan apakah kolom Kategori tampil
-        const isLoggedIn = !!auth.currentUser;
+    window.downloadPDF = function() {
+        if(allDataRows.length === 0){
+             alert("Tidak ada data untuk dibuat laporan PDF.");
+             return;
+        }
         
-        // ... (Isi fungsi generatePDFContent Anda yang sangat panjang, 
-        //      yang dimulai dengan 'const snapshot = await db.collection(...') ...
+        const isPaginationActive = allDataRows.length > rowsPerPage;
+        const originalCurrentPage = currentPage; 
         
-        // KARENA ISI FUNGSI INI PANJANG, PASTIKAN KAKAK SALIN SELURUHNYA TANPA TERPOTONG
-        // DAN PASTIKAN TIDAK ADA SYNTAX ERROR DI DALAMNYA.
+        // --- Langkah 1: Paksa Semua Baris Tampil untuk PDF ---
+        if (isPaginationActive) {
+            allDataRows.forEach(row => row.style.display = ''); 
+        }
         
-        // Untuk amannya, saya hanya tampilkan kerangkanya:
-        
-        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
-        let dataToPrint = []; 
-        let saldo = 0; 
-        let totalMasuk = 0; 
-        let totalKeluar = 0; 
-        let no = 1; 
-        const showKategoriInPDF = isLoggedIn && !isSummary; 
-        
-        snapshot.forEach((doc) => { 
-            // ... (logika perhitungan) ...
-            dataToPrint.push({ /* ... */ }); 
-        }); 
+        const tableToPrint = document.getElementById('finance-table').cloneNode(true);
 
-        // ... (logika pembentukan headerHTML dan tableHTML) ...
+        // --- Langkah 3: Kembalikan Tampilan Pagination ke halaman sebelumnya ---
+        if (isPaginationActive) {
+            displayTablePage(originalCurrentPage); 
+        }
         
-        let tableHTML = `...`; // Pastikan kode ini utuh!
-
-        dataToPrint.forEach(item => { 
-            // ... (logika baris tabel) ...
-        }); 
-
-        const finalSaldo = totalMasuk - totalKeluar; 
-        // ... (logika footer) ...
-
-        return headerHTML + tableHTML; // FUNGSI generatePDFContent HARUS DI AKHIRI DENGAN RETURN
-    }
-
-    // FUNGSI UTAMA DOWNLOAD - Didefinisikan langsung ke window untuk menghindari ReferenceError
-    window.downloadPDF = async function() { // ❗ PERUBAHAN UTAMA DI SINI
-        try {
-            // Kolom Kategori tampil di Lampiran hanya jika admin login.
-            const content = await generatePDFContent(false); 
-            const element = document.createElement('div');
-            element.innerHTML = content;
+        // 4. Proses pembersihan kolom Aksi pada tabel clone
+        const actionIndex = 6; 
+        const isActionColumnPresent = tableToPrint.querySelector('thead tr th:last-child') && tableToPrint.querySelector('thead tr th:last-child').textContent.trim() === 'Aksi';
+        
+        if (isActionColumnPresent) {
+            // A. Hapus Header 'Aksi'
+            tableToPrint.querySelector('thead tr th:last-child').remove();
             
-            // Orientasi 'landscape' dan margin kecil
-            html2pdf(element, { 
-                margin: [10, 10, 10, 10], 
-                filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            }); 
-        } catch (error) { 
-            console.error("Error generating PDF (downloadPDF):", error); 
-            alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
-        } 
-    }
+            // B. Hapus sel 'Aksi' di baris-baris data (tbody)
+            tableToPrint.querySelectorAll('tbody tr').forEach(row => {
+                if (row.cells.length > actionIndex) { 
+                    row.cells[actionIndex].remove();
+                }
+            });
 
-    // FUNGSI UTAMA DOWNLOAD RINGKASAN
-    window.downloadSummaryPDF = async function() { // ❗ PERUBAHAN UTAMA DI SINI
-        alert("Fungsi Unduh PDF Ringkasan sedang dikembangkan...");
-    }
-    
-    // Asumsi fungsi aggregateData() masih ada
-    async function aggregateData() { 
-        // ... (Logika aggregateData) ...
-        return {}; 
-    }
-// FUNGSI UTAMA DOWNLOAD - Didefinisikan langsung ke window untuk menghindari ReferenceError
-    window.downloadPDF = async function() { 
-        try {
-            // Kolom Kategori tampil di Lampiran hanya jika admin login.
-            const content = await generatePDFContent(false); 
-            const element = document.createElement('div');
-            element.innerHTML = content;
+            // C. Hapus sel kosong di footer (sel terakhir)
+            const footerRow = tableToPrint.querySelector('tfoot .total-row');
+            if (footerRow) {
+                const emptyActionCell = footerRow.querySelector('td:last-child');
+                if(emptyActionCell && emptyActionCell.textContent.trim() === ''){
+                    emptyActionCell.remove();
+                }
+            }
+        }
+        
+        // --- Perbaikan CSS khusus untuk PDF (lanjutan) ---
+        const style = document.createElement('style');
+        style.textContent = `
+            /* Aturan Umum */
+            body, html { margin: 0; padding: 0; }
+            h2, p { color: black; font-family: sans-serif; }
+            h2 { text-align: center; margin-bottom: 5px; font-size: 16px; }
+            p { text-align: right; font-size: 12px; margin: 3px 0; }
+
+            /* Aturan Tabel */
+            #finance-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                color: black; 
+                font-size: 10px;
+                border: 1px solid #333; 
+            }
+
+            #finance-table th, #finance-table td {
+                padding: 6px 3px;
+                text-align: center;
+                border: 1px solid #666; 
+                background: white; 
+            }
+
+            #finance-table th {
+                background: #f0f0f0; 
+                font-weight: bold;
+                color: #333;
+            }
             
-            // Konfigurasi html2pdf (Sama seperti sebelumnya)
-            const opt = { 
-                margin: [10, 10, 10, 10], 
-                filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
+            /* Kolom Uraian Rata Kiri di PDF */
+            #finance-table td:nth-child(3) {
+                text-align: left; 
+            }
 
-            // ❗ PERBAIKAN KRITIS: Menggunakan html2pdf().from(element).set(opt).save();
-            // Metode ini lebih aman dan sesuai standar pemanggilan library
-            html2pdf().from(element).set(opt).save(); 
+            /* Aturan Footer Total */
+            .total-row td {
+                font-weight: bold;
+                background-color: #ffffcc !important; 
+                color: black;
+                border-top: 2px solid #333;
+            }
+            .total-row td:first-child {
+                text-align: right;
+            }
+            /* Kolom nominal harus rata kanan */
+            #finance-table td:nth-child(4),
+            #finance-table td:nth-child(5),
+            #finance-table td:nth-child(6) {
+                text-align: right; 
+            }
 
-        } catch (error) { 
-            console.error("Error generating PDF (downloadPDF):", error); 
-            alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
-        } 
+            .saldo-minus { color: #cc0000 !important; font-weight: bold; }
+            .saldo-plus { color: #009900 !important; font-weight: bold; }
+        `;
+
+        // 5. Tambahkan judul dan informasi tanggal
+        const header = document.createElement('h2');
+        header.textContent = 'LAPORAN PERTANGGUNGJAWABAN KEUANGAN YAYASAN';
+
+        const dateInfo = document.createElement('p');
+        dateInfo.textContent = `Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`;
+
+        // 6. Masukkan semua elemen ke dalam satu kontainer
+        const element = document.createElement('div');
+        element.appendChild(style);
+        element.appendChild(header);
+        element.appendChild(dateInfo);
+        element.appendChild(tableToPrint); 
+
+        // 7. Pengaturan html2pdf
+        html2pdf(element, {
+            margin: 10,
+            filename: 'Laporan_Keuangan_' + new Date().toLocaleDateString('id-ID') + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3, logging: false, useCORS: true }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } // Menggunakan landscape agar kolom lebih lebar
+        });
     }
 
-    // FUNGSI UTAMA DOWNLOAD RINGKASAN (Jika ada, ganti juga)
-    window.downloadSummaryPDF = async function() { 
-        alert("Fungsi Unduh PDF Ringkasan sedang dikembangkan...");
+    // Fungsi untuk menginisialisasi event listener pada modal
+    function setupModalListeners() {
+        const modal = document.getElementById('editModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const saveBtn = document.getElementById('save-edit-btn');
+        
+        // Tutup saat klik tombol X
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Tutup saat klik di luar modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Simpan saat klik tombol Simpan
+        saveBtn.onclick = saveEditChanges;
     }
+
+
+    // Panggil fungsi setupModalListeners dan loadData saat dokumen siap
+    document.addEventListener('DOMContentLoaded', setupModalListeners);
+    document.addEventListener('DOMContentLoaded', loadData);
+
+
+    // Expose fungsi ke window agar dapat dipanggil dari HTML (penting untuk tombol di HTML)
+    window.login = login;
+    window.logout = logout;
+    window.addTransaction = addTransaction;
+    window.resetData = resetData;
+    window.deleteTransaction = deleteTransaction; 
+
+</script>
+
     // =========================================================================
     // 7. LISTENER PERUBAHAN STATUS AUTENTIKASI (Wajib)
     // =========================================================================
@@ -1459,6 +1521,7 @@
 </script>
 </body>
 </html>
+
 
 
 
