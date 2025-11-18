@@ -230,90 +230,92 @@
 
 
         // =========================================================================
-        // 3. FUNGSI CRUD (CREATE, READ, UPDATE, DELETE)
-        // =========================================================================
-
-        // Memuat data dari Firestore dan menampilkan di tabel
-        async function loadData() {
-            const isLoggedIn = !!auth.currentUser;
-            const tableBody = document.getElementById('finance-table-body');
-            const totalMasukElement = document.getElementById('total-masuk');
-            const totalKeluarElement = document.getElementById('total-keluar');
-            const saldoAkhirElement = document.getElementById('saldo-akhir');
-
-            if (!tableBody) return; 
-
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Memuat data...</td></tr>';
-
-            try {
-                const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-                let html = '';
-                let saldo = 0;
-                let totalMasuk = 0;
-                let totalKeluar = 0;
-                let no = 1;
-
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const docId = doc.id;
-                    // PASTIKAN DATA DICONVERT DARI STRING FIREBASE KE ANGKA
-                    const rawDanaMasuk = data.dana_masuk || 0;
-                    const rawDanaKeluar = data.dana_keluar || 0;
-                    
-                    // Konversi: Hapus semua karakter non-angka kecuali koma (jika ada) dan konversi ke integer
-                    // Kita gunakan teknik yang sama seperti di fungsi addTransaction:
-                    const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^0-9]/g, '')) || 0;
-                    const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^0-9]/g, '')) || 0;
-
-                    saldo += danaMasuk - danaKeluar;
-                    totalMasuk += danaMasuk;
-                    totalKeluar += danaKeluar;
-
-                    const saldoColor = saldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
-                    
-                    const kategoriCell = '<td class="kategori-cell">' + (data.kategori || '-') + '</td>';
-                    const aksiCell = 
-                        '<td class="aksi-cell">' +
-                            '<button onclick="editTransactionPrompt(\'' + docId + '\')" class="edit-btn">Edit</button>' +
-                            '<button onclick="deleteTransaction(\'' + docId + '\')" class="delete-btn">Hapus</button>' +
-                        '</td>';
-
-                    html += 
-                        '<tr>' +
-                            '<td>' + no++ + '</td>' +
-                            '<td>' + data.tanggal + '</td>' +
-                            '<td style="text-align: left;">' + data.uraian + '</td>' +
-                            kategoriCell +
-                            '<td class="dana-masuk">' + formatRupiah(danaMasuk) + '</td>' +
-                            '<td class="dana-keluar">' + formatRupiah(danaKeluar) + '</td>' +
-                            '<td style="' + saldoColor + '">' + formatRupiah(saldo) + '</td>' +
-                            aksiCell +
-                        '</tr>';
-                });
-
-                if (html === '') {
-                    html = '<tr><td colspan="8" style="text-align: center;">Belum ada transaksi yang tercatat.</td></tr>';
+            // FUNGSI LOAD DATA (VERSI FINAL TERVERIFIKASI)
+            // =========================================================================
+            
+            async function loadData() {
+                const isLoggedIn = !!auth.currentUser;
+                const tableBody = document.getElementById('finance-table-body');
+                const totalMasukElement = document.getElementById('total-masuk');
+                const totalKeluarElement = document.getElementById('total-keluar');
+                const saldoAkhirElement = document.getElementById('saldo-akhir');
+            
+                if (!tableBody) return; 
+            
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Memuat data...</td></tr>';
+            
+                try {
+                    // PERHATIAN: Pastikan di Baris 35-an, Kakak sudah set: 
+                    // const FINANCE_COLLECTION = 'laporan';
+            
+                    const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+                    let html = '';
+                    let saldo = 0;
+                    let totalMasuk = 0;
+                    let totalKeluar = 0;
+                    let no = 1;
+            
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const docId = doc.id;
+            
+                        // PERBAIKAN UTAMA: Ambil data dengan underscore, konversi ke String, hapus non-angka, lalu konversi ke integer
+                        const rawDanaMasuk = data.dana_masuk || 0; 
+                        const rawDanaKeluar = data.dana_keluar || 0;
+            
+                        // Ini akan menghapus titik/koma/Rp dan mengubah "500.000" menjadi 500000
+                        const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^0-9]/g, '')) || 0;
+                        const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^0-9]/g, '')) || 0;
+            
+                        saldo += danaMasuk - danaKeluar;
+                        totalMasuk += danaMasuk;
+                        totalKeluar += danaKeluar;
+            
+                        const saldoColor = saldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
+            
+                        const kategoriCell = '<td class="kategori-cell">' + (data.kategori || '-') + '</td>';
+                        const aksiCell = 
+                            '<td class="aksi-cell">' +
+                                '<button onclick="editTransactionPrompt(\'' + docId + '\')" class="edit-btn">Edit</button>' +
+                                '<button onclick="deleteTransaction(\'' + docId + '\')" class="delete-btn">Hapus</button>' +
+                            '</td>';
+            
+                        html += 
+                            '<tr>' +
+                                '<td>' + no++ + '</td>' +
+                                '<td>' + data.tanggal + '</td>' +
+                                '<td style="text-align: left;">' + data.uraian + '</td>' +
+                                kategoriCell +
+                                '<td class="dana-masuk">' + formatRupiah(danaMasuk) + '</td>' +
+                                '<td class="dana-keluar">' + formatRupiah(danaKeluar) + '</td>' +
+                                '<td style="' + saldoColor + '">' + formatRupiah(saldo) + '</td>' +
+                                aksiCell +
+                            '</tr>';
+                    });
+            
+                    if (html === '') {
+                        html = '<tr><td colspan="8" style="text-align: center;">Belum ada transaksi yang tercatat.</td></tr>';
+                    }
+            
+                    tableBody.innerHTML = html;
+            
+                    const finalSaldo = totalMasuk - totalKeluar;
+                    const finalSaldoColor = finalSaldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
+            
+                    if (totalMasukElement) totalMasukElement.textContent = formatRupiah(totalMasuk);
+                    if (totalKeluarElement) totalKeluarElement.textContent = formatRupiah(totalKeluar);
+                    if (saldoAkhirElement) {
+                        saldoAkhirElement.textContent = formatRupiah(finalSaldo);
+                        saldoAkhirElement.style.color = finalSaldoColor;
+                    }
+            
+                    toggleTableDisplay(isLoggedIn); 
+            
+                } catch (error) {
+                    console.error("Error loading data: ", error);
+                    tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Gagal memuat data. Cek error console.</td></tr>';
                 }
-                
-                tableBody.innerHTML = html;
-                
-                const finalSaldo = totalMasuk - totalKeluar;
-                const finalSaldoColor = finalSaldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
-
-                if (totalMasukElement) totalMasukElement.textContent = formatRupiah(totalMasuk);
-                if (totalKeluarElement) totalKeluarElement.textContent = formatRupiah(totalKeluar);
-                if (saldoAkhirElement) {
-                    saldoAkhirElement.textContent = formatRupiah(finalSaldo);
-                    saldoAkhirElement.style.color = finalSaldoColor;
-                }
-
-                toggleTableDisplay(isLoggedIn); 
-
-            } catch (error) {
-                console.error("Error loading data: ", error);
-                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Gagal memuat data. Cek error console.</td></tr>';
             }
-        }
 
         // Menambah Transaksi
         async function addTransaction() {
@@ -879,6 +881,7 @@
 
 </body>
 </html>
+
 
 
 
