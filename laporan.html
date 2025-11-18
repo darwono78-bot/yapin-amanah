@@ -1052,145 +1052,99 @@
     // 6. FUNGSI UNDUH PDF (DETAIL TANPA TANDA TANGAN, RINGKASAN DENGAN TANDA TANGAN)
     // =========================================================================
 
-    async function aggregateDataByCategory() {
-        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-        const aggregated = {};
-        let totalMasukGlobal = 0;
-        let totalKeluarGlobal = 0;
-
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            const kategori = data.kategori || 'Lain-lain';
-            const danaMasuk = data.danaMasuk || 0;
-            const danaKeluar = data.danaKeluar || 0;
-            
-            if (!aggregated[kategori]) {
-                aggregated[kategori] = { masuk: 0, keluar: 0 };
-            }
-            
-            aggregated[kategori].masuk += danaMasuk;
-            aggregated[kategori].keluar += danaKeluar;
-            
-            totalMasukGlobal += danaMasuk;
-            totalKeluarGlobal += danaKeluar;
-        });
-
-        const summaryMasuk = [];
-        const summaryKeluar = [];
-
-        KATEGORI_MASUK.forEach(cat => {
-            if (aggregated[cat] && aggregated[cat].masuk > 0) {
-                summaryMasuk.push({ kategori: cat, jumlah: aggregated[cat].masuk, isMasuk: true });
-            }
-        });
-        KATEGORI_KELUAR.forEach(cat => {
-            if (aggregated[cat] && aggregated[cat].keluar > 0) {
-                summaryKeluar.push({ kategori: cat, jumlah: aggregated[cat].keluar, isMasuk: false });
-            }
-        });
-
-        return {
-            summaryMasuk,
-            summaryKeluar,
-            totalMasukGlobal,
-            totalKeluarGlobal
-        };
-    }
+    // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN - TANPA TANDA TANGAN) - Versi Stabil
+async function generatePDFContent(isSummary = false) { 
     
-    // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN - TANPA TANDA TANGAN)
-    async function generatePDFContent(isSummary = false) { 
-        
-        const isLoggedIn = !!auth.currentUser;
-        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
-        let dataToPrint = []; 
-        let saldo = 0; 
-        let totalMasuk = 0; 
-        let totalKeluar = 0; 
-        let no = 1; 
-        const showKategoriInPDF = isLoggedIn && !isSummary; 
+    const isLoggedIn = !!auth.currentUser;
+    const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
+    let dataToPrint = []; 
+    let saldo = 0; 
+    let totalMasuk = 0; 
+    let totalKeluar = 0; 
+    let no = 1; 
+    const showKategoriInPDF = isLoggedIn && !isSummary; 
 
-        snapshot.forEach((doc) => { 
-            const data = doc.data(); 
-            const danaMasuk = data.danaMasuk || 0; 
-            const danaKeluar = data.danaKeluar || 0; 
-            saldo += danaMasuk - danaKeluar; 
-            totalMasuk += danaMasuk; 
-            totalKeluar += danaKeluar; 
-            dataToPrint.push({ 
-                no: no++, 
-                tanggal: data.tanggal, 
-                uraian: data.uraian, 
-                kategori: data.kategori || '-', 
-                danaMasuk: formatRupiah(danaMasuk), 
-                danaKeluar: formatRupiah(danaKeluar), 
-                saldo: formatRupiah(saldo), 
-                isDanaMasuk: danaMasuk > 0 
-            }); 
+    snapshot.forEach((doc) => { 
+        const data = doc.data(); 
+        const danaMasuk = data.danaMasuk || 0; 
+        const danaKeluar = data.danaKeluar || 0; 
+        saldo += danaMasuk - danaKeluar; 
+        totalMasuk += danaMasuk; 
+        totalKeluar += danaKeluar; 
+        dataToPrint.push({ 
+            no: no++, 
+            tanggal: data.tanggal, 
+            uraian: data.uraian, 
+            kategori: data.kategori || '-', 
+            danaMasuk: formatRupiah(danaMasuk), 
+            danaKeluar: formatRupiah(danaKeluar), 
+            saldo: formatRupiah(saldo), 
+            isDanaMasuk: danaMasuk > 0 
         }); 
+    }); 
 
-        const headerHTML = `
-            <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 5px;">
-                <h1 style="font-size: 16px; margin: 0; color: black;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>
-                <p style="font-size: 10px; margin: 0; color: black;">Khodimul Umat Ngablak Cluwak Pati</p>
-            </div>
-            <h2 style="font-size: 14px; text-align: center; margin: 15px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI)</h2>
-        `;
-        
-        const widthUraian = showKategoriInPDF ? '30%' : '40%';
-        const pdfColspan = showKategoriInPDF ? 4 : 3;
-        
-        let tableHTML = `
-            <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 9.5px; color: black;">
-                <thead>
-                    <tr style="background-color: #f0f0f0;">
-                        <th style="width: 5%; padding: 8px; border: 1px solid #ddd;">No</th>
-                        <th style="width: 12%; border: 1px solid #ddd;">Tanggal</th>
-                        <th style="width: ${widthUraian}; text-align: left; border: 1px solid #ddd;">Uraian</th>
-                        ${showKategoriInPDF ? '<th style="width: 15%; border: 1px solid #ddd;">Kategori</th>' : ''}
-                        <th style="width: 15%; border: 1px solid #ddd;">Dana Masuk (Rp)</th>
-                        <th style="width: 15%; border: 1px solid #ddd;">Dana Keluar (Rp)</th>
-                        <th style="width: 15%; border: 1px solid #ddd;">Saldo (Rp)</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        dataToPrint.forEach(item => { 
-            tableHTML += ` 
-                <tr> 
-                    <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${item.no}</td> 
-                    <td style="text-align: center; border: 1px solid #ddd;">${item.tanggal}</td> 
-                    <td style="text-align: left; border: 1px solid #ddd; max-width: ${widthUraian}; overflow-wrap: break-word;">
-                        <span style="color: black;">${item.uraian}</span>
-                    </td> 
-                    ${showKategoriInPDF ? `<td style="text-align: center; border: 1px solid #ddd;">${item.kategori}</td>` : ''}
-                    <td style="text-align: right; color: #008000; border: 1px solid #ddd;">${item.danaMasuk}</td> 
-                    <td style="text-align: right; color: #cc0000; border: 1px solid #ddd;">${item.danaKeluar}</td> 
-                    <td style="text-align: right; border: 1px solid #ddd;">${item.saldo}</td> 
-                </tr> 
-            `; 
-        }); 
-
-        const finalSaldo = totalMasuk - totalKeluar; 
-        const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000'; 
-        
-        tableHTML += ` 
-            <tr style="font-weight: bold; background-color: #ffffcc; border-top: 2px solid black;"> 
-                <td colspan="${pdfColspan}" style="text-align: right; padding: 8px; border: 1px solid black; color: black;">TOTAL AKHIR:</td> 
-                <td style="text-align: right; color: #008000; border: 1px solid black;">${formatRupiah(totalMasuk)}</td> 
-                <td style="text-align: right; color: #cc0000; border: 1px solid black;">${formatRupiah(totalKeluar)}</td> 
-                <td style="text-align: right; color: ${finalSaldoColor}; border: 1px solid black;">${formatRupiah(finalSaldo)}</td> 
-            </tr> 
-            </tbody> 
-        </table> 
-        <div style="text-align: right; margin-top: 20px; font-size: 10px; color: black;">
-            <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+    const headerHTML = `
+        <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 5px;">
+            <h1 style="font-size: 16px; margin: 0; color: black;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>
+            <p style="font-size: 10px; margin: 0; color: black;">Khodimul Umat Ngablak Cluwak Pati</p>
         </div>
-        `;
+        <h2 style="font-size: 14px; text-align: center; margin: 15px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI)</h2>
+    `;
+    
+    const widthUraian = showKategoriInPDF ? '30%' : '40%';
+    const pdfColspan = showKategoriInPDF ? 4 : 3;
+    
+    let tableHTML = `
+        <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 9.5px; color: black;">
+            <thead>
+                <tr style="background-color: #f0f0f0;">
+                    <th style="width: 5%; padding: 8px; border: 1px solid #ddd;">No</th>
+                    <th style="width: 12%; border: 1px solid #ddd;">Tanggal</th>
+                    <th style="width: ${widthUraian}; text-align: left; border: 1px solid #ddd;">Uraian</th>
+                    ${showKategoriInPDF ? '<th style="width: 15%; border: 1px solid #ddd;">Kategori</th>' : ''}
+                    <th style="width: 15%; border: 1px solid #ddd;">Dana Masuk (Rp)</th>
+                    <th style="width: 15%; border: 1px solid #ddd;">Dana Keluar (Rp)</th>
+                    <th style="width: 15%; border: 1px solid #ddd;">Saldo (Rp)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
 
-        return headerHTML + tableHTML;
-    }
+    dataToPrint.forEach(item => { 
+        tableHTML += ` 
+            <tr> 
+                <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${item.no}</td> 
+                <td style="text-align: center; border: 1px solid #ddd;">${item.tanggal}</td> 
+                <td style="text-align: left; border: 1px solid #ddd; max-width: ${widthUraian}; overflow-wrap: break-word;">
+                    <span style="color: black;">${item.uraian}</span>
+                </td> 
+                ${showKategoriInPDF ? `<td style="text-align: center; border: 1px solid #ddd;">${item.kategori}</td>` : ''}
+                <td style="text-align: right; color: #008000; border: 1px solid #ddd;">${item.danaMasuk}</td> 
+                <td style="text-align: right; color: #cc0000; border: 1px solid #ddd;">${item.danaKeluar}</td> 
+                <td style="text-align: right; border: 1px solid #ddd;">${item.saldo}</td> 
+            </tr> 
+        `; 
+    }); 
 
+    const finalSaldo = totalMasuk - totalKeluar; 
+    const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000'; 
+    
+    tableHTML += ` 
+        <tr style="font-weight: bold; background-color: #ffffcc; border-top: 2px solid black;"> 
+            <td colspan="${pdfColspan}" style="text-align: right; padding: 8px; border: 1px solid black; color: black;">TOTAL AKHIR:</td> 
+            <td style="text-align: right; color: #008000; border: 1px solid black;">${formatRupiah(totalMasuk)}</td> 
+            <td style="text-align: right; color: #cc0000; border: 1px solid black;">${formatRupiah(totalKeluar)}</td> 
+            <td style="text-align: right; color: ${finalSaldoColor}; border: 1px solid black;">${formatRupiah(finalSaldo)}</td> 
+        </tr> 
+        </tbody> 
+    </table> 
+    <div style="text-align: right; margin-top: 20px; font-size: 10px; color: black;">
+        <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+    </div>
+    `;
+
+    return headerHTML + tableHTML;
+}
     // Fungsi Pembantu: Menghasilkan konten PDF Ringkasan (Tanda Tangan Tetap Ada)
     async function generateSummaryPDFContent() {
         const aggregated = await aggregateDataByCategory();
@@ -1463,5 +1417,6 @@
 </script>
 </body>
 </html>
+
 
 
