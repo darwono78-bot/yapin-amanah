@@ -931,25 +931,17 @@
         });
     }
 
-// Cek Status Login Saat Memuat Halaman & Perubahan Status
-auth.onAuthStateChanged((user) => {
-    const isLoggedIn = !!user; // Tentukan status login di sini
-    
-    if (user) {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('input-control-container').style.display = 'block';
-    } else {
-        document.getElementById('login-container').style.display = 'block';
-        document.getElementById('input-control-container').style.display = 'none';
-    }
-    
-    // BARIS TAMBAHAN PENTING:
-    // Panggil fungsi untuk mengatur tampilan header kolom 'Kategori'
-    toggleKategoriHeader(isLoggedIn); 
-    
-    // Panggil loadData DENGAN parameter isLoggedIn
-    loadData(isLoggedIn); 
-}); // <--- Jangan lupakan tutup kurung kurawal dan kurung biasa
+    // Cek Status Login Saat Memuat Halaman & Perubahan Status
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('input-control-container').style.display = 'block';
+        } else {
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('input-control-container').style.display = 'none';
+        }
+        loadData(); // Selalu muat ulang data saat status auth berubah
+    });
 
     // =========================================================================
     // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
@@ -1032,151 +1024,133 @@ auth.onAuthStateChanged((user) => {
     }
 
 
-// A. Perbaikan Tanda Tangan Fungsi
-window.loadData = function(isLoggedIn) { 
-    // Jika dipanggil tanpa parameter, ambil status login dari Firebase
-    if (typeof isLoggedIn === 'undefined') {
-        isLoggedIn = !!auth.currentUser;
+    window.loadData = function() {
+        const tableBody = document.getElementById('finance-body');
+        const tableFooter = document.getElementById('finance-footer');
+        const user = auth.currentUser;
+        const isLoggedIn = !!user; 
+        
+        // Atur header tabel (tambah/hapus kolom Aksi)
+        setupTableHeaders(isLoggedIn);
+
+        // Urutkan berdasarkan waktu paling lama (ASC)
+        db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc")
+        .onSnapshot((snapshot) => {
+            tableBody.innerHTML = '';
+            tableFooter.innerHTML = '';
+            
+            allDataRows = []; 
+
+            let saldo = 0;
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+            let no = 1;
+            
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const id = doc.id;
+
+                const danaMasuk = data.danaMasuk || 0;
+                const danaKeluar = data.danaKeluar || 0;
+                const kategori = data.kategori || '-';
+
+                saldo += danaMasuk - danaKeluar;
+                totalMasuk += danaMasuk;
+                totalKeluar += danaKeluar;
+
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = no++;
+                row.insertCell(1).textContent = data.tanggal;
+                
+                // Kolom Uraian (Index 2)
+                const descriptionCell = row.insertCell(2);
+                let textColor = '';
+                if (danaMasuk > 0) { 
+                    textColor = 'masuk-text'; 
+                } 
+                descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
+                
+                // Kolom Kategori (Index 3)
+                row.insertCell(3).textContent = kategori; 
+
+                // Sel Dana Masuk (Index 4)
+                const masukCell = row.insertCell(4);
+                masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
+                masukCell.style.textAlign = 'right';
+
+                // Sel Dana Keluar (Index 5)
+                const keluarCell = row.insertCell(5);
+                keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
+                keluarCell.style.textAlign = 'right';
+
+                // Sel Saldo (Index 6)
+                const saldoCell = row.insertCell(6);
+                saldoCell.textContent = formatRupiah(saldo);
+                saldoCell.style.textAlign = 'right';
+                if (saldo < 0) {
+                    saldoCell.className = 'saldo-minus';
+                } else if (saldo > 0) {
+                    saldoCell.className = 'saldo-plus';
+                }
+
+                // Tambahkan Kolom Aksi HANYA jika pengurus login
+                if (isLoggedIn) {
+                    const actionCell = row.insertCell(7); // Index 7 karena ada 7 kolom data
+                    actionCell.innerHTML = `
+                        <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', '${kategori}', ${danaMasuk}, ${danaKeluar})">Edit</button>
+                        <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
+                    `;
+                }
+                
+                // --- Simpan referensi baris ke array untuk Pagination ---
+                allDataRows.push(row);
+            });
+            
+            // --- Panggil setupPagination setelah semua data ter-render ---
+            setupPagination();
+
+            // Tampilkan Total Laporan di Footer
+            const footerRow = tableFooter.insertRow();
+            footerRow.className = 'total-row';
+            
+            // Kolom Uraian digabung untuk Label TOTAL (Kolom 0, 1, 2, 3 digabung)
+            const totalLabelCell = footerRow.insertCell(0);
+            totalLabelCell.colSpan = 4; // Gabung No, Tanggal, Uraian, Kategori
+            totalLabelCell.textContent = 'TOTAL AKHIR:';
+            totalLabelCell.style.textAlign = 'right'; 
+
+            // Kolom Total Dana Masuk (Index 4)
+            const totalMasukCell = footerRow.insertCell(1);
+            totalMasukCell.textContent = formatRupiah(totalMasuk);
+            totalMasukCell.style.textAlign = 'right';
+
+            // Kolom Total Dana Keluar (Index 5)
+            const totalKeluarCell = footerRow.insertCell(2);
+            totalKeluarCell.textContent = formatRupiah(totalKeluar);
+            totalKeluarCell.style.textAlign = 'right';
+            
+            // Menggunakan warna MERAH VIBRANT (Lebih Jelas) pada Total Dana Keluar
+            totalKeluarCell.style.color = '#FF4136'; 
+            totalKeluarCell.style.textShadow = '0 0 5px #FF4136';
+
+            // Kolom Saldo Akhir (Index 6)
+            const finalSaldoCell = footerRow.insertCell(3);
+            finalSaldoCell.textContent = formatRupiah(saldo);
+            finalSaldoCell.style.textAlign = 'right';
+            if (saldo < 0) {
+                finalSaldoCell.className = 'saldo-minus';
+            } else if (saldo > 0) {
+                finalSaldoCell.className = 'saldo-plus';
+            }
+
+            // Jika admin login, perlu satu sel kosong lagi untuk mengisi kolom Aksi
+            if (isLoggedIn) {
+                const emptyActionCell = footerRow.insertCell(4);
+                emptyActionCell.textContent = '';
+            }
+        });
     }
 
-    const tableBody = document.getElementById('report-body');
-    const tableFooter = document.getElementById('report-footer');
-    tableBody.innerHTML = '';
-    tableFooter.innerHTML = '';
-    allDataRows = [];
-
-    // Mengambil data dari Firestore
-    db.collection('laporan').orderBy('tanggal', 'desc').get().then((snapshot) => {
-        let saldo = 0;
-        let totalMasuk = 0;
-        let totalKeluar = 0;
-        let no = 1;
-
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            const id = doc.id;
-
-            const danaMasuk = data.danaMasuk || 0;
-            const danaKeluar = data.danaKeluar || 0;
-            const kategori = data.kategori || '-';
-
-            // NEW: Variabel untuk koreksi index kolom (PENTING!)
-            let colOffset = 0; 
-            
-            saldo += danaMasuk - danaKeluar;
-            totalMasuk += danaMasuk;
-            totalKeluar += danaKeluar;
-
-            const row = tableBody.insertRow();
-            row.insertCell(0).textContent = no++;
-            row.insertCell(1).textContent = data.tanggal;
-            
-            // Kolom Uraian (Index 2)
-            const descriptionCell = row.insertCell(2);
-            let textColor = '';
-            if (danaMasuk > 0) { 
-                textColor = 'masuk-text'; 
-            } 
-            descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
-            
-            // =========================================================================
-            // NEW: LOGIKA KATEGORI KONDISIONAL (Index 3)
-            // =========================================================================
-            if (isLoggedIn) {
-                const kategoriCell = row.insertCell(3);
-                kategoriCell.textContent = kategori;
-                kategoriCell.style.textAlign = 'center';
-            } else {
-                // Jika tidak login, geser index kolom berikutnya mundur 1.
-                colOffset = -1;
-            }
-
-            // =========================================================================
-            // NEW: KOREKSI INDEX KOLOM SETELAH KATEGORI (gunakan Index + colOffset)
-            // =========================================================================
-
-            // Sel Dana Masuk (Original Index 4)
-            const masukCell = row.insertCell(4 + colOffset); // KOREKSI
-            masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
-            masukCell.style.textAlign = 'right';
-
-            // Sel Dana Keluar (Original Index 5)
-            const keluarCell = row.insertCell(5 + colOffset); // KOREKSI
-            keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
-            keluarCell.style.textAlign = 'right';
-
-            // Sel Saldo (Original Index 6)
-            const saldoCell = row.insertCell(6 + colOffset); // KOREKSI
-            saldoCell.textContent = formatRupiah(saldo);
-            saldoCell.style.textAlign = 'right';
-            if (saldo < 0) {
-                saldoCell.className = 'saldo-minus';
-            } else if (saldo > 0) {
-                saldoCell.className = 'saldo-plus';
-            }
-
-            // Tambahkan Kolom Aksi HANYA jika pengurus login (Original Index 7)
-            if (auth.currentUser) {
-                const actionCell = row.insertCell(7 + colOffset); // KOREKSI
-                actionCell.innerHTML = `
-                    <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', '${kategori}', ${danaMasuk}, ${danaKeluar})">Edit</button>
-                    <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
-                `;
-            }
-            
-            // --- Simpan referensi baris ke array untuk Pagination ---
-            allDataRows.push(row);
-        });
-        
-        // --- Panggil setupPagination setelah semua data ter-render ---
-        setupPagination();
-
-        // =========================================================================
-        // LOGIKA FOOTER (LANGKAH 5)
-        // =========================================================================
-        
-        // Tampilkan Total Laporan di Footer
-        const footerRow = tableFooter.insertRow();
-        footerRow.className = 'total-row';
-        
-        // Kolom Uraian digabung untuk Label TOTAL (KOREKSI colSpan)
-        const totalLabelCell = footerRow.insertCell(0);
-        // Jika login, colSpan = 4 (No, Tgl, Uraian, Kategori). 
-        // Jika tidak login, colSpan = 3 (No, Tgl, Uraian).
-        totalLabelCell.colSpan = isLoggedIn ? 4 : 3; // KOREKSI PENTING
-        totalLabelCell.textContent = 'TOTAL AKHIR:';
-
-        // Kolom Total Dana Masuk (Index 4)
-        const totalMasukCell = footerRow.insertCell(1);
-        totalMasukCell.textContent = formatRupiah(totalMasuk);
-        totalMasukCell.style.textAlign = 'right';
-
-        // Kolom Total Dana Keluar (Index 5)
-        const totalKeluarCell = footerRow.insertCell(2);
-        totalKeluarCell.textContent = formatRupiah(totalKeluar);
-        totalKeluarCell.style.textAlign = 'right';
-        
-        // Menggunakan warna MERAH VIBRANT (Lebih Jelas) pada Total Dana Keluar
-        totalKeluarCell.style.color = '#FF4136'; 
-        totalKeluarCell.style.textShadow = '0 0 5px #FF4136';
-
-        // Kolom Saldo Akhir (Index 6)
-        const finalSaldoCell = footerRow.insertCell(3);
-        finalSaldoCell.textContent = formatRupiah(saldo);
-        finalSaldoCell.style.textAlign = 'right';
-        if (saldo < 0) {
-            finalSaldoCell.className = 'saldo-minus';
-        } else if (saldo > 0) {
-            finalSaldoCell.className = 'saldo-plus';
-        }
-
-        // Jika admin login, perlu satu sel kosong lagi untuk mengisi kolom Aksi
-        if (isLoggedIn) {
-            const emptyActionCell = footerRow.insertCell(4);
-            emptyActionCell.textContent = '';
-        }
-    }); // Tutup then()
-} // Tutup fungsi loadData
 
     window.deleteTransaction = function(docId) {
         if (!auth.currentUser) {
@@ -1376,7 +1350,7 @@ window.loadData = function(isLoggedIn) {
                         <th style="width: 3%;">No</th>
                         <th style="width: 12%;">Tanggal</th>
                         <th style="width: 25%;">Uraian</th>
-                        <th id="header-kategori" style="width: 15%; display: none;">Kategori</th>
+                        <th style="width: 15%;">Kategori</th>
                         <th style="width: 15%; text-align: right;">Dana Masuk</th>
                         <th style="width: 15%; text-align: right;">Dana Keluar</th>
                         <th style="width: 15%; text-align: right;">Saldo</th>
@@ -1770,17 +1744,7 @@ window.loadData = function(isLoggedIn) {
     document.addEventListener('DOMContentLoaded', setupModalListeners);
     document.addEventListener('DOMContentLoaded', loadData);
 
-// =========================================================================
-// 2A. FUNGSI BARU: MENGATUR VISIBILITAS HEADER KATEGORI
-// =========================================================================
-// NEW: Fungsi untuk mengontrol visibilitas header kolom Kategori
-function toggleKategoriHeader(isLoggedIn) {
-    const header = document.getElementById('header-kategori');
-    if (header) {
-        // Tampilkan header jika Admin/user login
-        header.style.display = isLoggedIn ? '' : 'none';
-    }
-}
+
     // Expose fungsi ke window agar dapat dipanggil dari HTML (penting untuk tombol di HTML)
     window.login = login;
     window.logout = logout;
@@ -1803,4 +1767,3 @@ function toggleKategoriHeader(isLoggedIn) {
 </script>
 </body>
 </html>
-
