@@ -629,23 +629,19 @@
         <button onclick="downloadSummaryPDF()" style="background-color: #00A9A5;">📥 Unduh PDF Global (Ringkasan LPJ)</button>
     </div>
     <table id="finance-table">
-        <thead>
-            <tr>
-                <th style="width: 5%;">No</th>
-                <th style="width: 15%;">Tanggal</th>
-                <th style="width: 25%;">Uraian</th>
-                <th style="width: 15%;">Kategori</th>
-                <th style="width: 10%;">Dana Masuk</th>
-                <th style="width: 10%;">Dana Keluar</th>
-                <th style="width: 10%;">Saldo</th>
-                </tr>
-        </thead>
-        <tbody id="finance-body">
-            
-        </tbody>
-        <tfoot id="finance-footer">
-            </tfoot>
-    </table>
+     <thead>
+    <tr>
+        <th style="width: 5%;">No</th>
+        <th style="width: 15%;">Tanggal</th>
+        <th style="width: 25%;">Uraian</th>
+        
+        <th id="header-kategori" style="width: 15%; display: none;">Kategori</th>
+        
+        <th style="width: 10%;">Dana Masuk</th>
+        <th style="width: 10%;">Dana Keluar</th>
+        <th style="width: 10%;">Saldo</th>
+    </tr>
+</thead>
     
     <div id="pagination-controls" class="pagination-controls">
         </div>
@@ -675,14 +671,16 @@
         <input type="date" id="input-tanggal" required>
         <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
         
-        <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
-        <select id="input-kategori" required>
-             <option value="" selected disabled>--- Pilih Kategori ---</option>
-             <optgroup label="Dana Masuk">
-                 </optgroup>
-             <optgroup label="Dana Keluar">
-                 </optgroup>
-        </select>
+        <div id="input-kategori-container" style="display: none;">
+    <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
+    <select id="input-kategori" required>
+         <option value="" selected disabled>--- Pilih Kategori ---</option>
+         <optgroup label="Dana Masuk">
+             </optgroup>
+         <optgroup label="Dana Keluar">
+             </optgroup>
+    </select>
+</div>
 
         <div class="input-group">
             <div>
@@ -1763,6 +1761,7 @@
 </script>
 </body>
 </html>
+
 
 
 
