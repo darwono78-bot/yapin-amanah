@@ -1277,17 +1277,14 @@
         }); 
     }
 
-    // =========================================================================
-    // 6. FUNGSI UNDUH PDF (Harus disesuaikan dengan kolom Kategori)
+  // =========================================================================
+    // 6. FUNGSI UNDUH PDF (TELAH DIFIXING TOTAL DAN WARNA TULISAN)
     // =========================================================================
 
-    // FUNGSI INI PERLU DITINJAU ULANG TERKAIT LOGIKA KOLOM KATEGORI DAN AKSI
-    // Untuk saat ini, kita akan menggunakan logika lama karena fokus pada tampilan tabel.
-    // Jika Anda ingin PDF yang fleksibel, Anda harus menerapkan logika isLoggedIn 
-    // juga di dalam generatePDFContent() (seperti yang ditunjukkan di bawah).
-
+    // Fungsi Pembantu: Hanya untuk menghasilkan konten PDF
     async function generatePDFContent(isSummary = false) { 
-        // Ambil semua data dari Firestore (tanpa pagination) 
+        const isLoggedIn = !!auth.currentUser;
+        
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
         let dataToPrint = []; 
         let saldo = 0; 
@@ -1295,8 +1292,8 @@
         let totalKeluar = 0; 
         let no = 1; 
 
-        // Logika untuk menampilkan Kategori di PDF Lampiran
-        const showKategoriInPDF = !isSummary; // Kategori tampil di Lampiran (Detail)
+        // Kolom Kategori hanya tampil jika admin sedang login (isLoggedIn) dan bukan Ringkasan
+        const showKategoriInPDF = isLoggedIn && !isSummary; 
 
         snapshot.forEach((doc) => { 
             const data = doc.data(); 
@@ -1322,40 +1319,42 @@
                 <h1 style="font-size: 16px; margin: 0;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>
                 <p style="font-size: 10px; margin: 0;">Khodimul Umat Ngablak Cluwak Pati</p>
             </div>
-            <h2 style="font-size: 14px; text-align: center; margin: 15px 0;">LAPORAN KEUANGAN (LAMPIRAN DETAIL)</h2>
+            <h2 style="font-size: 14px; text-align: center; margin: 15px 0;">LAPORAN KEUANGAN (${isSummary ? 'RINGKASAN GLOBAL' : 'LAMPIRAN DETAIL'})</h2>
         `;
         
-        // Colspan di PDF: 4 (No, Tgl, Uraian, Kategori) atau 3 (No, Tgl, Uraian)
+        // Penentuan lebar kolom untuk mode Landscape:
+        const widthUraian = showKategoriInPDF ? '30%' : '40%';
         const pdfColspan = showKategoriInPDF ? 4 : 3;
-        const totalFooterColspan = showKategoriInPDF ? 3 : 2;
         
         let tableHTML = `
-            <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px;">
-                <thead>
+            <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 9.5px; color: black;">
+            <thead>
                     <tr style="background-color: #f0f0f0;">
-                        <th style="width: 5%; padding: 8px;">No</th>
-                        <th style="width: 15%;">Tanggal</th>
-                        <th style="width: 30%; text-align: left;">Uraian</th>
-                        ${showKategoriInPDF ? '<th style="width: 15%;">Kategori</th>' : ''}
-                        <th style="width: 15%;">Dana Masuk (Rp)</th>
-                        <th style="width: 15%;">Dana Keluar (Rp)</th>
-                        <th style="width: 15%;">Saldo (Rp)</th>
+                        <th style="width: 5%; padding: 8px; border: 1px solid #ddd;">No</th>
+                        <th style="width: 12%; border: 1px solid #ddd;">Tanggal</th>
+                        <th style="width: ${widthUraian}; text-align: left; border: 1px solid #ddd;">Uraian</th>
+                        ${showKategoriInPDF ? '<th style="width: 15%; border: 1px solid #ddd;">Kategori</th>' : ''}
+                        <th style="width: 15%; border: 1px solid #ddd;">Dana Masuk (Rp)</th>
+                        <th style="width: 15%; border: 1px solid #ddd;">Dana Keluar (Rp)</th>
+                        <th style="width: 15%; border: 1px solid #ddd;">Saldo (Rp)</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
         dataToPrint.forEach(item => { 
-            const colorStyle = item.isDanaMasuk ? 'color: #008000;' : 'color: black;';
+            // Pastikan Uraian selalu hitam untuk keterbacaan
             tableHTML += ` 
                 <tr> 
-                    <td style="padding: 5px; text-align: center;">${item.no}</td> 
-                    <td style="text-align: center;">${item.tanggal}</td> 
-                    <td style="text-align: left;"><span style="${colorStyle}">${item.uraian}</span></td> 
-                    ${showKategoriInPDF ? `<td style="text-align: center;">${item.kategori}</td>` : ''}
-                    <td style="text-align: right; color: #008000;">${item.danaMasuk}</td> 
-                    <td style="text-align: right; color: #cc0000;">${item.danaKeluar}</td> 
-                    <td style="text-align: right;">${item.saldo}</td> 
+                    <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${item.no}</td> 
+                    <td style="text-align: center; border: 1px solid #ddd;">${item.tanggal}</td> 
+                    <td style="text-align: left; border: 1px solid #ddd; max-width: ${widthUraian}; overflow-wrap: break-word;">
+                        <span style="color: black;">${item.uraian}</span>
+                    </td> 
+                    ${showKategoriInPDF ? `<td style="text-align: center; border: 1px solid #ddd;">${item.kategori}</td>` : ''}
+                    <td style="text-align: right; color: #008000; border: 1px solid #ddd;">${item.danaMasuk}</td> 
+                    <td style="text-align: right; color: #cc0000; border: 1px solid #ddd;">${item.danaKeluar}</td> 
+                    <td style="text-align: right; border: 1px solid #ddd;">${item.saldo}</td> 
                 </tr> 
             `; 
         }); 
@@ -1365,61 +1364,75 @@
         
         tableHTML += ` 
             <tr style="font-weight: bold; background-color: #ffffcc; border-top: 2px solid black;"> 
-                <td colspan="${pdfColspan}" style="text-align: right;">TOTAL AKHIR:</td> 
-                <td style="text-align: right; color: #008000;">${formatRupiah(totalMasuk)}</td> 
-                <td style="text-align: right; color: #cc0000;">${formatRupiah(totalKeluar)}</td> 
-                <td style="text-align: right; color: ${finalSaldoColor};">${formatRupiah(finalSaldo)}</td> 
+                <td colspan="${pdfColspan}" style="text-align: right; padding: 8px; border: 1px solid black; color: black;">TOTAL AKHIR:</td> 
+                <td style="text-align: right; color: #008000; border: 1px solid black;">${formatRupiah(totalMasuk)}</td> 
+                <td style="text-align: right; color: #cc0000; border: 1px solid black;">${formatRupiah(totalKeluar)}</td> 
+                <td style="text-align: right; color: ${finalSaldoColor}; border: 1px solid black;">${formatRupiah(finalSaldo)}</td> 
             </tr> 
             </tbody> 
         </table> 
-        <div style="text-align: right; margin-top: 20px; font-size: 10px;">
-            <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+        <div style="text-align: right; margin-top: 20px; font-size: 10px; color: black;">
+        <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
         </div>
         `;
 
         return headerHTML + tableHTML;
     }
 
-    window.downloadPDF = async function() {
+
+    // FUNGSI UTAMA DOWNLOAD LAMPIRAN (Detail Transaksi)
+    window.downloadPDF = async function() { 
         try {
-            // Kita anggap untuk PDF Lampiran (Detail) kolom Kategori harus tampil
             const content = await generatePDFContent(false);
             const element = document.createElement('div');
             element.innerHTML = content;
             
-            html2pdf(element, { 
-                margin: [15, 10, 15, 10], 
+            const opt = { 
+                margin: [10, 10, 10, 10], 
                 filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
                 image: { type: 'jpeg', quality: 0.98 }, 
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } 
-            }); 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            // PEMANGGILAN html2pdf YANG DIPERBAIKI (metode from().set().save())
+            html2pdf().from(element).set(opt).save(); 
+
         } catch (error) { 
-            console.error("Error generating PDF:", error); 
-            alert("Gagal membuat PDF Lampiran. Cek konsol browser untuk detail error."); 
+            console.error("Error generating PDF (downloadPDF):", error); 
+            alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
         } 
     }
 
-    // Fungsi Ringkasan PDF (Ringkasan tetap tidak menampilkan kolom Kategori)
+    // FUNGSI UTAMA DOWNLOAD GLOBAL (Ringkasan LPJ)
+    window.downloadSummaryPDF = async function() { 
+        try {
+            const content = await generatePDFContent(true); // true = Ringkasan
+            const element = document.createElement('div');
+            element.innerHTML = content;
+            
+            const opt = { 
+                margin: [10, 10, 10, 10], 
+                filename: 'Laporan_Keuangan_RINGKASAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
+                image: { type: 'jpeg', quality: 0.98 }, 
+                html2canvas: { scale: 3, logging: false, useCORS: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
+
+            // PEMANGGILAN html2pdf YANG DIPERBAIKI
+            html2pdf().from(element).set(opt).save(); 
+
+        } catch (error) { 
+            console.error("Error generating Summary PDF:", error); 
+            alert("Fungsi Unduh PDF Ringkasan Gagal. Cek Konsol Browser (F12) untuk detail error."); 
+        } 
+    }
+    
+    // Fungsi aggregateData (placeholder)
     async function aggregateData() { 
-        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-        // ... (Logika aggregateData yang memproses data ke dalam rekapitulasi) ...
-        // Logika ini sangat panjang dan sensitif, diasumsikan sudah benar
-        return {
-            totalMasuk: 1000000, // Placeholder
-            totalKeluar: 500000, // Placeholder
-            rekapMasuk: [{kategori: 'Infaq', jumlah: 500000}], // Placeholder
-            rekapKeluar: [{kategori: 'Gaji', jumlah: 500000}] // Placeholder
-        }
+        // ... (Logika aggregateData jika ada) ...
+        return {}; 
     }
-
-    window.downloadSummaryPDF = async function() {
-        alert("Fungsi Unduh PDF Ringkasan sedang dikembangkan...");
-        // Logika asli downloadSummaryPDF harus dimasukkan di sini, 
-        // memastikan ia tidak merender kolom Kategori
-    }
-
-
     // =========================================================================
     // 7. LISTENER PERUBAHAN STATUS AUTENTIKASI (Wajib)
     // =========================================================================
@@ -1498,3 +1511,4 @@
 </body>
 </html>
 file unduhannya blm jadi
+
