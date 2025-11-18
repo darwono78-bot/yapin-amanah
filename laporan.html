@@ -259,9 +259,13 @@
                         const data = doc.data();
                         const docId = doc.id;
             
-                        // KONVERSI LEBIH AGRESIF: memastikan semua non-digit dihapus, bahkan karakter tak terlihat (unicode)
+                        // PASTIKAN DATA DICONVERT DARI STRING FIREBASE KE ANGKA (FIX FINAL)
+                        const rawDanaMasuk = data.dana_masuk || 0; 
+                        const rawDanaKeluar = data.dana_keluar || 0;
+            
+                        // Konversi Agresif (yang tidak menyebabkan SyntaxError):
                         const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^\d]/g, '')) || 0;
-                        const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^\d]/g, '')) || 0;lace(/\D/g, '')) || 0;
+                        const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^\d]/g, '')) || 0;
             
                         // Ini akan menghapus titik/koma/Rp dan mengubah "500.000" menjadi 500000
                         const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^0-9]/g, '')) || 0;
@@ -881,6 +885,7 @@
 
 </body>
 </html>
+
 
 
 
