@@ -11,884 +11,712 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCLFgGblfLTDvploV-tZGYqAajIzT7t0bc",
-            authDomain: "laporan-keuangan-yayasan.firebaseapp.com",
-            projectId: "laporan-keuangan-yayasan",
-            storageBucket: "laporan-keuangan-yayasan.firebasestorage.app",
-            messagingSenderId: "616927572689",
-            appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
-        };
-        // Inisialisasi Firebase
-        firebase.initializeApp(firebaseConfig);
-    </script>
-
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; scroll-behavior: smooth; }
-        body { 
-            background: linear-gradient(rgba(0, 40, 0, 0.85), rgba(0, 40, 0, 0.85)),
+        /* [ ... STYLE CSS UMUM ANDA TETAP SAMA ... ] */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background:
+                linear-gradient(rgba(0, 40, 0, 0.85), rgba(0, 40, 0, 0.85)),
                 url('background-masjid-hijau-3.jpg') no-repeat center center fixed;
             background-size: cover;
-            color: #fff; 
-            padding: 20px; 
+            color: #fff;
             overflow-x: hidden;
         }
-        .container { max-width: 1200px; margin: auto; }
-        h1, h2 { text-align: center; margin-bottom: 20px; }
-        input, select, button { padding: 8px; margin: 5px 0; border-radius: 4px; border: 1px solid #ccc; }
-        .login-box, .input-control-box { 
-            background: rgba(0,0,0,0.5); 
-            padding: 20px; 
-            border-radius: 8px; 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Tambahkan CSS Khusus untuk Laporan agar tampilan rapi */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .section {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #fff;
             margin-bottom: 20px;
         }
-        .login-box button, .input-control-box button { background: #38a169; color: white; border: none; cursor: pointer; }
-        #finance-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; color: #333; }
-        #finance-table th, #finance-table td { padding: 10px; border: 1px solid #ddd; text-align: center; }
-        #finance-table th { background-color: #f0f0f0; }
-        .summary-box { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; margin-top: 20px; }
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; color: #333; border-radius: 8px; }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
-        .close-btn:hover, .close-btn:focus { color: black; text-decoration: none; cursor: pointer; }
-        .aksi-cell { white-space: nowrap; }
-        .edit-btn, .delete-btn { padding: 5px 10px; margin: 2px; }
-        /* Animasi */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+
+        /* Login */
+        #login-section {
+            display: none;
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
         }
-        .section { opacity: 0; transition: opacity 0.5s, transform 0.5s; transform: scale(0.95); }
-        .section.visible { opacity: 1; transform: scale(1); }
+
+        /* Form Input */
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #333;
+            color: #fff;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            margin-right: 10px;
+        }
+        button.logout-btn { background-color: #dc3545; }
+        button.reset-btn { background-color: #6c757d; }
+        button.edit-btn { background-color: #ffc107; color: #333; }
+        button.delete-btn { background-color: #dc3545; }
+        button.pdf-btn { background-color: #28a745; }
+
+        /* Summary */
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .summary-box h3 { margin-bottom: 5px; }
+
+        /* Table */
+        .report-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #555;
+            text-align: right;
+            color: #fff;
+        }
+        table th {
+            background-color: rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+            text-align: center;
+        }
+        table td:first-child { text-align: center; }
+        table td:nth-child(3) { text-align: left; }
+        .aksi-cell { width: 150px; text-align: center !important; }
+        .kategori-cell { text-align: center !important; }
+
+        /* Modal Edit */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4); 
+        }
+        .modal-content {
+            background-color: #222;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover, .close:focus {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-content h2 { margin-bottom: 15px; }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Laporan Keuangan Yayasan</h1>
 
-    <div class="container section">
-        <h1>Sistem Informasi Keuangan Yayasan</h1>
-
-        <div id="login-container" class="login-box section">
-            <h2>Login Admin</h2>
-            <input type="email" id="login-email" placeholder="Email Admin" required />
-            <input type="password" id="login-password" placeholder="Password" required />
+        <div id="login-section" class="section">
+            <h2>Hanya Admin</h2>
+            <input type="email" id="email" placeholder="Email Admin" class="input-group-field" />
+            <input type="password" id="password" placeholder="Password" class="input-group-field" />
             <button onclick="login()">Login</button>
         </div>
-        
-        <div id="input-control-container" class="input-control-box section" style="display: none;">
-            <h2>Input Transaksi Baru</h2>
-            <input type="date" id="inputTanggal" value="" required />
-            <input type="text" id="inputUraian" placeholder="Uraian Transaksi" required />
-            <select id="inputKategori" required>
-                <option value="">Pilih Kategori</option>
-            </select>
-            <input type="number" id="inputMasuk" placeholder="Dana Masuk (0 jika keluar)" />
-            <input type="number" id="inputKeluar" placeholder="Dana Keluar (0 jika masuk)" />
-            <button onclick="addTransaction()">Tambah Transaksi</button>
-            <button onclick="logout()">Logout</button>
-            <button onclick="resetData()" style="background: #a13838;">Reset Data (Hapus Semua)</button>
-        </div>
-        
-        <div class="summary-box section">
-            <h2>Ringkasan Keuangan</h2>
-            <p>Total Dana Masuk: <span id="total-masuk" style="color: #6dff8f;">Rp 0</span></p>
-            <p>Total Dana Keluar: <span id="total-keluar" style="color: #ff6d6d;">Rp 0</span></p>
-            <hr style="margin: 10px 0;" />
-            <p style="font-size: 1.2em; font-weight: bold;">SALDO AKHIR: <span id="saldo-akhir" style="color: #6dff8f;">Rp 0</span></p>
+
+        <div id="report-content" style="display: none;">
             
-            <div style="margin-top: 20px;">
-                <button onclick="downloadSummaryPDF()" style="background: #38a169;">Download LPJ Ringkasan (PDF)</button>
-                <button onclick="downloadPDF()" style="background: #38a169;">Download Lampiran Detail (PDF)</button>
+            <div class="section">
+                <button onclick="logout()" class="logout-btn">Logout</button>
+                <button onclick="generatePDF()" class="pdf-btn">Download PDF Laporan</button>
             </div>
-        </div>
 
-        <h2>Detail Laporan Transaksi</h2>
-        <div style="overflow-x: auto;" class="section">
-            <table id="finance-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">No</th>
-                        <th style="width: 12%;">Tanggal</th>
-                        <th style="width: 30%;">Uraian</th>
-                        <th style="width: 15%;" id="kategori-header">Kategori</th>
-                        <th style="width: 12%;">Dana Masuk</th>
-                        <th style="width: 12%;">Dana Keluar</th>
-                        <th style="width: 14%;">Saldo</th>
-                        <th style="width: 10%;" id="aksi-header">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="finance-table-body">
+            <form id="add-transaction-form" class="section">
+                <h2>Tambah Transaksi Baru</h2>
+                <div class="input-group">
+                    <label for="tanggal-input">Tanggal:</label>
+                    <input type="date" id="tanggal-input" required />
+                </div>
+
+                <div class="input-group">
+                    <label for="uraian-input">Uraian:</label>
+                    <input type="text" id="uraian-input" required />
+                </div>
+                
+                <div class="input-group">
+                    <label for="kategori-input">Kategori:</label>
+                    <select id="kategori-input" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="dana-masuk-input">Dana Masuk:</label>
+                    <input type="text" id="dana-masuk-input" placeholder="Contoh: 500.000" />
+                </div>
+
+                <div class="input-group">
+                    <label for="dana-keluar-input">Dana Keluar:</label>
+                    <input type="text" id="dana-keluar-input" placeholder="Contoh: 100.000" />
+                </div>
+
+                <button type="submit" onclick="addTransaction(event)">Tambah Transaksi</button>
+                <button type="button" onclick="resetData()" class="reset-btn">Reset Semua Data</button>
+            </form>
+            
+            <div class="summary section">
+                <div class="summary-box">
+                    <h3>Total Dana Masuk</h3>
+                    <p id="total-masuk">Rp 0</p>
+                </div>
+                <div class="summary-box">
+                    <h3>Total Dana Keluar</h3>
+                    <p id="total-keluar">Rp 0</p>
+                </div>
+                <div class="summary-box">
+                    <h3>Saldo Akhir</h3>
+                    <p id="saldo-akhir" style="font-weight: bold;">Rp 0</p>
+                </div>
+            </div>
+
+            <div class="report-container section" id="laporan-table">
+                <h2>Tabel Laporan Transaksi</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th style="width: 100px;">Tanggal</th>
+                            <th style="width: 300px;">Uraian</th>
+                            <th style="width: 150px;">Kategori</th>
+                            <th style="width: 150px;">Dana Masuk</th>
+                            <th style="width: 150px;">Dana Keluar</th>
+                            <th style="width: 150px;">Saldo</th>
+                            <th style="width: 150px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="finance-table-body">
+                        <tr><td colspan="8" style="text-align: center;">Memuat data...</td></tr>
                     </tbody>
-            </table>
-        </div>
-    </div>
-    
-    <div id="editModal" class="modal">
+                </table>
+            </div>
+
+        </div> </div> <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close">&times;</span>
             <h2>Edit Transaksi</h2>
-            <input type="hidden" id="editDocId">
-            
-            <label for="editTanggal">Tanggal:</label>
-            <input type="date" id="editTanggal" required />
-            
-            <label for="editUraian">Uraian:</label>
-            <input type="text" id="editUraian" required />
-
-            <label for="editKategori">Kategori:</label>
-            <select id="editKategori" required>
-                </select>
-            
-            <label for="editMasuk">Dana Masuk:</label>
-            <input type="number" id="editMasuk" placeholder="Dana Masuk" />
-            
-            <label for="editKeluar">Dana Keluar:</label>
-            <input type="number" id="editKeluar" placeholder="Dana Keluar" />
-            
-            <button id="save-edit-btn" style="background: #38a169;">Simpan Perubahan</button>
+            <div class="input-group">
+                <label for="edit-tanggal">Tanggal:</label>
+                <input type="date" id="edit-tanggal" />
+            </div>
+            <div class="input-group">
+                <label for="edit-uraian">Uraian:</label>
+                <input type="text" id="edit-uraian" />
+            </div>
+            <div class="input-group">
+                <label for="edit-kategori">Kategori:</label>
+                <select id="edit-kategori"></select>
+            </div>
+            <div class="input-group">
+                <label for="edit-masuk">Dana Masuk:</label>
+                <input type="text" id="edit-masuk" />
+            </div>
+            <div class="input-group">
+                <label for="edit-keluar">Dana Keluar:</label>
+                <input type="text" id="edit-keluar" />
+            </div>
+            <button id="save-edit-btn">Simpan Perubahan</button>
         </div>
     </div>
+
+
+<script>
+    // =========================================================================
+    // FIREBASE CONFIGURATION (PASTIKAN INI ADALAH CONFIG ANDA)
+    // =========================================================================
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY", // GANTI DENGAN KODE API KAKAK
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "SENDER_ID",
+        appId: "APP_ID"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    // FIX 2: NAMA KOLEKSI HARUS 'laporan'
+    const FINANCE_COLLECTION = 'laporan'; 
 
-    <script>
-        // =========================================================================
-        // 1. KONFIGURASI DAN INISIALISASI
-        // =========================================================================
+    // Daftar Kategori untuk dropdown
+    const CATEGORIES = [
+        'Donasi/Sumbangan',
+        'Infaq Sekolah',
+        'Bantuan Pemerintah',
+        'Pengeluaran Operasional',
+        'Pengeluaran Pendidikan',
+        'Pengeluaran Sosial',
+        'Lain-lain Masuk',
+        'Lain-lain Keluar'
+    ];
 
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const FINANCE_COLLECTION = 'laporan'; 
 
-        // Data Kategori
-        const CATEGORIES = {
-            // Kategori Dana Masuk
-            Masuk: [
-                'Dana Pemerintah', 'Iuran Santri', 'Dana Proposal', 'Dana Donatur', 
-                'Dana Donatur Jamaah / Masyarakat', 'Dana Kotak Amal', 'Hasil Kebun', 
-                'Hasil Usaha', 'Dana Iuran Sertifikasi Guru', 'Lain-lain (DM)'
-            ],
-            // Kategori Dana Keluar
-            Keluar: [
-                'Pengeluaran Pasti (PP)', 'Pengeluaran Tidak Pasti (PTP)', 
-                'Pengeluaran Pembangungunan & Perawatan Gedung (P3G)', 'Pengeluaran Sosial (PS)', 
-                'Pengeluaran Pembiayaan Perawatan Barang (P3B)', 'Pengeluaran PHBI', 
-                'Pengeluaran Lain-Lain (PL2)'
-            ]
+    // =========================================================================
+    // UTILITY FUNCTIONS
+    // =========================================================================
+
+    // Fungsi untuk memformat angka menjadi Rupiah (termasuk konversi dari string ke number)
+    function formatRupiah(angka) {
+        // Konversi angka ke string, hapus semua non-digit kecuali tanda minus, dan konversi ke angka
+        const numberValue = parseInt(String(angka).replace(/[^\d-]/g, '')) || 0;
+        
+        const isNegative = numberValue < 0;
+        const absValue = Math.abs(numberValue);
+
+        const rupiah = absValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        
+        return (isNegative ? '- Rp ' : 'Rp ') + rupiah;
+    }
+
+    // Fungsi untuk mengisi opsi kategori
+    function fillCategoryOptions() {
+        const selects = document.querySelectorAll('#kategori-input, #edit-kategori');
+        selects.forEach(select => {
+            select.innerHTML = '<option value="">-- Pilih Kategori --</option>';
+            CATEGORIES.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
+            });
+        });
+    }
+
+    // Fungsi untuk menampilkan/menyembunyikan konten berdasarkan status login
+    function toggleTableDisplay(isLoggedIn) {
+        document.getElementById('login-section').style.display = isLoggedIn ? 'none' : 'block';
+        document.getElementById('report-content').style.display = isLoggedIn ? 'block' : 'none';
+        if (isLoggedIn) {
+            loadData();
+        }
+    }
+
+
+    // =========================================================================
+    // FIREBASE AUTH
+    // =========================================================================
+
+    auth.onAuthStateChanged(user => {
+        toggleTableDisplay(!!user);
+    });
+
+    function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                alert('Login Berhasil!');
+            })
+            .catch(error => {
+                alert('Login Gagal: ' + error.message);
+            });
+    }
+
+    function logout() {
+        auth.signOut().then(() => {
+            alert('Logout Berhasil!');
+            document.getElementById('finance-table-body').innerHTML = '<tr><td colspan="8" style="text-align: center;">Silakan Login.</td></tr>';
+        }).catch(error => {
+            console.error('Logout error:', error);
+        });
+    }
+
+
+    // =========================================================================
+    // FUNGSI UTAMA TRANSAKSI
+    // =========================================================================
+
+    // FIX 3: Fungsi addTransaction yang menggunakan ID input yang benar dan konversi angka
+    async function addTransaction(event) {
+        event.preventDefault();
+
+        // Mengambil nilai dari input form (ID sudah disesuaikan dengan HTML)
+        const tanggalInput = document.getElementById('tanggal-input').value;
+        const uraianInput = document.getElementById('uraian-input').value;
+        const kategoriInput = document.getElementById('kategori-input').value;
+        const danaMasukInput = document.getElementById('dana-masuk-input').value;
+        const danaKeluarInput = document.getElementById('dana-keluar-input').value;
+
+        if (!tanggalInput || !uraianInput || !kategoriInput) {
+            alert('Semua bidang (Tanggal, Uraian, Kategori) harus diisi.');
+            return;
+        }
+
+        // Konversi Agresif: Menghapus semua non-digit dari input string untuk mendapatkan angka
+        const danaMasukValue = parseInt(String(danaMasukInput).replace(/[^\d]/g, '')) || 0;
+        const danaKeluarValue = parseInt(String(danaKeluarInput).replace(/[^\d]/g, '')) || 0;
+
+        // Validasi, pastikan salah satu harus diisi (tidak boleh keduanya nol)
+        if (danaMasukValue === 0 && danaKeluarValue === 0) {
+            alert('Dana Masuk atau Dana Keluar harus diisi.');
+            return;
+        }
+
+        const newTransaction = {
+            tanggal: tanggalInput,
+            uraian: uraianInput,
+            kategori: kategoriInput,
+            // FIX: Simpan ke database dengan format underscore: 'dana_masuk' dan 'dana_keluar'
+            // Nilai disimpan sebagai STRING dengan format Rupiah agar data lama tetap kompatibel
+            dana_masuk: danaMasukValue > 0 ? formatRupiah(danaMasukValue).replace('Rp ', '') : '0',
+            dana_keluar: danaKeluarValue > 0 ? formatRupiah(danaKeluarValue).replace('Rp ', '') : '0',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-
-        // =========================================================================
-        // 2. FUNGSI UTILITY (PEMBANTU)
-        // =========================================================================
-
-        // Fungsi format rupiah
-        function formatRupiah(angka) {
-            if (angka === 0 || angka === null || typeof angka === 'undefined') return 'Rp 0';
-            const numberString = Math.abs(angka).toString();
-            const sisa = numberString.length % 3;
-            let rupiah = numberString.substr(0, sisa);
-            const ribuan = numberString.substr(sisa).match(/\d{3}/g);
-
-            if (ribuan) {
-                const separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            return (angka < 0 ? '-Rp ' : 'Rp ') + rupiah;
+        try {
+            await db.collection(FINANCE_COLLECTION).add(newTransaction);
+            alert('Transaksi Berhasil Ditambahkan!');
+            
+            // Reset Form dan Muat Ulang Data
+            document.getElementById('add-transaction-form').reset();
+            loadData();
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            alert('Gagal menambahkan transaksi. Cek console.');
         }
-        
-        // Mengisi opsi kategori
-        function fillCategoryOptions() {
-            const inputKategori = document.getElementById('inputKategori');
-            const editKategori = document.getElementById('editKategori');
-            
-            if (inputKategori) inputKategori.innerHTML = '<option value="">Pilih Kategori</option>';
-            if (editKategori) editKategori.innerHTML = '<option value="">Pilih Kategori</option>';
+    }
 
-            const allCategories = [...CATEGORIES.Masuk, ...CATEGORIES.Keluar];
-            allCategories.forEach(cat => {
-                const option = '<option value="' + cat + '">' + cat + '</option>';
-                if (inputKategori) inputKategori.innerHTML += option;
-                if (editKategori) editKategori.innerHTML += option;
-            });
-        }
+    // FIX 4: Fungsi loadData yang menggunakan field 'dana_masuk' dan konversi angka agresif
+    async function loadData() {
+        const isLoggedIn = !!auth.currentUser;
+        const tableBody = document.getElementById('finance-table-body');
+        const totalMasukElement = document.getElementById('total-masuk');
+        const totalKeluarElement = document.getElementById('total-keluar');
+        const saldoAkhirElement = document.getElementById('saldo-akhir');
 
-        // Mengatur visibilitas kolom Kategori dan Aksi
-        function toggleTableDisplay(isLoggedIn) {
-            const kategoriHeader = document.getElementById('kategori-header');
-            const aksiHeader = document.getElementById('aksi-header');
-            
-            const kategoriCells = document.querySelectorAll('#finance-table-body .kategori-cell');
-            const aksiCells = document.querySelectorAll('#finance-table-body .aksi-cell');
-            
-            if (kategoriHeader) kategoriHeader.style.display = isLoggedIn ? '' : 'none';
-            if (aksiHeader) aksiHeader.style.display = isLoggedIn ? '' : 'none';
+        if (!tableBody || !isLoggedIn) return; 
 
-            kategoriCells.forEach(cell => cell.style.display = isLoggedIn ? '' : 'none');
-            aksiCells.forEach(cell => cell.style.display = isLoggedIn ? '' : 'none');
-        }
+        tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Memuat data...</td></tr>';
 
-
-        // =========================================================================
-            // FUNGSI LOAD DATA (VERSI FINAL TERVERIFIKASI)
-            // =========================================================================
-            
-            async function loadData() {
-                const isLoggedIn = !!auth.currentUser;
-                const tableBody = document.getElementById('finance-table-body');
-                const totalMasukElement = document.getElementById('total-masuk');
-                const totalKeluarElement = document.getElementById('total-keluar');
-                const saldoAkhirElement = document.getElementById('saldo-akhir');
-            
-                if (!tableBody) return; 
-            
-                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Memuat data...</td></tr>';
-            
-                try {
-                    // PERHATIAN: Pastikan di Baris 35-an, Kakak sudah set: 
-                    // const FINANCE_COLLECTION = 'laporan';
-            
-                    const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-                    let html = '';
-                    let saldo = 0;
-                    let totalMasuk = 0;
-                    let totalKeluar = 0;
-                    let no = 1;
-            
-                    snapshot.forEach((doc) => {
-                            const data = doc.data();
-                            const docId = doc.id;
-                    
-                            // PASTIKAN DATA DICONVERT DARI STRING FIREBASE KE ANGKA (FIX FINAL)
-                            const rawDanaMasuk = data.dana_masuk || 0; 
-                            const rawDanaKeluar = data.dana_keluar || 0;
-                    
-                            // Konversi Agresif:
-                            const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^\d]/g, '')) || 0;
-                            const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^\d]/g, '')) || 0;
-                    
-                            saldo += danaMasuk - danaKeluar;
-                            totalMasuk += danaMasuk;
-                            totalKeluar += danaKeluar;
-                    
-                            const saldoColor = saldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
-                    
-                            const kategoriCell = '<td class="kategori-cell">' + (data.kategori || '-') + '</td>';
-                            const aksiCell = 
-                                '<td class="aksi-cell">' +
-                                    '<button onclick="editTransactionPrompt(\'' + docId + '\')" class="edit-btn">Edit</button>' +
-                                    '<button onclick="deleteTransaction(\'' + docId + '\')" class="delete-btn">Hapus</button>' +
-                                '</td>';
-                    
-                            html += 
-                                '<tr>' +
-                                    '<td>' + no++ + '</td>' +
-                                    '<td>' + data.tanggal + '</td>' +
-                                    '<td style="text-align: left;">' + data.uraian + '</td>' +
-                                    kategoriCell +
-                                    '<td class="dana-masuk">' + formatRupiah(danaMasuk) + '</td>' +
-                                    '<td class="dana-keluar">' + formatRupiah(danaKeluar) + '</td>' +
-                                    '<td style="' + saldoColor + '">' + formatRupiah(saldo) + '</td>' +
-                                    aksiCell +
-                                '</tr>';
-                        }); // Hentikan di sini, Lanjutkan dengan if (html === '') di kode lama Kakak
-            
-                    if (html === '') {
-                        html = '<tr><td colspan="8" style="text-align: center;">Belum ada transaksi yang tercatat.</td></tr>';
-                    }
-            
-                    tableBody.innerHTML = html;
-            
-                    const finalSaldo = totalMasuk - totalKeluar;
-                    const finalSaldoColor = finalSaldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
-            
-                    if (totalMasukElement) totalMasukElement.textContent = formatRupiah(totalMasuk);
-                    if (totalKeluarElement) totalKeluarElement.textContent = formatRupiah(totalKeluar);
-                    if (saldoAkhirElement) {
-                        saldoAkhirElement.textContent = formatRupiah(finalSaldo);
-                        saldoAkhirElement.style.color = finalSaldoColor;
-                    }
-            
-                    toggleTableDisplay(isLoggedIn); 
-            
-                } catch (error) {
-                    console.error("Error loading data: ", error);
-                    tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Gagal memuat data. Cek error console.</td></tr>';
-                }
-            }
-
-        // Menambah Transaksi
-        async function addTransaction() {
-            const inputTanggal = document.getElementById('inputTanggal');
-            const inputUraian = document.getElementById('inputUraian');
-            const inputKategori = document.getElementById('inputKategori');
-            const inputMasuk = document.getElementById('inputMasuk');
-            const inputKeluar = document.getElementById('inputKeluar');
-
-            if (!inputTanggal.value || !inputUraian.value || !inputKategori.value || (!inputMasuk.value && !inputKeluar.value)) {
-                alert('Semua kolom (Tanggal, Uraian, Kategori) harus diisi, dan salah satu dari Dana Masuk/Keluar harus diisi.');
-                return;
-            }
-
-            const danaMasuk = parseInt(inputMasuk.value.replace(/[^0-9]/g, '')) || 0;
-            const danaKeluar = parseInt(inputKeluar.value.replace(/[^0-9]/g, '')) || 0;
-
-            if (danaMasuk > 0 && danaKeluar > 0) {
-                alert('Hanya boleh mengisi salah satu: Dana Masuk atau Dana Keluar.');
-                return;
-            }
-            if (danaMasuk === 0 && danaKeluar === 0) {
-                alert('Dana Masuk atau Dana Keluar harus diisi.');
-                return;
-            }
-
-            try {
-                await db.collection(FINANCE_COLLECTION).add({
-                    tanggal: inputTanggal.value,
-                    uraian: inputUraian.value,
-                    kategori: inputKategori.value,
-                    danaMasuk: danaMasuk,
-                    danaKeluar: danaKeluar,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                inputTanggal.value = new Date().toISOString().substring(0, 10);
-                inputUraian.value = '';
-                inputKategori.value = ''; 
-                inputMasuk.value = '';
-                inputKeluar.value = '';
-
-                alert('Transaksi berhasil ditambahkan!');
-                loadData(); 
-            } catch (error) {
-                console.error("Error adding document: ", error);
-                alert('Gagal menambahkan transaksi: ' + error.message);
-            }
-        }
-
-        // Menghapus Transaksi
-        async function deleteTransaction(docId) {
-            if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
-
-            try {
-                await db.collection(FINANCE_COLLECTION).doc(docId).delete();
-                alert('Transaksi berhasil dihapus!');
-                loadData();
-            } catch (error) {
-                console.error("Error removing document: ", error);
-                alert('Gagal menghapus transaksi: ' + error.message);
-            }
-        }
-
-        // Mengisi Modal Edit
-        async function editTransactionPrompt(docId) {
-            const modal = document.getElementById('editModal');
-            const doc = await db.collection(FINANCE_COLLECTION).doc(docId).get();
-            if (!doc.exists) {
-                alert('Dokumen tidak ditemukan.');
-                return;
-            }
-
-            const data = doc.data();
-
-            document.getElementById('editDocId').value = docId;
-            document.getElementById('editTanggal').value = data.tanggal;
-            document.getElementById('editUraian').value = data.uraian;
-            document.getElementById('editKategori').value = data.kategori || ''; 
-            document.getElementById('editMasuk').value = data.danaMasuk || '';
-            document.getElementById('editKeluar').value = data.danaKeluar || '';
-            
-            if (modal) modal.style.display = 'block';
-        }
-
-        // Menyimpan Perubahan Edit
-        async function saveEditChanges() {
-            const docId = document.getElementById('editDocId').value;
-            const editTanggal = document.getElementById('editTanggal').value;
-            const editUraian = document.getElementById('editUraian').value;
-            const editKategori = document.getElementById('editKategori').value;
-            const editMasuk = document.getElementById('editMasuk').value;
-            const editKeluar = document.getElementById('editKeluar').value;
-
-            const danaMasuk = parseInt(editMasuk.replace(/[^0-9]/g, '')) || 0;
-            const danaKeluar = parseInt(editKeluar.replace(/[^0-9]/g, '')) || 0;
-
-            if (danaMasuk > 0 && danaKeluar > 0) {
-                alert('Hanya boleh mengisi salah satu: Dana Masuk atau Dana Keluar.');
-                return;
-            }
-            if (danaMasuk === 0 && danaKeluar === 0) {
-                alert('Dana Masuk atau Dana Keluar harus diisi.');
-                return;
-            }
-            
-            if (!editTanggal || !editUraian || !editKategori) {
-                alert('Semua kolom (Tanggal, Uraian, Kategori) harus diisi.');
-                return;
-            }
-
-            try {
-                await db.collection(FINANCE_COLLECTION).doc(docId).update({
-                    tanggal: editTanggal,
-                    uraian: editUraian,
-                    kategori: editKategori,
-                    danaMasuk: danaMasuk,
-                    danaKeluar: danaKeluar,
-                });
-
-                alert('Perubahan berhasil disimpan!');
-                document.getElementById('editModal').style.display = 'none';
-                loadData();
-            } catch (error) {
-                console.error("Error updating document: ", error);
-                alert('Gagal menyimpan perubahan: ' + error.message);
-            }
-        }
-
-
-        // =========================================================================
-        // 4. FUNGSI AUTHENTIKASI & RESET DATA
-        // =========================================================================
-
-        function login() {
-            const userEmail = document.getElementById('login-email').value;
-            const userPassword = document.getElementById('login-password').value;
-
-            auth.signInWithEmailAndPassword(userEmail, userPassword)
-                .then((userCredential) => {
-                    console.log("User logged in:", userCredential.user);
-                })
-                .catch((error) => {
-                    console.error("Login failed:", error.message);
-                    alert('Login Gagal: ' + error.message);
-                });
-        }
-
-        function logout() {
-            auth.signOut().then(() => {
-                console.log("User signed out");
-                alert('Anda telah logout.');
-            }).catch((error) => {
-                console.error("Logout failed:", error.message);
-            });
-        }
-
-        async function resetData() {
-            if (!confirm("PERINGATAN: Anda yakin ingin MENGHAPUS SEMUA DATA TRANSAKSI? Aksi ini tidak bisa dibatalkan!")) return;
-
-            try {
-                const snapshot = await db.collection(FINANCE_COLLECTION).get();
-                const batch = db.batch();
-                snapshot.docs.forEach((doc) => {
-                    batch.delete(doc.ref);
-                });
-                await batch.commit();
-                alert('Semua data transaksi berhasil dihapus!');
-                loadData();
-            } catch (error) {
-                console.error("Error resetting data:", error);
-                alert("Gagal menghapus semua data: " + error.message);
-            }
-        }
-
-
-        // =========================================================================
-        // 5. FUNGSI GENERASI PDF (MENGGUNAKAN KONKATENASI STANDAR)
-        // =========================================================================
-        
-        // Fungsi Pembantu: Agregasi data untuk Ringkasan
-        async function aggregateDataByCategory() {
-            const snapshot = await db.collection(FINANCE_COLLECTION).get();
-            const summaryMasukMap = new Map();
-            const summaryKeluarMap = new Map();
-            let totalMasukGlobal = 0;
-            let totalKeluarGlobal = 0;
+        try {
+            // FIX: Mengambil data dari koleksi 'laporan'
+            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+            let html = '';
+            let saldo = 0;
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+            let no = 1;
 
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                const kategori = data.kategori || 'Tanpa Kategori';
-                const danaMasuk = data.danaMasuk || 0;
-                const danaKeluar = data.danaKeluar || 0;
+                const docId = doc.id;
 
-                if (danaMasuk > 0) {
-                    summaryMasukMap.set(kategori, (summaryMasukMap.get(kategori) || 0) + danaMasuk);
-                    totalMasukGlobal += danaMasuk;
-                } else if (danaKeluar > 0) {
-                    summaryKeluarMap.set(kategori, (summaryKeluarMap.get(kategori) || 0) + danaKeluar);
-                    totalKeluarGlobal += danaKeluar;
-                }
-            });
-
-            const summaryMasuk = Array.from(summaryMasukMap, ([kategori, jumlah]) => ({ kategori, jumlah }));
-            const summaryKeluar = Array.from(summaryKeluarMap, ([kategori, jumlah]) => ({ kategori, jumlah }));
-            
-            return { summaryMasuk, summaryKeluar, totalMasukGlobal, totalKeluarGlobal };
-        }
-
-
-        // Fungsi Pembantu: Konten PDF Detail (LAMPIRAN)
-        async function generatePDFContent(isSummary = false) { 
+                const rawDanaMasuk = data.dana_masuk || 0; 
+                const rawDanaKeluar = data.dana_keluar || 0;
                 
-            const isLoggedIn = !!auth.currentUser;
-            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
-            let dataToPrint = []; 
-            let saldo = 0; 
-            let totalMasuk = 0; 
-            let totalKeluar = 0; 
-            let no = 1; 
-            const showKategoriInPDF = isLoggedIn && !isSummary; 
+                // FIX: Konversi Agresif, menghapus semua non-digit (termasuk titik/koma)
+                const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^\d]/g, '')) || 0;
+                const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^\d]/g, '')) || 0;
 
-            snapshot.forEach((doc) => { 
-                const data = doc.data(); 
-                const danaMasuk = data.danaMasuk || 0; 
-                const danaKeluar = data.danaKeluar || 0; 
-                saldo += danaMasuk - danaKeluar; 
-                totalMasuk += danaMasuk; 
-                totalKeluar += danaKeluar; 
-                dataToPrint.push({ 
-                    no: no++, 
-                    tanggal: data.tanggal, 
-                    uraian: data.uraian, 
-                    kategori: data.kategori || '-', 
-                    danaMasuk: formatRupiah(danaMasuk), 
-                    danaKeluar: formatRupiah(danaKeluar), 
-                    saldo: formatRupiah(saldo), 
-                    isDanaMasuk: danaMasuk > 0 
-                }); 
-            }); 
+                saldo += danaMasuk - danaKeluar;
+                totalMasuk += danaMasuk;
+                totalKeluar += danaKeluar;
 
-            const headerHTML = 
-                '<div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 5px;">' +
-                    '<h1 style="font-size: 16px; margin: 0; color: black;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>' +
-                    '<p style="font-size: 10px; margin: 0; color: black;">Khodimul Umat Ngablak Cluwak Pati</p>' +
-                '</div>' +
-                '<h2 style="font-size: 14px; text-align: center; margin: 15px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI)</h2>';
-            
-            const widthUraian = showKategoriInPDF ? '30%' : '40%';
-            const pdfColspan = showKategoriInPDF ? 4 : 3;
-            
-            let tableHTML = 
-                '<table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 9.5px; color: black;">' +
-                    '<thead>' +
-                        '<tr style="background-color: #f0f0f0;">' +
-                            '<th style="width: 5%; padding: 8px; border: 1px solid #ddd;">No</th>' +
-                            '<th style="width: 12%; border: 1px solid #ddd;">Tanggal</th>' +
-                            '<th style="width: ' + widthUraian + '; text-align: left; border: 1px solid #ddd;">Uraian</th>' +
-                            (showKategoriInPDF ? '<th style="width: 15%; border: 1px solid #ddd;">Kategori</th>' : '') +
-                            '<th style="width: 15%; border: 1px solid #ddd;">Dana Masuk (Rp)</th>' +
-                            '<th style="width: 15%; border: 1px solid #ddd;">Dana Keluar (Rp)</th>' +
-                            '<th style="width: 15%; border: 1px solid #ddd;">Saldo (Rp)</th>' +
-                        '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
+                const saldoColor = saldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
+                
+                const kategoriCell = '<td class="kategori-cell">' + (data.kategori || '-') + '</td>';
+                const aksiCell = 
+                    '<td class="aksi-cell">' +
+                        '<button onclick="editTransactionPrompt(\'' + docId + '\')" class="edit-btn">Edit</button>' +
+                        '<button onclick="deleteTransaction(\'' + docId + '\')" class="delete-btn">Hapus</button>' +
+                    '</td>';
 
-            dataToPrint.forEach(item => { 
-                tableHTML += 
-                    '<tr>' + 
-                        '<td style="padding: 5px; text-align: center; border: 1px solid #ddd;">' + item.no + '</td>' + 
-                        '<td style="text-align: center; border: 1px solid #ddd;">' + item.tanggal + '</td>' + 
-                        '<td style="text-align: left; border: 1px solid #ddd; max-width: ' + widthUraian + '; overflow-wrap: break-word;">' +
-                            '<span style="color: black;">' + item.uraian + '</span>' +
-                        '</td>' + 
-                        (showKategoriInPDF ? '<td style="text-align: center; border: 1px solid #ddd;">' + item.kategori + '</td>' : '') +
-                        '<td style="text-align: right; color: #008000; border: 1px solid #ddd;">' + item.danaMasuk + '</td>' + 
-                        '<td style="text-align: right; color: #cc0000; border: 1px solid #ddd;">' + item.danaKeluar + '</td>' + 
-                        '<td style="text-align: right; border: 1px solid #ddd;">' + item.saldo + '</td>' + 
-                    '</tr>'; 
-            }); 
-
-            const finalSaldo = totalMasuk - totalKeluar; 
-            const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000'; 
-            
-            tableHTML += 
-                '<tr style="font-weight: bold; background-color: #ffffcc; border-top: 2px solid black;">' + 
-                    '<td colspan="' + pdfColspan + '" style="text-align: right; padding: 8px; border: 1px solid black; color: black;">TOTAL AKHIR:</td>' + 
-                    '<td style="text-align: right; color: #008000; border: 1px solid black;">' + formatRupiah(totalMasuk) + '</td>' + 
-                    '<td style="text-align: right; color: #cc0000; border: 1px solid black;">' + formatRupiah(totalKeluar) + '</td>' + 
-                    '<td style="text-align: right; color: ' + finalSaldoColor + '; border: 1px solid black;">' + formatRupiah(finalSaldo) + '</td>' + 
-                '</tr>' + 
-                '</tbody>' + 
-            '</table>' + 
-            '<div style="text-align: right; margin-top: 20px; font-size: 10px; color: black;">' +
-                '<p>Pati, ' + new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) + '</p>' +
-            '</div>';
-
-            return headerHTML + tableHTML;
-        }
-
-
-        // Fungsi Pembantu: Konten PDF Ringkasan (DENGAN TANDA TANGAN)
-        async function generateSummaryPDFContent() {
-            const aggregated = await aggregateDataByCategory();
-            const { summaryMasuk, summaryKeluar, totalMasukGlobal, totalKeluarGlobal } = aggregated;
-            let no = 1;
-            
-            const headerHTML = 
-                '<div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 5px;">' +
-                    '<h1 style="font-size: 16px; margin: 0; color: black;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>' +
-                    '<p style="font-size: 10px; margin: 0; color: black;">Khodimul Umat Ngablak Cluwak Pati</p>' +
-                '</div>' +
-                '<h2 style="font-size: 14px; text-align: center; margin: 15px 0; color: black;">LAPORAN PERTANGGUNGJAWABAN (LPJ) RINGKASAN GLOBAL</h2>';
-            
-            let tableHTML = '';
-            
-            // 1. TABEL DANA MASUK
-            tableHTML += 
-                '<h3 style="font-size: 12px; margin-top: 20px; margin-bottom: 5px; color: black;">A. Dana Masuk</h3>' +
-                '<table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">' +
-                    '<thead>' +
-                        '<tr style="background-color: #e6ffe6;">' +
-                            '<th style="width: 5%; padding: 6px; border: 1px solid #ddd;">No</th>' +
-                            '<th style="width: 55%; text-align: left; border: 1px solid #ddd;">Kategori</th>' +
-                            '<th style="width: 20%; border: 1px solid #ddd;">Debit (Rp)</th>' +
-                            '<th style="width: 20%; border: 1px solid #ddd;">Kredit (Rp)</th>' +
-                        '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
-            
-            summaryMasuk.forEach(item => {
-                tableHTML += 
-                    '<tr>' + 
-                        '<td style="padding: 5px; text-align: center; border: 1px solid #ddd;">' + no++ + '</td>' + 
-                        '<td style="text-align: left; border: 1px solid #ddd;">' + item.kategori + '</td>' + 
-                        '<td style="text-align: right; color: #008000; border: 1px solid #ddd;">' + formatRupiah(item.jumlah) + '</td>' + 
-                        '<td style="text-align: right; border: 1px solid #ddd;">-</td>' + 
-                    '</tr>'; 
-            });
-
-            tableHTML += 
-                '<tr style="font-weight: bold; background-color: #ccffcc; border-top: 1px solid black;">' + 
-                    '<td colspan="2" style="text-align: right; padding: 6px; border: 1px solid black; color: black;">TOTAL DANA MASUK:</td>' + 
-                    '<td style="text-align: right; color: #008000; border: 1px solid black;">' + formatRupiah(totalMasukGlobal) + '</td>' + 
-                    '<td style="text-align: right; border: 1px solid black; color: black;">-</td>' + 
-                '</tr>' + 
-                '</tbody>' + 
-            '</table>'; 
-
-            no = 1;
-
-            // 2. TABEL DANA KELUAR
-            tableHTML += 
-                '<h3 style="font-size: 12px; margin-top: 25px; margin-bottom: 5px; color: black;">B. Dana Keluar</h3>' +
-                '<table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">' +
-                    '<thead>' +
-                        '<tr style="background-color: #ffe6e6;">' +
-                            '<th style="width: 5%; padding: 6px; border: 1px solid #ddd;">No</th>' +
-                            '<th style="width: 55%; text-align: left; border: 1px solid #ddd;">Kategori</th>' +
-                            '<th style="width: 20%; border: 1px solid #ddd;">Debit (Rp)</th>' +
-                            '<th style="width: 20%; border: 1px solid #ddd;">Kredit (Rp)</th>' +
-                        '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
-            
-            summaryKeluar.forEach(item => {
-                tableHTML += 
-                    '<tr>' + 
-                        '<td style="padding: 5px; text-align: center; border: 1px solid #ddd;">' + no++ + '</td>' + 
-                        '<td style="text-align: left; border: 1px solid #ddd;">' + item.kategori + '</td>' + 
-                        '<td style="text-align: right; border: 1px solid #ddd; color: black;">-</td>' + 
-                        '<td style="text-align: right; color: #cc0000; border: 1px solid #ddd;">' + formatRupiah(item.jumlah) + '</td>' + 
-                    '</tr>'; 
-            });
-
-            tableHTML += 
-                '<tr style="font-weight: bold; background-color: #ffcccc; border-top: 1px solid black;">' + 
-                    '<td colspan="2" style="text-align: right; padding: 6px; border: 1px solid black; color: black;">TOTAL DANA KELUAR:</td>' + 
-                    '<td style="text-align: right; border: 1px solid black; color: black;">-</td>' + 
-                    '<td style="text-align: right; color: #cc0000; border: 1px solid black;">' + formatRupiah(totalKeluarGlobal) + '</td>' + 
-                '</tr>' + 
-                '</tbody>' + 
-                '</table>'; 
-
-            // 3. REKAPITULASI AKHIR & Tanda Tangan
-            const finalSaldo = totalMasukGlobal - totalKeluarGlobal; 
-            const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000'; 
-            
-            tableHTML +=
-                '<h3 style="font-size: 12px; margin-top: 25px; margin-bottom: 5px; color: black;">C. Rekapitulasi Akhir</h3>' +
-                '<table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">' +
+                html += 
                     '<tr>' +
-                        '<td style="width: 60%; padding: 6px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f0f0f0; color: black;">TOTAL DEBIT (DANA MASUK)</td>' +
-                        '<td style="width: 40%; padding: 6px; border: 1px solid #ddd; text-align: right; color: #008000; font-weight: bold;">' + formatRupiah(totalMasukGlobal) + '</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                        '<td style="width: 60%; padding: 6px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f0f0f0; color: black;">TOTAL KREDIT (DANA KELUAR)</td>' +
-                        '<td style="width: 40%; padding: 6px; border: 1px solid #ddd; text-align: right; color: #cc0000; font-weight: bold;">' + formatRupiah(totalKeluarGlobal) + '</td>' +
-                    '</tr>' +
-                    '<tr style="border-top: 2px solid black; background-color: #ffffcc;">' +
-                        '<td style="width: 60%; padding: 6px; border: 1px solid black; text-align: right; font-weight: bold; color: black;">SALDO AKHIR</td>' +
-                        '<td style="width: 40%; padding: 6px; border: 1px solid black; text-align: right; color: ' + finalSaldoColor + '; font-weight: bold;">' + formatRupiah(finalSaldo) + '</td>' +
-                    '</tr>' +
-                '</table>';
-            
-            // Tanda tangan
-            tableHTML +=
-            '<div style="text-align: right; margin-top: 30px; font-size: 10px; color: black;">' +
-                '<p>Pati, ' + new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) + '</p>' +
-            '</div>' +
-            '<table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; color: black;">' +
-                '<tr>' +
-                    '<td style="width: 50%; text-align: center; padding: 10px;">' +
-                        '<p>Mengetahui,</p>' +
-                        '<p>Ketua Yayasan</p>' +
-                        '<br><br><br><br>' +
-                        '<p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP KETUA]</p>' +
-                    '</td>' +
-                    '<td style="width: 50%; text-align: center; padding: 10px;">' +
-                        '<p>Hormat Kami,</p>' +
-                        '<p>Bendahara</p>' +
-                        '<br><br><br><br>' +
-                        '<p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP BENDAHARA]</p>' +
-                    '</td>' +
-                '</tr>' +
-            '</table>';
+                        '<td>' + no++ + '</td>' +
+                        '<td>' + data.tanggal + '</td>' +
+                        '<td style="text-align: left;">' + data.uraian + '</td>' +
+                        kategoriCell +
+                        '<td class="dana-masuk">' + formatRupiah(danaMasuk) + '</td>' +
+                        '<td class="dana-keluar">' + formatRupiah(danaKeluar) + '</td>' +
+                        '<td style="' + saldoColor + '">' + formatRupiah(saldo) + '</td>' +
+                        aksiCell +
+                    '</tr>';
+            });
 
-            return headerHTML + tableHTML;
-        }
-
-
-        // FUNGSI UTAMA DOWNLOAD LAMPIRAN (Detail Transaksi)
-        window.downloadPDF = async function() { 
-            try {
-                const content = await generatePDFContent(false); 
-                const element = document.createElement('div');
-                element.innerHTML = content;
-                
-                const opt = { 
-                    margin: [10, 10, 10, 10], 
-                    filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
-                    image: { type: 'jpeg', quality: 0.98 }, 
-                    html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                };
-                html2pdf().from(element).set(opt).save(); 
-            } catch (error) { 
-                console.error("Error generating PDF (downloadPDF):", error); 
-                alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
-            } 
-        }
-
-        // FUNGSI UTAMA DOWNLOAD GLOBAL (Ringkasan LPJ)
-        window.downloadSummaryPDF = async function() { 
-            try {
-                const content = await generateSummaryPDFContent();
-                const element = document.createElement('div');
-                element.innerHTML = content;
-                
-                const opt = { 
-                    margin: [10, 10, 10, 10], 
-                    filename: 'Laporan_Keuangan_RINGKASAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
-                    image: { type: 'jpeg', quality: 0.98 }, 
-                    html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-                };
-
-                html2pdf().from(element).set(opt).save(); 
-
-            } catch (error) { 
-                console.error("Error generating Summary PDF:", error); 
-                alert("Gagal membuat PDF Ringkasan. Cek Konsol Browser (F12) untuk detail error."); 
-            } 
-        }
-
-        // =========================================================================
-        // 6. LISTENER PERUBAHAN STATUS AUTENTIKASI
-        // =========================================================================
-        
-        auth.onAuthStateChanged((user) => { 
-            const isLoggedIn = !!user;
-
-            const loginContainer = document.getElementById('login-container');
-            const inputControlContainer = document.getElementById('input-control-container');
-            
-            if (user) { 
-                if (loginContainer) loginContainer.style.display = 'none'; 
-                if (inputControlContainer) inputControlContainer.style.display = 'block'; 
-            } else { 
-                if (loginContainer) loginContainer.style.display = 'block'; 
-                if (inputControlContainer) inputControlContainer.style.display = 'none'; 
-            } 
-            
-            loadData(); 
-        });
-
-
-        // =========================================================================
-        // 7. INISIALISASI & LISTENERS
-        // =========================================================================
-
-        function setupModalListeners() {
-            const modal = document.getElementById('editModal');
-            const closeBtn = document.querySelector('.close-btn');
-            const saveBtn = document.getElementById('save-edit-btn');
-            
-            if (modal) { modal.style.display = 'none'; }
-            
-            if (closeBtn) { 
-                closeBtn.onclick = function() { 
-                    if (modal) modal.style.display = 'none'; 
-                } 
+            if (html === '') {
+                html = '<tr><td colspan="8" style="text-align: center;">Belum ada transaksi yang tercatat.</td></tr>';
             }
             
-            window.onclick = function(event) { 
-                if (modal && event.target == modal) { 
-                    modal.style.display = 'none'; 
-                } 
+            tableBody.innerHTML = html;
+            
+            const finalSaldo = totalMasuk - totalKeluar;
+            const finalSaldoColor = finalSaldo < 0 ? 'color: #cc0000;' : 'color: #008000;';
+
+            if (totalMasukElement) totalMasukElement.textContent = formatRupiah(totalMasuk);
+            if (totalKeluarElement) totalKeluarElement.textContent = formatRupiah(totalKeluar);
+            if (saldoAkhirElement) {
+                saldoAkhirElement.textContent = formatRupiah(finalSaldo);
+                saldoAkhirElement.style.color = finalSaldoColor;
             }
+
+        } catch (error) {
+            console.error("Error loading data: ", error);
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Gagal memuat data. Cek error console.</td></tr>';
+        }
+    }
+
+
+    // =========================================================================
+    // FUNGSI EDIT DAN DELETE
+    // =========================================================================
+
+    // Variabel untuk menyimpan ID dokumen yang sedang diedit
+    let currentEditDocId = null;
+
+    async function editTransactionPrompt(docId) {
+        currentEditDocId = docId;
+        const doc = await db.collection(FINANCE_COLLECTION).doc(docId).get();
+
+        if (doc.exists) {
+            const data = doc.data();
             
-            if (saveBtn) { saveBtn.onclick = saveEditChanges; }
-            
-            fillCategoryOptions(); 
+            // Konversi Agresif untuk menampilkan angka di modal
+            const danaMasukValue = parseInt(String(data.dana_masuk || 0).replace(/[^\d]/g, '')) || 0;
+            const danaKeluarValue = parseInt(String(data.dana_keluar || 0).replace(/[^\d]/g, '')) || 0;
+
+            // FIX: Menggunakan ID input modal yang benar
+            document.getElementById('edit-tanggal').value = data.tanggal;
+            document.getElementById('edit-uraian').value = data.uraian;
+            document.getElementById('edit-kategori').value = data.kategori || '';
+            document.getElementById('edit-masuk').value = danaMasukValue > 0 ? danaMasukValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
+            document.getElementById('edit-keluar').value = danaKeluarValue > 0 ? danaKeluarValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
+
+            document.getElementById('editModal').style.display = 'block';
+        } else {
+            alert('Dokumen tidak ditemukan.');
+        }
+    }
+
+    async function saveEditChanges() {
+        if (!currentEditDocId) return;
+
+        // FIX: Mengambil nilai dari input modal yang benar
+        const tanggal = document.getElementById('edit-tanggal').value;
+        const uraian = document.getElementById('edit-uraian').value;
+        const kategori = document.getElementById('edit-kategori').value;
+        const danaMasukInput = document.getElementById('edit-masuk').value;
+        const danaKeluarInput = document.getElementById('edit-keluar').value;
+
+        // Konversi Agresif saat menyimpan
+        const danaMasukValue = parseInt(String(danaMasukInput).replace(/[^\d]/g, '')) || 0;
+        const danaKeluarValue = parseInt(String(danaKeluarInput).replace(/[^\d]/g, '')) || 0;
+
+        if (!tanggal || !uraian || !kategori || (danaMasukValue === 0 && danaKeluarValue === 0)) {
+            alert('Semua bidang wajib diisi.');
+            return;
         }
 
-        function setupScrollAnimation() {
-            const sections = document.querySelectorAll('.section');
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    } else {
-                        // Opsi: hapus 'visible' saat tidak terlihat (agar animasi terulang)
-                        // entry.target.classList.remove('visible'); 
-                    }
+        const updatedTransaction = {
+            tanggal: tanggal,
+            uraian: uraian,
+            kategori: kategori,
+            // FIX: Simpan ke database dengan format underscore dan String format rupiah
+            dana_masuk: danaMasukValue > 0 ? formatRupiah(danaMasukValue).replace('Rp ', '') : '0',
+            dana_keluar: danaKeluarValue > 0 ? formatRupiah(danaKeluarValue).replace('Rp ', '') : '0',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+            await db.collection(FINANCE_COLLECTION).doc(currentEditDocId).update(updatedTransaction);
+            alert('Perubahan Berhasil Disimpan!');
+            document.getElementById('editModal').style.display = 'none';
+            loadData();
+        } catch (error) {
+            console.error("Error updating document: ", error);
+            alert('Gagal menyimpan perubahan. Cek console.');
+        }
+    }
+
+    function deleteTransaction(docId) {
+        if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+            db.collection(FINANCE_COLLECTION).doc(docId).delete().then(() => {
+                alert('Transaksi Berhasil Dihapus!');
+                loadData();
+            }).catch(error => {
+                console.error("Error removing document: ", error);
+                alert('Gagal menghapus transaksi. Cek console.');
+            });
+        }
+    }
+
+    function resetData() {
+        if (confirm('PERINGATAN! Anda akan menghapus SEMUA data laporan. Lanjutkan?')) {
+            // Ini adalah operasi yang sangat berbahaya dan memakan waktu
+            db.collection(FINANCE_COLLECTION).get().then(snapshot => {
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
                 });
-            }, { threshold: 0.1 }); // Trigger saat 10% elemen terlihat
-
-            sections.forEach(section => {
-                observer.observe(section);
+                return batch.commit();
+            }).then(() => {
+                alert('SEMUA data berhasil dihapus!');
+                loadData();
+            }).catch(error => {
+                console.error("Error deleting all documents: ", error);
+                alert('Gagal menghapus data. Cek console.');
             });
         }
+    }
 
 
-        document.addEventListener('DOMContentLoaded', () => {
-            setupModalListeners();
-            setupScrollAnimation(); // Panggil fungsi animasi
+    // =========================================================================
+    // FUNGSI PDF
+    // =========================================================================
+
+    function generatePDF() {
+        const element = document.getElementById('laporan-table');
+        const opt = {
+            margin:       1,
+            filename:     'Laporan_Keuangan_Yayasan.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, logging: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // Buat salinan sementara tabel untuk PDF agar tidak ada tombol aksi
+        const tableClone = element.cloneNode(true);
+        const aksiHeader = tableClone.querySelector('thead tr th:last-child');
+        if (aksiHeader) aksiHeader.remove();
+        
+        tableClone.querySelectorAll('tbody tr').forEach(row => {
+            const aksiCell = row.querySelector('td:last-child');
+            if (aksiCell) aksiCell.remove();
         });
 
+        // Hapus elemen lain yang tidak perlu (misal: tombol reset)
+        const buttons = tableClone.querySelectorAll('button');
+        buttons.forEach(btn => btn.remove());
 
-        // Expose fungsi ke window (agar bisa dipanggil dari tombol HTML)
-        window.login = login;
-        window.logout = logout;
-        window.addTransaction = addTransaction;
-        window.resetData = resetData;
-        window.deleteTransaction = deleteTransaction; 
-        window.editTransactionPrompt = editTransactionPrompt; 
-        window.downloadPDF = downloadPDF; // Ditambahkan kembali
-        window.downloadSummaryPDF = downloadSummaryPDF; // Ditambahkan kembali
-        window.loadData = loadData; 
 
-    </script>
+        html2pdf().set(opt).from(tableClone).save();
+    }
 
+
+    // =========================================================================
+    // EVENT LISTENERS
+    // =========================================================================
+
+    function setupModalListeners() {
+        const modal = document.getElementById('editModal');
+        const closeBtn = document.querySelector('.close');
+        const saveBtn = document.getElementById('save-edit-btn');
+        
+        // Tambahkan pengaman null
+        if (modal) { modal.style.display = 'none'; }
+        
+        if (closeBtn) { 
+            closeBtn.onclick = function() { 
+                if (modal) modal.style.display = 'none'; 
+            } 
+        }
+        
+        window.onclick = function(event) { 
+            if (modal && event.target == modal) { 
+                modal.style.display = 'none'; 
+            } 
+        }
+        
+        if (saveBtn) { saveBtn.onclick = saveEditChanges; }
+        
+        fillCategoryOptions();
+    }
+
+
+    document.addEventListener('DOMContentLoaded', setupModalListeners);
+
+
+    // Expose fungsi ke window
+    window.login = login;
+    window.logout = logout;
+    window.addTransaction = addTransaction;
+    window.resetData = resetData;
+    window.deleteTransaction = deleteTransaction; 
+    window.editTransactionPrompt = editTransactionPrompt; 
+    window.generatePDF = generatePDF;
+
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
