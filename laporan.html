@@ -652,11 +652,14 @@
         <p id="auth-status" style="color: red;"></p>
     </div>
 
-    <div id="input-control-container" style="display: none;">
-        
-        <p style="text-align: right;">Selamat datang, Bendahara! <button onclick="logout()" style="background-color: #dc3545">Logout</button></p>
-
-        <button type="button" onclick="resetData()" class="reset-btn">Reset Data</button>
+    <div style="overflow: auto; margin-bottom: 5px;">
+    <button type="button" onclick="resetData()" class="reset-btn">Reset Data</button> 
+    
+    <p style="text-align: right; margin: 0;">
+        Selamat datang, Bendahara! 
+        <button onclick="logout()" style="background-color: #dc3545">Logout</button>
+    </p>
+</div>
         
         <div id="input-form">
             <h3>Input Transaksi Baru</h3>
@@ -1753,4 +1756,5 @@
 </script>
 </body>
 </html>
+
 
