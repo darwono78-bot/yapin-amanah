@@ -315,6 +315,13 @@
 .reset-btn:hover {
     background-color: #c82333;
 }
+        /* Tambahkan di dalam tag <style> Anda, bersama CSS .reset-btn */
+.control-container-flex {
+    display: flex;
+    flex-direction: column; /* Mengatur konten berbaris dari atas ke bawah */
+    align-items: flex-start; /* Memastikan konten dimulai dari kiri/atas */
+    width: 100%; /* Memastikan kontainer mengambil lebar penuh */
+}
 /* ======================================================= */
         footer {
             background: rgba(0, 60, 0, 0.85);
@@ -652,43 +659,43 @@
         <p id="auth-status" style="color: red;"></p>
     </div>
 
-<div style="overflow: auto; padding-top: 25px; margin-bottom: 15px;"> 
-    <button type="button" onclick="resetData()" class="reset-btn">Reset Data</button> 
+<div id="input-control-container" style="display: none;" class="control-container-flex">
     
-    <p style="text-align: right; margin: 0;">
-        Selamat datang, Bendahara! 
-        <button onclick="logout()" style="background-color: #dc3545">Logout</button>
-    </p>
-</div>
+    <div style="width: 100%; margin-bottom: 20px;">
+        <button type="button" onclick="resetData()" class="reset-btn" style="float: left;">Reset Data</button> 
         
-        <div id="input-form">
-            <h3>Input Transaksi Baru</h3>
-            <input type="date" id="input-tanggal" required>
-            <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
-            
-            <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
-            <select id="input-kategori" required>
-                 <option value="" selected disabled>--- Pilih Kategori ---</option>
-                 <optgroup label="Dana Masuk">
-                     </optgroup>
-                 <optgroup label="Dana Keluar">
-                     </optgroup>
-            </select>
-
-            <div class="input-group">
-                <div>
-                    <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
-                </div>
-                <div>
-                    <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
-                </div>
-            </div>
-
-            <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
-            
-            </div>
+        <p style="text-align: right; margin: 0;">
+            Selamat datang, Bendahara! 
+            <button onclick="logout()" style="background-color: #dc3545">Logout</button>
+        </p>
+    </div>
+    
+    <div id="input-form" style="width: 100%;">
+        <h3>Input Transaksi Baru</h3>
+        <input type="date" id="input-tanggal" required>
+        <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
         
+        <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
+        <select id="input-kategori" required>
+             <option value="" selected disabled>--- Pilih Kategori ---</option>
+             <optgroup label="Dana Masuk">
+                 </optgroup>
+             <optgroup label="Dana Keluar">
+                 </optgroup>
+        </select>
+
+        <div class="input-group">
+            <div>
+                <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
+            </div>
+            <div>
+                <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
+            </div>
         </div>
+
+        <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
+    </div>
+</div>
    </section>
     
 <div id="editModal" class="modal">
@@ -1756,6 +1763,7 @@
 </script>
 </body>
 </html>
+
 
 
 
