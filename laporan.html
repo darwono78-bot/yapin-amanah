@@ -293,7 +293,29 @@
             background: #fff799;
             transform: scale(1.05);
         }
+/* ======================================================= */
+/* GLONDONGAN 1: CSS BARU UNTUK TOMBOL RESET KECIL & AMAN */
+/* ======================================================= */
+.reset-btn {
+    padding: 5px 10px; /* Membuat tombol kecil: Reset Data */
+    font-size: 14px;
+    background-color: #dc3545; /* Warna merah untuk reset */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    float: right; /* Menempatkan di kanan atas */
+    margin-bottom: 15px; /* Memberi jarak dari kotak input di bawahnya */
+    margin-right: 10px; /* Jarak dari sisi kanan container */
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0,0,0,0.5);
+}
 
+.reset-btn:hover {
+    background-color: #c82333;
+}
+/* ======================================================= */
         footer {
             background: rgba(0, 60, 0, 0.85);
             text-align: center;
@@ -634,6 +656,8 @@
         
         <p style="text-align: right;">Selamat datang, Bendahara! <button onclick="logout()" style="background-color: #dc3545">Logout</button></p>
 
+        <button type="button" onclick="resetData()" class="reset-btn">Reset Data</button>
+        
         <div id="input-form">
             <h3>Input Transaksi Baru</h3>
             <input type="date" id="input-tanggal" required>
@@ -658,12 +682,10 @@
             </div>
 
             <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
-        </div>
+            
+            </div>
         
-        <div class="actions" style="text-align: center; margin-top: 20px;">
-            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545; width: 80%;">⚠️ RESET DATA BULANAN (HAPUS SEMUA DATA)</button>
         </div>
-    </div>
    </section>
     
 <div id="editModal" class="modal">
@@ -1731,6 +1753,3 @@
 </script>
 </body>
 </html>
-
-
-
