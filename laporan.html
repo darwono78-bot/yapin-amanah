@@ -256,8 +256,14 @@
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     const docId = doc.id;
-                    const danaMasuk = data.dana_Masuk || 0;
-                    const danaKeluar = data.dana_Keluar || 0;
+                    // PASTIKAN DATA DICONVERT DARI STRING FIREBASE KE ANGKA
+                    const rawDanaMasuk = data.dana_masuk || 0;
+                    const rawDanaKeluar = data.dana_keluar || 0;
+                    
+                    // Konversi: Hapus semua karakter non-angka kecuali koma (jika ada) dan konversi ke integer
+                    // Kita gunakan teknik yang sama seperti di fungsi addTransaction:
+                    const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^0-9]/g, '')) || 0;
+                    const danaKeluar = parseInt(String(rawDanaKeluar).replace(/[^0-9]/g, '')) || 0;
 
                     saldo += danaMasuk - danaKeluar;
                     totalMasuk += danaMasuk;
@@ -873,6 +879,7 @@
 
 </body>
 </html>
+
 
 
 
