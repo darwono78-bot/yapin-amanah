@@ -259,9 +259,9 @@
                         const data = doc.data();
                         const docId = doc.id;
             
-                        // PERBAIKAN UTAMA: Ambil data dengan underscore, konversi ke String, hapus non-angka, lalu konversi ke integer
-                        const rawDanaMasuk = data.dana_masuk || 0; 
-                        const rawDanaKeluar = data.dana_keluar || 0;
+                        // KONVERSI LEBIH AGRESIF: memastikan semua non-digit dihapus, bahkan karakter tak terlihat (unicode)
+                        const danaMasuk = parseInt(String(rawDanaMasuk).replace(/\D/g, '')) || 0;
+                        const danaKeluar = parseInt(String(rawDanaKeluar).replace(/\D/g, '')) || 0;
             
                         // Ini akan menghapus titik/koma/Rp dan mengubah "500.000" menjadi 500000
                         const danaMasuk = parseInt(String(rawDanaMasuk).replace(/[^0-9]/g, '')) || 0;
@@ -881,6 +881,7 @@
 
 </body>
 </html>
+
 
 
 
