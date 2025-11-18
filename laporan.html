@@ -677,14 +677,16 @@
         <input type="date" id="input-tanggal" required>
         <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
         
-        <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
-        <select id="input-kategori" required>
-             <option value="" selected disabled>--- Pilih Kategori ---</option>
-             <optgroup label="Dana Masuk">
-                 </optgroup>
-             <optgroup label="Dana Keluar">
-                 </optgroup>
-        </select>
+<div id="input-kategori-container" style="display: none;">
+    <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
+    <select id="input-kategori" required>
+         <option value="" selected disabled>--- Pilih Kategori ---</option>
+         <optgroup label="Dana Masuk">
+             </optgroup>
+         <optgroup label="Dana Keluar">
+             </optgroup>
+    </select>
+</div>
 
         <div class="input-group">
             <div>
@@ -931,17 +933,28 @@
         });
     }
 
-    // Cek Status Login Saat Memuat Halaman & Perubahan Status
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('input-control-container').style.display = 'block';
-        } else {
-            document.getElementById('login-container').style.display = 'block';
-            document.getElementById('input-control-container').style.display = 'none';
-        }
-        loadData(); // Selalu muat ulang data saat status auth berubah
-    });
+// Cek Status Login Saat Memuat Halaman & Perubahan Status
+auth.onAuthStateChanged((user) => {
+    const isLoggedIn = !!user; // Tentukan status login
+    if (isLoggedIn) {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('input-control-container').style.display = 'block';
+
+        // Tampilkan Form Kategori saat Admin Login
+        const kategoriContainer = document.getElementById('input-kategori-container');
+        if (kategoriContainer) kategoriContainer.style.display = 'block'; 
+
+    } else {
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('input-control-container').style.display = 'none';
+
+        // Sembunyikan Form Kategori saat Publik
+        const kategoriContainer = document.getElementById('input-kategori-container');
+        if (kategoriContainer) kategoriContainer.style.display = 'none'; 
+        
+    }
+    loadData(); // Selalu muat ulang data saat status auth berubah
+});
 
     // =========================================================================
     // 3. FUNGSI DATA (INPUT, LOAD, HAPUS, RESET, EDIT)
@@ -1001,28 +1014,35 @@
         });
     }
 
-    // Fungsi untuk menambah/menghapus header 'Aksi'
-    function setupTableHeaders(isLoggedIn) {
-        const table = document.getElementById('finance-table');
-        const headerRow = table.querySelector('thead tr');
-        
-        // Cek apakah header 'Aksi' sudah ada
-        const existingActionHeader = headerRow.querySelector('th:last-child');
-        const hasActionHeader = existingActionHeader && existingActionHeader.textContent.trim() === 'Aksi';
-        
-        // Hapus Kolom Aksi lama jika ada dan user logout
-        if (hasActionHeader && !isLoggedIn) {
-            existingActionHeader.remove();
-        } 
-        // Tambahkan Kolom Aksi hanya jika user login dan belum ada
-        else if (!hasActionHeader && isLoggedIn) {
-            const actionHeader = document.createElement('th');
-            actionHeader.textContent = 'Aksi';
-            actionHeader.style.width = '10%';
-            headerRow.appendChild(actionHeader);
-        }
+    // Fungsi untuk menambah/menghapus header 'Aksi' dan mengontrol Kategori
+function setupTableHeaders(isLoggedIn) {
+    const table = document.getElementById('finance-table');
+    const headerRow = table.querySelector('thead tr');
+    
+    // --- KONTROL HEADER KATEGORI (KODE BARU) ---
+    const kategoriHeader = document.getElementById('header-kategori');
+    if (kategoriHeader) {
+        // Tampilkan 'table-cell' saat login, Sembunyikan 'none' saat publik
+        kategoriHeader.style.display = isLoggedIn ? 'table-cell' : 'none'; 
     }
-
+    // ------------------------------------
+    
+    // Cek apakah header 'Aksi' sudah ada
+    const existingActionHeader = headerRow.querySelector('th:last-child');
+    const hasActionHeader = existingActionHeader && existingActionHeader.textContent.trim() === 'Aksi';
+    
+    // Hapus Kolom Aksi lama jika ada dan user logout
+    if (hasActionHeader && !isLoggedIn) {
+        existingActionHeader.remove();
+    } 
+    // Tambahkan Kolom Aksi hanya jika user login dan belum ada
+    else if (!hasActionHeader && isLoggedIn) {
+        const actionHeader = document.createElement('th');
+        actionHeader.textContent = 'Aksi';
+        actionHeader.style.width = '10%';
+        headerRow.appendChild(actionHeader);
+    }
+}
 
     window.loadData = function() {
         const tableBody = document.getElementById('finance-body');
@@ -1071,7 +1091,11 @@
                 descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
                 
                 // Kolom Kategori (Index 3)
-                row.insertCell(3).textContent = kategori; 
+                const kategoriCell = row.insertCell(3);
+                kategoriCell.textContent = kategori;
+                if (!isLoggedIn) {
+                    kategoriCell.style.display = 'none'; // Sembunyikan jika tidak login
+                }
 
                 // Sel Dana Masuk (Index 4)
                 const masukCell = row.insertCell(4);
@@ -1113,11 +1137,15 @@
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
             
-            // Kolom Uraian digabung untuk Label TOTAL (Kolom 0, 1, 2, 3 digabung)
+           // Kolom Uraian digabung untuk Label TOTAL (Kolom 0, 1, 2, dst. digabung)
             const totalLabelCell = footerRow.insertCell(0);
-            totalLabelCell.colSpan = 4; // Gabung No, Tanggal, Uraian, Kategori
+            
+            // KODE PERBAIKAN COLSPAN: 4 jika Kategori terlihat (login), 3 jika tersembunyi (publik)
+            const spanCount = isLoggedIn ? 4 : 3; 
+            totalLabelCell.colSpan = spanCount;
+            
             totalLabelCell.textContent = 'TOTAL AKHIR:';
-            totalLabelCell.style.textAlign = 'right'; 
+            totalLabelCell.style.textAlign = 'right';
 
             // Kolom Total Dana Masuk (Index 4)
             const totalMasukCell = footerRow.insertCell(1);
@@ -1350,7 +1378,7 @@
                         <th style="width: 3%;">No</th>
                         <th style="width: 12%;">Tanggal</th>
                         <th style="width: 25%;">Uraian</th>
-                        <th style="width: 15%;">Kategori</th>
+                        <th id="header-kategori" style="width: 15%; display: none;">Kategori</th>
                         <th style="width: 15%; text-align: right;">Dana Masuk</th>
                         <th style="width: 15%; text-align: right;">Dana Keluar</th>
                         <th style="width: 15%; text-align: right;">Saldo</th>
@@ -1767,3 +1795,4 @@
 </script>
 </body>
 </html>
+
