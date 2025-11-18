@@ -256,8 +256,8 @@
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     const docId = doc.id;
-                    const danaMasuk = data.danaMasuk || 0;
-                    const danaKeluar = data.danaKeluar || 0;
+                    const danaMasuk = data.dana_Masuk || 0;
+                    const danaKeluar = data.dana_Keluar || 0;
 
                     saldo += danaMasuk - danaKeluar;
                     totalMasuk += danaMasuk;
@@ -873,6 +873,7 @@
 
 </body>
 </html>
+
 
 
 
