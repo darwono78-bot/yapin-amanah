@@ -551,6 +551,10 @@
             font-weight: bold;
             color: #006400; /* Warna hijau sedikit lebih gelap untuk label group */
         }
+        /* --- CSS Tambahan: Jaminan untuk menyembunyikan kolom tanpa menyisakan ruang --- */
+.col-hide {
+    display: none !important;
+}
     </style>
 </head>
 <body>
@@ -1014,20 +1018,23 @@ auth.onAuthStateChanged((user) => {
         });
     }
 
-    // Fungsi untuk menambah/menghapus header 'Aksi' dan mengontrol Kategori
+   // Fungsi untuk menambah/menghapus header 'Aksi' dan mengontrol Kategori
 function setupTableHeaders(isLoggedIn) {
     const table = document.getElementById('finance-table');
     const headerRow = table.querySelector('thead tr');
     
-    // --- KONTROL HEADER KATEGORI (KODE BARU) ---
+    // --- KONTROL HEADER KATEGORI (MENGGUNAKAN CLASS) ---
     const kategoriHeader = document.getElementById('header-kategori');
     if (kategoriHeader) {
-        // Tampilkan 'table-cell' saat login, Sembunyikan 'none' saat publik
-        kategoriHeader.style.display = isLoggedIn ? 'table-cell' : 'none'; 
+        // Jika TIDAK login, tambahkan class 'col-hide'
+        kategoriHeader.classList.toggle('col-hide', !isLoggedIn); 
+        
+        // Hapus style='display:none' jika admin login (agar CSS class tidak mengganggu)
+        kategoriHeader.style.display = isLoggedIn ? 'table-cell' : 'none';
     }
     // ------------------------------------
     
-    // Cek apakah header 'Aksi' sudah ada
+    // ... Logika Kolom Aksi (TIDAK BERUBAH) ...
     const existingActionHeader = headerRow.querySelector('th:last-child');
     const hasActionHeader = existingActionHeader && existingActionHeader.textContent.trim() === 'Aksi';
     
@@ -1094,7 +1101,7 @@ function setupTableHeaders(isLoggedIn) {
                 const kategoriCell = row.insertCell(3);
                 kategoriCell.textContent = kategori;
                 if (!isLoggedIn) {
-                    kategoriCell.style.display = 'none'; // Sembunyikan jika tidak login
+                    kategoriCell.classList.add('col-hide'); // Sembunyikan dengan class jika tidak login
                 }
 
                 // Sel Dana Masuk (Index 4)
@@ -1137,7 +1144,7 @@ function setupTableHeaders(isLoggedIn) {
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
             
-           // Kolom Uraian digabung untuk Label TOTAL (Kolom 0, 1, 2, dst. digabung)
+          // Kolom Uraian digabung untuk Label TOTAL (Kolom 0, 1, 2, dst. digabung)
             const totalLabelCell = footerRow.insertCell(0);
             
             // KODE PERBAIKAN COLSPAN: 4 jika Kategori terlihat (login), 3 jika tersembunyi (publik)
@@ -1795,4 +1802,5 @@ function setupTableHeaders(isLoggedIn) {
 </script>
 </body>
 </html>
+
 
