@@ -765,12 +765,14 @@
         appId: "1:616927572689:web:3961f22c7a7899e71d8bf0"
     };
 
+    // Pastikan Firebase sudah diinisialisasi sekali saja
     if (firebase.apps.length === 0) {
         firebase.initializeApp(firebaseConfig);
     }
     const auth = firebase.auth();
     const db = firebase.firestore();
     
+    // --- Nama Koleksi ---
     const FINANCE_COLLECTION = "laporan"; 
 
     // =========================================================================
@@ -794,9 +796,12 @@
         "Pengeluaran Lain-Lain (PL2)" 
     ]; 
     
-    // --- DOM REFERENCES (Hanya untuk elemen yang pasti ada, yang bermasalah dipindahkan) ---
+    // --- DOM REFERENCES ---
     const tableBody = document.getElementById('finance-body');
     const tableFooter = document.getElementById('finance-footer'); 
+    const loginContainer = document.getElementById('login-container');
+    const inputControlContainer = document.getElementById('input-control-container');
+
 
     // FUNGSI UTILITY
     function formatRupiah(angka) { 
@@ -804,6 +809,7 @@
         return new Intl.NumberFormat('id-ID', { style: 'decimal', minimumFractionDigits: 0 }).format(angka); 
     } 
 
+    // Fungsi Pagination (hanya kerangka, asumsikan sudah benar)
     function displayTablePage(page) { 
         currentPage = page; 
         const start = (page - 1) * rowsPerPage; 
@@ -828,11 +834,13 @@
         paginationDiv.innerHTML = ''; 
         if (totalRows === 0 || totalPages <= 1) return; 
 
+        // Tombol Previous (<<)
         const prevBtn = document.createElement('button');
         prevBtn.textContent = '<<';
         prevBtn.onclick = () => displayTablePage(Math.max(1, currentPage - 1));
         paginationDiv.appendChild(prevBtn);
 
+        // Nomor Halaman
         for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement('button');
             btn.textContent = i;
@@ -841,6 +849,7 @@
             paginationDiv.appendChild(btn);
         }
 
+        // Tombol Next (>>)
         const nextBtn = document.createElement('button');
         nextBtn.textContent = '>>';
         nextBtn.onclick = () => displayTablePage(Math.min(totalPages, currentPage + 1));
@@ -852,9 +861,6 @@
     function fillCategoryOptions() { 
         const inputSelect = document.getElementById('input-kategori'); 
         const editSelect = document.getElementById('edit-kategori'); 
-
-        // Pastikan elemen ada sebelum diisi
-        if (!inputSelect || !editSelect) return; 
 
         inputSelect.innerHTML = '<option value="" selected disabled>--- Pilih Kategori ---</option>'; 
         editSelect.innerHTML = '<option value="" selected disabled>--- Pilih Kategori ---</option>'; 
@@ -885,11 +891,10 @@
     } 
     
     // =========================================================================
-    // 2. FUNGSI TOGGLE DISPLAY KOLOM KATEGORI & AKSI (FIXED: Mengatasi TypeError)
+    // 2. FUNGSI TOGGLE DISPLAY KOLOM KATEGORI & AKSI (Header Saja)
     // =========================================================================
     
     function toggleTableDisplay(isLoggedIn) {
-        // Ambil elemen di dalam fungsi untuk memastikan elemen sudah dimuat
         const kategoriHeader = document.getElementById('header-kategori');
         const aksiHeader = document.getElementById('header-aksi');
 
@@ -903,7 +908,7 @@
 
 
     // =========================================================================
-    // 3. FUNGSI MEMUAT DATA UTAMA (LOAD DATA) 
+    // 3. FUNGSI MEMUAT DATA UTAMA (LOAD DATA) - Logika Fleksibel
     // =========================================================================
 
     window.loadData = async function() { 
@@ -912,11 +917,9 @@
         let totalMasuk = 0;
         let totalKeluar = 0;
         
+        // Cek status login
         const user = auth.currentUser;
         const isLoggedIn = !!user;
-
-        // Pastikan elemen ada
-        if (!tableBody || !tableFooter) return;
 
         tableBody.innerHTML = '';
         tableFooter.innerHTML = '';
@@ -925,6 +928,7 @@
         try {
             const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
             
+            // Tentukan offset index. Jika admin login, index bergeser 1 karena kolom Kategori.
             const offset = isLoggedIn ? 0 : -1;
 
             snapshot.forEach((doc) => {
@@ -943,6 +947,7 @@
                 row.insertCell(0).textContent = no++;
                 row.insertCell(1).textContent = data.tanggal;
                 
+                // Kolom Uraian (Index 2)
                 const descriptionCell = row.insertCell(2);
                 let textColor = '';
                 if (danaMasuk > 0) { 
@@ -950,32 +955,38 @@
                 } 
                 descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
                 
+                // Kolom Kategori (Index 3) - HANYA JIKA LOGIN
                 if (isLoggedIn) {
                     const kategoriCell = row.insertCell(3);
                     kategoriCell.textContent = kategori; 
                     kategoriCell.style.textAlign = 'center';
                 }
 
+                // Sel Dana Masuk (Index 4 + offset)
                 const masukCell = row.insertCell(4 + offset); 
                 masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
                 masukCell.style.textAlign = 'right';
 
+                // Sel Dana Keluar (Index 5 + offset)
                 const keluarCell = row.insertCell(5 + offset);
                 keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
                 keluarCell.style.textAlign = 'right';
 
+                // Sel Saldo (Index 6 + offset)
                 const saldoCell = row.insertCell(6 + offset);
                 saldoCell.textContent = formatRupiah(saldo);
                 saldoCell.style.textAlign = 'right';
                 
+                // ❗ Logika pewarnaan Saldo Negatif/Positif
                 if (saldo < 0) {
                     saldoCell.className = 'saldo-minus';
-                    saldoCell.style.color = '#FF4136';   
+                    saldoCell.style.color = '#FF4136';   // Merah
                 } else if (saldo > 0) {
                     saldoCell.className = 'saldo-plus';
-                    saldoCell.style.color = '#008000';   
+                    saldoCell.style.color = '#008000';   // Hijau
                 }
 
+                // Kolom Aksi (Hanya jika admin login)
                 if (isLoggedIn) {
                     const actionCell = row.insertCell(7 + offset); 
                     actionCell.innerHTML = `
@@ -994,6 +1005,7 @@
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
             
+            // Colspan: 4 jika admin, 3 jika publik.
             const colspanValue = isLoggedIn ? 4 : 3; 
             
             const totalLabelCell = footerRow.insertCell(0);
@@ -1014,6 +1026,7 @@
             finalSaldoCell.textContent = formatRupiah(saldo);
             finalSaldoCell.style.textAlign = 'right';
             
+            // ❗ Logika pewarnaan Total Saldo Akhir
             if (saldo < 0) {
                 finalSaldoCell.className = 'saldo-minus';
                 finalSaldoCell.style.color = '#FF4136';
@@ -1022,6 +1035,7 @@
                 finalSaldoCell.style.color = '#008000';
             }
 
+            // Jika admin login, perlu satu sel kosong lagi untuk kolom Aksi
             if (isLoggedIn) {
                 const emptyActionCell = footerRow.insertCell(4);
                 emptyActionCell.textContent = '';
@@ -1035,23 +1049,24 @@
 
 
     // =========================================================================
-    // 4. FUNGSI AUTENTIKASI & 5. FUNGSI CRUD (TEMPATKAN LOGIKA ANDA DI SINI)
+    // 4. FUNGSI AUTENTIKASI (LOGIN/LOGOUT) & 5. FUNGSI CRUD TAMBAHAN
     // =========================================================================
     
     // ⚠️ NOTE: Pastikan Anda mengisi fungsi-fungsi ini sesuai logika Firebase Authentication dan Firestore Anda!
-    window.login = function() { console.log("Login function called - Implement your logic here"); }
-    window.logout = function() { console.log("Logout function called - Implement your logic here"); }
-    window.addTransaction = function() { console.log("Add transaction called - Implement your logic here"); }
-    window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) { console.log("Edit prompt called - Implement your logic here"); }
-    window.saveEditChanges = function() { console.log("Save edit called - Implement your logic here"); }
-    window.deleteTransaction = function(id) { console.log("Delete transaction called - Implement your logic here"); }
-    window.resetData = function() { console.log("Reset data called - Implement your logic here"); }
+    window.login = function() { /* ... (Fungsi login Anda) ... */ }
+    window.logout = function() { /* ... (Fungsi logout Anda) ... */ }
+    window.addTransaction = function() { /* ... (Fungsi addTransaction Anda) ... */ }
+    window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) { /* ... (Fungsi editTransactionPrompt Anda) ... */ }
+    window.saveEditChanges = function() { /* ... (Fungsi saveEditChanges Anda) ... */ }
+    window.deleteTransaction = function(id) { /* ... (Fungsi deleteTransaction Anda) ... */ }
+    window.resetData = function() { /* ... (Fungsi resetData Anda) ... */ }
 
 
     // =========================================================================
-    // 6. FUNGSI UNDUH PDF (DETAIL TANPA TANDA TANGAN, RINGKASAN DENGAN TANDA TANGAN)
+    // 6. FUNGSI UNDUH PDF (FINAL: DETAIL & RINGKASAN + TANDA TANGAN)
     // =========================================================================
 
+    // Fungsi baru untuk mengelompokkan data berdasarkan Kategori
     async function aggregateDataByCategory() {
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
         const aggregated = {};
@@ -1097,16 +1112,19 @@
         };
     }
     
-    // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN - TANPA TANDA TANGAN)
+    // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN)
     async function generatePDFContent(isSummary = false) { 
         
         const isLoggedIn = !!auth.currentUser;
+        
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
         let dataToPrint = []; 
         let saldo = 0; 
         let totalMasuk = 0; 
         let totalKeluar = 0; 
         let no = 1; 
+
+        // Kolom Kategori hanya tampil jika admin sedang login (isLoggedIn)
         const showKategoriInPDF = isLoggedIn && !isSummary; 
 
         snapshot.forEach((doc) => { 
@@ -1183,15 +1201,35 @@
             </tr> 
             </tbody> 
         </table> 
-        <div style="text-align: right; margin-top: 20px; font-size: 10px; color: black;">
+        `;
+
+        // MENAMBAHKAN TANDA TANGAN DI AKHIR LAMPIRAN
+        tableHTML += `
+        <div style="text-align: right; margin-top: 20px; font-size: 10px; color: black; break-inside: avoid;">
             <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
         </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; color: black; break-inside: avoid;">
+            <tr>
+                <td style="width: 50%; text-align: center; padding: 10px;">
+                    <p>Mengetahui,</p>
+                    <p>Ketua Yayasan</p>
+                    <br><br><br><br>
+                    <p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP KETUA]</p>
+                </td>
+                <td style="width: 50%; text-align: center; padding: 10px;">
+                    <p>Hormat Kami,</p>
+                    <p>Bendahara</p>
+                    <br><br><br><br>
+                    <p style="border-bottom: 1px solid black; display: inline-block;">[NAMA LENGKAP BENDAHARA]</p>
+                </td>
+            </tr>
+        </table>
         `;
 
         return headerHTML + tableHTML;
     }
 
-    // Fungsi Pembantu: Menghasilkan konten PDF Ringkasan (Tanda Tangan Tetap Ada)
+    // Fungsi Pembantu: Menghasilkan konten PDF Ringkasan
     async function generateSummaryPDFContent() {
         const aggregated = await aggregateDataByCategory();
         const { summaryMasuk, summaryKeluar, totalMasukGlobal, totalKeluarGlobal } = aggregated;
@@ -1207,7 +1245,9 @@
         
         let tableHTML = '';
         
+        // =================================================================
         // 1. TABEL DANA MASUK
+        // =================================================================
         tableHTML += `
             <h3 style="font-size: 12px; margin-top: 20px; margin-bottom: 5px; color: black;">A. Dana Masuk</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">
@@ -1243,9 +1283,12 @@
         </table> 
         `;
 
+        // Reset nomor urut untuk tabel selanjutnya
         no = 1;
 
+        // =================================================================
         // 2. TABEL DANA KELUAR
+        // =================================================================
         tableHTML += `
             <h3 style="font-size: 12px; margin-top: 25px; margin-bottom: 5px; color: black;">B. Dana Keluar</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 10px; color: black;">
@@ -1281,7 +1324,9 @@
         </table> 
         `;
 
-        // 3. REKAPITULASI AKHIR & Tanda Tangan
+        // =================================================================
+        // 3. REKAPITULASI AKHIR
+        // =================================================================
         const finalSaldo = totalMasukGlobal - totalKeluarGlobal; 
         const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000'; 
         
@@ -1380,16 +1425,13 @@
 
 
     // =========================================================================
-    // 7. LISTENER PERUBAHAN STATUS AUTENTIKASI (FIXED: Mengatasi TypeError)
+    // 7. LISTENER PERUBAHAN STATUS AUTENTIKASI (Wajib)
     // =========================================================================
     
+    // Cek Status Login Saat Memuat Halaman & Perubahan Status 
     auth.onAuthStateChanged((user) => { 
         const isLoggedIn = !!user;
 
-        // PENTING: Ambil referensi di dalam listener untuk menjamin elemen sudah ada
-        const loginContainer = document.getElementById('login-container');
-        const inputControlContainer = document.getElementById('input-control-container');
-        
         // 1. Logika tampilan kontrol login/logout/admin
         if (user) { 
             if (loginContainer) loginContainer.style.display = 'none'; 
@@ -1416,31 +1458,20 @@
         const closeBtn = document.querySelector('.close-btn');
         const saveBtn = document.getElementById('save-edit-btn');
         
-        // Tambahkan pengaman null
         if (modal) { modal.style.display = 'none'; }
-        
-        if (closeBtn) { 
-            closeBtn.onclick = function() { 
-                if (modal) modal.style.display = 'none'; 
-            } 
-        }
-        
-        window.onclick = function(event) { 
-            if (modal && event.target == modal) { 
-                modal.style.display = 'none'; 
-            } 
-        }
-        
+        if (closeBtn) { closeBtn.onclick = function() { modal.style.display = 'none'; } }
+        window.onclick = function(event) { if (event.target == modal) { modal.style.display = 'none'; } }
         if (saveBtn) { saveBtn.onclick = saveEditChanges; }
         
         fillCategoryOptions();
     }
 
 
+    // Panggil fungsi setupModalListeners saat dokumen siap
     document.addEventListener('DOMContentLoaded', setupModalListeners);
 
 
-    // Expose fungsi ke window
+    // Expose fungsi ke window agar dapat dipanggil dari HTML
     window.login = login;
     window.logout = logout;
     window.addTransaction = addTransaction;
@@ -1463,5 +1494,6 @@
 </script>
 </body>
 </html>
+
 
 
