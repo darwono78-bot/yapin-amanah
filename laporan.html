@@ -293,7 +293,38 @@
             background: #fff799;
             transform: scale(1.05);
         }
+/* ======================================================= */
+/* GLONDONGAN 1: CSS BARU UNTUK TOMBOL RESET KECIL DI KIRI */
+/* ======================================================= */
+.reset-btn {
+    padding: 5px 10px; /* Membuat tombol kecil */
+    font-size: 14px;
+    background-color: #dc3545; /* Warna merah */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    float: left; /* Pindah ke kiri */
+    margin-bottom: 15px; 
+    margin-left: 10px; /* Jarak dari sisi kiri */
+    margin-right: 10px; 
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0,0,0,0.5);
+}
 
+.reset-btn:hover {
+    background-color: #c82333;
+}
+
+/* CSS ini diperlukan untuk mengatasi tombol yang "melayang" di tengah */
+.control-container-flex {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    width: 100%;
+}
+/* ======================================================= */
         footer {
             background: rgba(0, 60, 0, 0.85);
             text-align: center;
@@ -630,39 +661,44 @@
         <p id="auth-status" style="color: red;"></p>
     </div>
 
-    <div id="input-control-container" style="display: none;">
+  <div id="input-control-container" style="display: none;" class="control-container-flex">
+    
+    <div style="width: 100%; overflow: auto; margin-bottom: 20px;">
+        <button type="button" onclick="resetData()" class="reset-btn" style="float: left;">Reset Data</button> 
         
-        <p style="text-align: right;">Selamat datang, Bendahara! <button onclick="logout()" style="background-color: #dc3545">Logout</button></p>
+        <p style="text-align: right; margin: 0;">
+            Selamat datang, Bendahara! 
+            <button onclick="logout()" style="background-color: #dc3545">Logout</button>
+        </p>
+    </div>
+    
+    <div id="input-form" style="width: 100%;">
+        <h3>Input Transaksi Baru</h3>
+        <input type="date" id="input-tanggal" required>
+        <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
+        
+        <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
+        <select id="input-kategori" required>
+             <option value="" selected disabled>--- Pilih Kategori ---</option>
+             <optgroup label="Dana Masuk">
+                 </optgroup>
+             <optgroup label="Dana Keluar">
+                 </optgroup>
+        </select>
 
-        <div id="input-form">
-            <h3>Input Transaksi Baru</h3>
-            <input type="date" id="input-tanggal" required>
-            <input type="text" id="input-uraian" placeholder="Uraian Transaksi (Contoh: Saldo bulan lalu/Bayar Bisyaroh)" required>
-            
-            <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
-            <select id="input-kategori" required>
-                 <option value="" selected disabled>--- Pilih Kategori ---</option>
-                 <optgroup label="Dana Masuk">
-                     </optgroup>
-                 <optgroup label="Dana Keluar">
-                     </optgroup>
-            </select>
-
-            <div class="input-group">
-                <div>
-                    <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
-                </div>
-                <div>
-                    <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
-                </div>
+        <div class="input-group">
+            <div>
+                <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
             </div>
+            <div>
+                <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
+            </div>
+        </div>
 
-            <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
-        </div>
+        <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
         
-        <div class="actions" style="text-align: center; margin-top: 20px;">
-            <button id="reset-btn" onclick="resetData()" style="background-color: #dc3545; width: 80%;">⚠️ RESET DATA BULANAN (HAPUS SEMUA DATA)</button>
         </div>
+    
     </div>
    </section>
     
@@ -1731,3 +1767,4 @@
 </script>
 </body>
 </html>
+
