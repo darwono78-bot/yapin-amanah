@@ -1018,23 +1018,23 @@ auth.onAuthStateChanged((user) => {
         });
     }
 
-   // Fungsi untuk menambah/menghapus header 'Aksi' dan mengontrol Kategori
+  // Fungsi untuk menambah/menghapus header 'Aksi' dan mengontrol Kategori
 function setupTableHeaders(isLoggedIn) {
     const table = document.getElementById('finance-table');
     const headerRow = table.querySelector('thead tr');
     
-    // --- KONTROL HEADER KATEGORI (MENGGUNAKAN CLASS) ---
+    // --- KONTROL HEADER KATEGORI (FOKUS PERBAIKAN) ---
     const kategoriHeader = document.getElementById('header-kategori');
     if (kategoriHeader) {
-        // Jika TIDAK login, tambahkan class 'col-hide'
+        // PERBAIKAN: Gunakan class 'col-hide' yang memiliki !important
         kategoriHeader.classList.toggle('col-hide', !isLoggedIn); 
         
-        // Hapus style='display:none' jika admin login (agar CSS class tidak mengganggu)
+        // Atur display untuk tampilan yang rapi saat login
         kategoriHeader.style.display = isLoggedIn ? 'table-cell' : 'none';
     }
     // ------------------------------------
     
-    // ... Logika Kolom Aksi (TIDAK BERUBAH) ...
+    // ... Logika Kolom Aksi (Sudah benar) ...
     const existingActionHeader = headerRow.querySelector('th:last-child');
     const hasActionHeader = existingActionHeader && existingActionHeader.textContent.trim() === 'Aksi';
     
@@ -1050,7 +1050,6 @@ function setupTableHeaders(isLoggedIn) {
         headerRow.appendChild(actionHeader);
     }
 }
-
     window.loadData = function() {
         const tableBody = document.getElementById('finance-body');
         const tableFooter = document.getElementById('finance-footer');
@@ -1802,5 +1801,6 @@ function setupTableHeaders(isLoggedIn) {
 </script>
 </body>
 </html>
+
 
 
