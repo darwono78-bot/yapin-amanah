@@ -1148,14 +1148,13 @@
         }); 
 
             const headerHTML = `
-    <div style="text-align: center; margin-bottom: 5px;">
-        <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
-    </div>
-    <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI)</h2>
-`;
-        
-        const widthUraian = showKategoriInPDF ? '30%' : '40%';
-        const pdfColspan = showKategoriInPDF ? 4 : 3;
+                <div style="text-align: center; margin-bottom: 5px;">
+                    <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
+                </div>
+                <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI) BULANAN</h2>
+            `;
+            const widthUraian = showKategoriInPDF ? '30%' : '40%';
+            const pdfColspan = showKategoriInPDF ? 4 : 3;
         
         let tableHTML = `
             <table id="pdf-finance-table" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 9.5px; color: black;">
@@ -1273,12 +1272,14 @@
         const { summaryMasuk, summaryKeluar, totalMasukGlobal, totalKeluarGlobal } = aggregated;
         let no = 1;
         
- const headerHTML = `
-    <div style="text-align: center; margin-bottom: 5px;">
-        <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
-    </div>
-    <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN PERTANGGUNGJAWABAN ( LPJ ) BULANAN </h2>
-`;
+         const headerHTML = `
+            <div style="text-align: center; margin-bottom: 5px;">
+                <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
+            </div>
+            <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI) BULANAN</h2>
+        `;
+        const widthUraian = showKategoriInPDF ? '30%' : '40%';
+        const pdfColspan = showKategoriInPDF ? 4 : 3;
         
         let tableHTML = '';
         
@@ -1578,6 +1579,7 @@
 </script>
 </body>
 </html>
+
 
 
 
