@@ -880,7 +880,17 @@ window.resetData = function() { // Didefinisikan menggunakan window. karena dipa
     let allDataRows = []; 
     let currentPage = 1; 
     let currentEditingId = null;
-
+// =========================================================================
+// FUNGSI UTILITY (PENGGUNAAN UMUM)
+// =========================================================================
+function formatRupiah(angka) {
+    if (typeof angka !== 'number') {
+        // Pastikan konversi ke angka aman
+        angka = parseInt(angka) || 0; 
+    }
+    // Menggunakan Intl.NumberFormat untuk format Rupiah yang efisien
+    return new Intl.NumberFormat('id-ID', { style: 'decimal', minimumFractionDigits: 0 }).format(angka);
+}
     // --- KATEGORI DANA ---
     const KATEGORI_MASUK = [ 
         "Dana Pemerintah", "Iuran Santri", "Dana Proposal", "Dana Donatur", 
@@ -1719,3 +1729,4 @@ function logout() {
 </script>
 </body>
 </html>
+
