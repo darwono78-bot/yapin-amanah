@@ -1552,12 +1552,29 @@
 
 
     // Expose fungsi ke window
-    window.login = login;
-    window.logout = logout;
-    window.addTransaction = addTransaction;
-    window.resetData = resetData;
-    window.deleteTransaction = deleteTransaction; 
-    window.editTransactionPrompt = editTransactionPrompt; 
+ function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const statusText = document.getElementById('auth-status');
+
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                statusText.textContent = 'Login Berhasil!';
+                statusText.style.color = 'lime';
+            })
+            .catch((error) => {
+                statusText.textContent = `Login Gagal: ${error.message}`;
+                statusText.style.color = 'red';
+            });
+    }
+
+    function logout() {
+        auth.signOut().then(() => {
+            document.getElementById('auth-status').textContent = 'Anda telah Logout.';
+            document.getElementById('auth-status').style.color = 'red';
+        });
+    }
+
 
 </script>
 <script>
@@ -1574,3 +1591,4 @@
 </script>
 </body>
 </html>
+
