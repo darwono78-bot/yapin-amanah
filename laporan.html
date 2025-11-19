@@ -1488,7 +1488,11 @@
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
             };
 
-            html2pdf().from(element).set(opt).save(); 
+            html2pdf()
+            .set(opt)
+            .from(element)
+            .delay(3000) // <=== INI WAJIB ADA UNTUK KONSISTENSI!
+            .save();
 
         } catch (error) { 
             console.error("Error generating Summary PDF:", error); 
@@ -1571,6 +1575,7 @@
 </script>
 </body>
 </html>
+
 
 
 
