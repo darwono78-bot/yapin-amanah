@@ -629,7 +629,7 @@
 
     <div class="actions" style="text-align: right; margin-bottom: 20px;">
         <button onclick="downloadPDF()" style="background-color: #008CBA; margin-right: 10px;">📥 Unduh PDF Lampiran (Detail Transaksi)</button>
-        <button onclick="downloadSummaryPDF()" style="background-color: #00A9A5;">📥 Unduh PDF Global (Ringkasan LPJ)</button>
+        <button onclick="()" style="background-color: #00A9A5;">📥 Unduh PDF Global (Ringkasan LPJ)</button>
     </div>
     <table id="finance-table">
         <thead>
@@ -1460,7 +1460,7 @@
             element.innerHTML = content;
             
             const opt = { 
-                margin: [20, 10, 10, 10], 
+                margin: [30, 10, 10, 10], 
                 filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
                 image: { type: 'jpeg', quality: 0.98 }, 
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
@@ -1474,14 +1474,14 @@
     }
 
     // FUNGSI UTAMA DOWNLOAD GLOBAL (Ringkasan LPJ)
-    window.downloadSummaryPDF = async function() { 
+    window. = async function() { 
         try {
             const content = await generateSummaryPDFContent();
             const element = document.createElement('div');
             element.innerHTML = content;
             
             const opt = { 
-                margin: [20, 10, 10, 10], 
+                margin: [10, 10, 10, 10], 
                 filename: 'Laporan_Keuangan_RINGKASAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
                 image: { type: 'jpeg', quality: 0.98 }, 
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
@@ -1580,6 +1580,7 @@
 </script>
 </body>
 </html>
+
 
 
 
