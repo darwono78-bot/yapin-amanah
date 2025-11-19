@@ -1187,7 +1187,70 @@
             <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
         </div>
         `;
+        
+        // Tanda tangan
+        tableHTML += `
+        <div style="text-align: right; margin-top: 30px; font-size: 10px; color: black;">
+            <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; color: black;">
+            <tr>
+                <td style="width: 50%; text-align: center; padding: 10px;">
+                    <p>Mengetahui,</p>
+                    <p>Ketua Yayasan</p>
+                    <img 
+        src="ttd_ketua.png" 
+        alt="Tanda Tangan Ketua" 
+        style="
+            width: 150px; 
+            height: auto; 
+            margin-top: 10px; 
+            margin-bottom: -20px; 
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto; 
+        " 
+        />
+            <p style="
+            width: 150px; 
+            margin: 0 auto; 
+            /* border-bottom: 1px solid black; <== DIHAPUS */
+            padding-top: 5px; 
+            text-align: center; 
+        ">
+                    <p style="border-bottom: 1px solid black; display: inline-block;">[H. Midi, S.Pd.I]</p>
+                </td>
+                <td style="width: 50%; text-align: center; padding: 10px;">
+                    <p>Hormat Kami,</p>
+                    <p>Bendahara</p>
+                    <img 
+        src="ttd_bendahara.png" 
+        alt="Tanda Tangan Bendahara" 
+        style="
+            width: 150px; 
+            height: auto; 
+            margin-top: 10px; 
+            margin-bottom: -20px; 
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto; 
+        " 
+        />
+            <p style="
+            width: 150px; 
+            margin: 0 auto; 
+            /* border-bottom: 1px solid black; <== DIHAPUS */
+            padding-top: 5px; 
+            text-align: center; 
+        ">
+                    <p style="border-bottom: 1px solid black; display: inline-block;">[Imam Baihaqi]</p>
+                </td>
+            </tr>
+        </table>
+        `;
 
+        return headerHTML + tableHTML;
+    }
         return headerHTML + tableHTML;
     }
 
@@ -1507,6 +1570,7 @@
 </script>
 </body>
 </html>
+
 
 
 
