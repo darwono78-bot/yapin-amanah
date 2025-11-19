@@ -553,7 +553,7 @@
         }
         /* KODE BARU UNTUK MENDORONG KONTEN KE BAWAH */
     #report-content {
-        padding-top: 150px; /* Nilai ini bisa disesuaikan */
+        padding-top: 50px; /* Nilai ini bisa disesuaikan */
     }
     </style>
 </head>
@@ -1463,11 +1463,11 @@
             element.innerHTML = content;
             
             const opt = { 
-                margin: [10, 10, 10, 10], 
+                margin: [40, 10, 10, 10], 
                 filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
                 image: { type: 'jpeg', quality: 0.98 }, 
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                jsPDF: { unit: 'mm', format: 'f4', orientation: 'landscape' }
             };
             html2pdf().from(element).set(opt).save(); 
         } catch (error) { 
@@ -1484,11 +1484,11 @@
             element.innerHTML = content;
             
             const opt = { 
-                margin: [10, 10, 10, 10], 
+                margin: [40, 10, 10, 10], 
                 filename: 'Laporan_Keuangan_RINGKASAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
                 image: { type: 'jpeg', quality: 0.98 }, 
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+                jsPDF: { unit: 'mm', format: 'f4', orientation: 'portrait' } 
             };
 
             html2pdf().from(element).set(opt).save(); 
@@ -1574,6 +1574,7 @@
 </script>
 </body>
 </html>
+
 
 
 
