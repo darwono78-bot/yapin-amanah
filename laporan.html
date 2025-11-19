@@ -1147,12 +1147,12 @@
             }); 
         }); 
 
-        const headerHTML = `
-            <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 5px;">
-                <h1 style="font-size: 16px; margin: 0; color: black;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>
-                <p style="font-size: 10px; margin: 0; color: black;">Khodimul Umat Ngablak Cluwak Pati</p>
+                const headerHTML = `
+            <div style="text-align: center; margin-bottom: 5px;">
+                <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
             </div>
-            <h2 style="font-size: 14px; text-align: center; margin: 15px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI)</h2>
+            
+            <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI) BULANAN</h2>
         `;
         
         const widthUraian = showKategoriInPDF ? '30%' : '40%';
@@ -1274,13 +1274,13 @@
         const { summaryMasuk, summaryKeluar, totalMasukGlobal, totalKeluarGlobal } = aggregated;
         let no = 1;
         
-        const headerHTML = `
-            <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 5px;">
-                <h1 style="font-size: 16px; margin: 0; color: black;">YAYASAN PENDIDIKAN ISLAM NURUL HUDA</h1>
-                <p style="font-size: 10px; margin: 0; color: black;">Khodimul Umat Ngablak Cluwak Pati</p>
-            </div>
-            <h2 style="font-size: 14px; text-align: center; margin: 15px 0; color: black;">LAPORAN PERTANGGUNGJAWABAN (LPJ) RINGKASAN GLOBAL</h2>
-        `;
+       const headerHTML = `
+    <div style="text-align: center; margin-bottom: 5px;">
+        <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
+    </div>
+    
+    <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN PERTANGGUNGJAWABAN (LPJ) BULANAN</h2>
+`;
         
         let tableHTML = '';
         
@@ -1580,6 +1580,7 @@
 </script>
 </body>
 </html>
+
 
 
 
