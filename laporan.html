@@ -1001,139 +1001,151 @@ window.resetData = function() { // Didefinisikan menggunakan window. karena dipa
         }
     }
 
+// =========================================================================
+// 3. FUNGSI LOADDATA YANG SUDAH DIAMANKAN DARI ERROR NULL
+// =========================================================================
+loadData = async function() { 
+    let no = 1;
+    let saldo = 0;
+    let totalMasuk = 0;
+    let totalKeluar = 0;
+    
+    // ⚠️ PERBAIKAN: Ambil elemen di dalam fungsi untuk memastikan tersedia
+    const tableBody = document.getElementById('data-table-body');
+    const tableFooter = document.getElementById('data-table-footer');
 
-    // =========================================================================
-    // 3. FUNGSI MEMUAT DATA UTAMA (LOAD DATA) 
-    // =========================================================================
+    const user = auth.currentUser;
+    const isLoggedIn = !!user;
 
-    window.loadData = async function() { 
-        let no = 1;
-        let saldo = 0;
-        let totalMasuk = 0;
-        let totalKeluar = 0;
+    // Pastikan elemen penting (body dan footer tabel) ada
+    if (!tableBody || !tableFooter) return; 
+
+    tableBody.innerHTML = '';
+    tableFooter.innerHTML = '';
+    allDataRows = [];
+
+    try {
+        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
         
-        const user = auth.currentUser;
-        const isLoggedIn = !!user;
+        const offset = isLoggedIn ? 0 : -1;
 
-        // Pastikan elemen ada
-        if (!tableBody || !tableFooter) return;
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const id = doc.id;
 
-        tableBody.innerHTML = '';
-        tableFooter.innerHTML = '';
-        allDataRows = [];
+            const danaMasuk = data.danaMasuk || 0;
+            const danaKeluar = data.danaKeluar || 0;
+            const kategori = data.kategori || '-';
 
-        try {
-            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+            saldo += danaMasuk - danaKeluar;
+            totalMasuk += danaMasuk;
+            totalKeluar += danaKeluar;
+
+            const row = tableBody.insertRow();
+            row.insertCell(0).textContent = no++;
+            row.insertCell(1).textContent = data.tanggal;
             
-            const offset = isLoggedIn ? 0 : -1;
-
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const id = doc.id;
-
-                const danaMasuk = data.danaMasuk || 0;
-                const danaKeluar = data.danaKeluar || 0;
-                const kategori = data.kategori || '-';
-
-                saldo += danaMasuk - danaKeluar;
-                totalMasuk += danaMasuk;
-                totalKeluar += danaKeluar;
-
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = no++;
-                row.insertCell(1).textContent = data.tanggal;
-                
-                const descriptionCell = row.insertCell(2);
-                let textColor = '';
-                if (danaMasuk > 0) { 
-                    textColor = 'masuk-text'; 
-                } 
-                descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
-                
-                if (isLoggedIn) {
-                    const kategoriCell = row.insertCell(3);
-                    kategoriCell.textContent = kategori; 
-                    kategoriCell.style.textAlign = 'center';
-                }
-
-                const masukCell = row.insertCell(4 + offset); 
-                masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
-                masukCell.style.textAlign = 'right';
-
-                const keluarCell = row.insertCell(5 + offset);
-                keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
-                keluarCell.style.textAlign = 'right';
-
-                const saldoCell = row.insertCell(6 + offset);
-                saldoCell.textContent = formatRupiah(saldo);
-                saldoCell.style.textAlign = 'right';
-                
-                if (saldo < 0) {
-                    saldoCell.className = 'saldo-minus';
-                    saldoCell.style.color = '#FF4136';   
-                } else if (saldo > 0) {
-                    saldoCell.className = 'saldo-plus';
-                    saldoCell.style.color = '#C6FF00';   
-                }
-
-                if (isLoggedIn) {
-                    const actionCell = row.insertCell(7 + offset); 
-                    actionCell.innerHTML = `
-                        <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', '${kategori}', ${danaMasuk}, ${danaKeluar})">Edit</button>
-                        <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
-                    `;
-                    actionCell.style.textAlign = 'center';
-                }
-                
-                allDataRows.push(row);
-            });
+            const descriptionCell = row.insertCell(2);
+            let textColor = '';
+            if (danaMasuk > 0) { 
+                textColor = 'masuk-text'; 
+            } 
+            descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
             
-            setupPagination();
+            if (isLoggedIn) {
+                const kategoriCell = row.insertCell(3);
+                kategoriCell.textContent = kategori; 
+                kategoriCell.style.textAlign = 'center';
+            }
 
-            // Tampilkan Total Laporan di Footer
-            const footerRow = tableFooter.insertRow();
-            footerRow.className = 'total-row';
-            
-            const colspanValue = isLoggedIn ? 4 : 3; 
-            
-            const totalLabelCell = footerRow.insertCell(0);
-            totalLabelCell.colSpan = colspanValue; 
-            totalLabelCell.textContent = 'TOTAL AKHIR:';
-            totalLabelCell.style.textAlign = 'right'; 
+            const masukCell = row.insertCell(4 + offset); 
+            masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
+            masukCell.style.textAlign = 'right';
 
-            const totalMasukCell = footerRow.insertCell(1);
-            totalMasukCell.textContent = formatRupiah(totalMasuk);
-            totalMasukCell.style.textAlign = 'right';
+            const keluarCell = row.insertCell(5 + offset);
+            keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
+            keluarCell.style.textAlign = 'right';
 
-            const totalKeluarCell = footerRow.insertCell(2);
-            totalKeluarCell.textContent = formatRupiah(totalKeluar);
-            totalKeluarCell.style.textAlign = 'right';
-            totalKeluarCell.style.color = '#FF4136'; 
-
-            const finalSaldoCell = footerRow.insertCell(3);
-            finalSaldoCell.textContent = formatRupiah(saldo);
-            finalSaldoCell.style.textAlign = 'right';
+            const saldoCell = row.insertCell(6 + offset);
+            saldoCell.textContent = formatRupiah(saldo);
+            saldoCell.style.textAlign = 'right';
             
             if (saldo < 0) {
-                finalSaldoCell.className = 'saldo-minus';
-                finalSaldoCell.style.color = '#FF4136';
+                saldoCell.className = 'saldo-minus';
+                saldoCell.style.color = '#FF4136';   
             } else if (saldo > 0) {
-                finalSaldoCell.className = 'saldo-plus';
-                finalSaldoCell.style.color = '#00FFCC';
+                saldoCell.className = 'saldo-plus';
+                saldoCell.style.color = '#C6FF00';   
             }
 
             if (isLoggedIn) {
-                const emptyActionCell = footerRow.insertCell(4);
-                emptyActionCell.textContent = '';
+                const actionCell = row.insertCell(7 + offset); 
+                actionCell.innerHTML = `
+                    <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', '${kategori}', ${danaMasuk}, ${danaKeluar})">Edit</button>
+                    <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
+                `;
+                actionCell.style.textAlign = 'center';
             }
+            
+            allDataRows.push(row);
+        });
+        
+        setupPagination();
 
-        } catch (error) {
-            console.error("Error loading data:", error);
-            alert("Gagal memuat data keuangan. Cek konsol browser untuk detail error.");
+        // Tampilkan Total Laporan di Footer
+        const footerRow = tableFooter.insertRow();
+        footerRow.className = 'total-row';
+        
+        const colspanValue = isLoggedIn ? 4 : 3; 
+        
+        const totalLabelCell = footerRow.insertCell(0);
+        totalLabelCell.colSpan = colspanValue; 
+        totalLabelCell.textContent = 'TOTAL AKHIR:';
+        totalLabelCell.style.textAlign = 'right'; 
+
+        const totalMasukCell = footerRow.insertCell(1);
+        totalMasukCell.textContent = formatRupiah(totalMasuk);
+        totalMasukCell.style.textAlign = 'right';
+
+        const totalKeluarCell = footerRow.insertCell(2);
+        totalKeluarCell.textContent = formatRupiah(totalKeluar);
+        totalKeluarCell.style.textAlign = 'right';
+        totalKeluarCell.style.color = '#FF4136'; 
+
+        const finalSaldoCell = footerRow.insertCell(3);
+        finalSaldoCell.textContent = formatRupiah(saldo);
+        finalSaldoCell.style.textAlign = 'right';
+        
+        if (saldo < 0) {
+            finalSaldoCell.className = 'saldo-minus';
+            finalSaldoCell.style.color = '#FF4136';
+        } else if (saldo > 0) {
+            finalSaldoCell.className = 'saldo-plus';
+            finalSaldoCell.style.color = '#00FFCC';
+        }
+
+        if (isLoggedIn) {
+            const emptyActionCell = footerRow.insertCell(4);
+            emptyActionCell.textContent = '';
+        }
+        
+        // ⚠️ Tambahkan pengecekan ini: Jika ada kode yang mengatur status loading/error
+        const statusElement = document.getElementById('loading-status') || document.getElementById('error-message');
+        if (statusElement) {
+             statusElement.style.display = 'none'; // Amankan dari error style.display
+        }
+
+
+    } catch (error) {
+        console.error("Error loading data:", error);
+        alert("Gagal memuat data keuangan. Cek konsol browser untuk detail error.");
+        
+        const statusElement = document.getElementById('loading-status') || document.getElementById('error-message');
+        if (statusElement) {
+             statusElement.style.display = 'block'; // Amankan dari error style.display
         }
     }
-
-
+}
     // =========================================================================
     // 4. FUNGSI AUTENTIKASI & 5. FUNGSI CRUD (TEMPATKAN LOGIKA ANDA DI SINI)
     // =========================================================================
@@ -1707,5 +1719,3 @@ function logout() {
 </script>
 </body>
 </html>
-
-
