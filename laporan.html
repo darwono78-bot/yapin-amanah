@@ -1579,17 +1579,6 @@
     }
 
     // Cek Status Login Saat Memuat Halaman & Perubahan Status
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('input-control-container').style.display = 'block';
-        } else {
-            document.getElementById('login-container').style.display = 'block';
-            document.getElementById('input-control-container').style.display = 'none';
-        }
-        loadData(); // Selalu muat ulang data saat status auth berubah
-    });
-
     window.addTransaction = addTransaction;
     window.resetData = resetData;
     window.deleteTransaction = deleteTransaction; 
@@ -1610,4 +1599,5 @@
 </script>
 </body>
 </html>
+
 
