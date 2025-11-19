@@ -1488,11 +1488,16 @@
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
             };
 
-            html2pdf()
-            .set(opt)
-            .from(element)
-            .delay(3000) // <=== INI WAJIB ADA UNTUK KONSISTENSI!
-            .save();
+            // GANTI BAGIAN AKHIR DARI FUNGSI DOWNLOAD PDF KAKAK DENGAN KODE INI
+
+                // Menggunakan setTimeout untuk memberi jeda 1.5 detik (1500ms) tanpa crash!
+                setTimeout(function() {
+                    html2pdf()
+                        .set(opt)
+                        .from(element)
+                        // HAPUS TOTAL: .delay(1500)
+                        .save();
+                }, 1500); // <=== Jeda 1.5 detik diatur di sini
 
         } catch (error) { 
             console.error("Error generating Summary PDF:", error); 
@@ -1575,6 +1580,7 @@
 </script>
 </body>
 </html>
+
 
 
 
