@@ -1113,11 +1113,15 @@
         };
     }
     
-    // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN)
+   // Fungsi Pembantu: Menghasilkan konten PDF Detail (LAMPIRAN)
 async function generatePDFContent(isSummary = false) { 
     
     const isLoggedIn = !!auth.currentUser;
     
+    // Asumsi FINANCE_COLLECTION, auth, db, dan formatRupiah sudah terdefinisi di tempat lain
+    // Asumsi aggregateDataByCategory() juga terdefinisi jika isSummary digunakan
+    
+    // Ganti ini dengan query yang benar jika Kakak menggunakan query bulanan
     const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get(); 
     let dataToPrint = []; 
     let saldo = 0; 
@@ -1147,13 +1151,13 @@ async function generatePDFContent(isSummary = false) {
         }); 
     }); 
 
-    // --- KRITIS: PASTIKAN SEMICOLON (;) ADA DI SINI ---
+    // JUDUL DAN KOP UNTUK DETAIL TRANSAKSI
     const headerHTML = `
         <div style="text-align: center; margin-bottom: 5px;">
             <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
         </div>
         <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN KEUANGAN LAMPIRAN (DETAIL TRANSAKSI) BULANAN</h2>
-    `; // <-- TITIK KOMA HILANG DI KODE LAMA KAKAK!
+    `;
     
     const widthUraian = showKategoriInPDF ? '30%' : '40%';
     const pdfColspan = showKategoriInPDF ? 4 : 3;
@@ -1266,13 +1270,165 @@ async function generatePDFContent(isSummary = false) {
     `;
 
     return headerHTML + tableHTML;
-}
+} // <-- PENUTUP FUNGSI generatePDFContent (SUDAH BENAR)
+
 
 // Fungsi Pembantu: Menghasilkan konten PDF Ringkasan
 async function generateSummaryPDFContent() {
+    // Asumsi aggregated sudah terdefinisi
     const aggregated = await aggregateDataByCategory();
     const { summaryMasuk, summaryKeluar, totalMasukGlobal, totalKeluarGlobal } = aggregated;
     let no = 1;
+    
+    // JUDUL DAN KOP UNTUK RINGKASAN
+    const headerHTML = `
+        <div style="text-align: center; margin-bottom: 5px;">
+            <img src="header.png" style="width: 100%; height: auto; display: block; margin: 0 auto;">
+        </div>
+        <h2 style="font-size: 14px; text-align: center; margin: 15px 0 5px 0; color: black;">LAPORAN KEUANGAN RINGKASAN BULANAN</h2>
+    `; 
+    
+    // Di Ringkasan, kita hanya perlu 3 kolom (No, Kategori, Jumlah)
+    let tableHTML = `
+        <table id="pdf-summary-table" style="width: 70%; margin: 20px auto; border-collapse: collapse; font-size: 10.5px; color: black;">
+            <thead>
+                <tr style="background-color: #e0e0e0; font-size: 11.5px;">
+                    <th style="width: 5%; padding: 8px; border: 1px solid #333;">No</th>
+                    <th style="width: 65%; text-align: left; border: 1px solid #333;">Kategori Transaksi</th>
+                    <th style="width: 30%; border: 1px solid #333;">Jumlah (Rp)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    // Data Pemasukan
+    tableHTML += `
+        <tr style="background-color: #f0fff0; font-weight: bold; font-size: 11px;">
+            <td colspan="3" style="padding: 6px; border: 1px solid #333; color: #008000;">A. PEMASUKAN (Dana Masuk)</td>
+        </tr>
+    `;
+    no = 1;
+    summaryMasuk.forEach(item => {
+        tableHTML += `
+            <tr>
+                <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${no++}</td>
+                <td style="text-align: left; border: 1px solid #ddd;">${item.kategori}</td>
+                <td style="text-align: right; border: 1px solid #ddd; color: #008000;">${formatRupiah(item.jumlah)}</td>
+            </tr>
+        `;
+    });
+
+    // Total Pemasukan
+    tableHTML += `
+        <tr style="font-weight: bold; background-color: #ccffcc;">
+            <td colspan="2" style="text-align: right; padding: 8px; border: 1px solid #333; color: black;">TOTAL PEMASUKAN:</td>
+            <td style="text-align: right; border: 1px solid #333; color: #008000;">${formatRupiah(totalMasukGlobal)}</td>
+        </tr>
+    `;
+
+    // Data Pengeluaran
+    tableHTML += `
+        <tr style="background-color: #fff0f0; font-weight: bold; font-size: 11px;">
+            <td colspan="3" style="padding: 6px; border: 1px solid #333; color: #cc0000;">B. PENGELUARAN (Dana Keluar)</td>
+        </tr>
+    `;
+    no = 1;
+    summaryKeluar.forEach(item => {
+        tableHTML += `
+            <tr>
+                <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">${no++}</td>
+                <td style="text-align: left; border: 1px solid #ddd;">${item.kategori}</td>
+                <td style="text-align: right; border: 1px solid #ddd; color: #cc0000;">${formatRupiah(item.jumlah)}</td>
+            </tr>
+        `;
+    });
+
+    // Total Pengeluaran
+    tableHTML += `
+        <tr style="font-weight: bold; background-color: #ffcccc;">
+            <td colspan="2" style="text-align: right; padding: 8px; border: 1px solid #333; color: black;">TOTAL PENGELUARAN:</td>
+            <td style="text-align: right; border: 1px solid #333; color: #cc0000;">${formatRupiah(totalKeluarGlobal)}</td>
+        </tr>
+    `;
+
+    // Saldo Akhir
+    const finalSaldo = totalMasukGlobal - totalKeluarGlobal;
+    const finalSaldoColor = finalSaldo < 0 ? '#cc0000' : '#008000';
+    tableHTML += `
+        <tr style="font-weight: bold; background-color: #ccccff; font-size: 12px;">
+            <td colspan="2" style="text-align: right; padding: 10px; border: 2px solid black; color: black;">SALDO AKHIR BULAN:</td>
+            <td style="text-align: right; border: 2px solid black; color: ${finalSaldoColor};">${formatRupiah(finalSaldo)}</td>
+        </tr>
+    `;
+
+    tableHTML += `
+        </tbody>
+    </table> 
+    `;
+
+    // MENAMBAHKAN TANDA TANGAN DI AKHIR RINGKASAN
+    tableHTML += `
+    <div style="width: 70%; margin: 20px auto; text-align: right; font-size: 10px; color: black; break-inside: avoid;">
+        <p>Pati, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+    </div>
+    <table style="width: 70%; margin: 0 auto; border-collapse: collapse; font-size: 10px; color: black; break-inside: avoid;">
+        <tr>
+            <td style="width: 50%; text-align: center; padding: 10px;">
+                <p>Mengetahui,</p>
+                <p>Ketua Yayasan</p>
+                <img 
+                            src="ttd_ketua.png" 
+                            alt="Tanda Tangan Ketua" 
+                            style="
+                                width: 120px; 
+                                height: auto; 
+                                margin-top: 10px; 
+                                margin-bottom: -20px; 
+                                display: block; 
+                                margin-left: auto; 
+                                margin-right: auto; 
+                            " 
+                        />
+                        
+                        <p style="
+                            width: 150px; 
+                            margin: 0 auto; 
+                            padding-top: 5px; 
+                            text-align: center; 
+                            ">
+                <p style="border-bottom: 1px solid black; display: inline-block;">[Midi, S.Pd.I]</p>
+            </td>
+            <td style="width: 50%; text-align: center; padding: 10px;">
+                <p>Hormat Kami,</p>
+                <p>Bendahara</p>
+                <img 
+                            src="ttd_bendahara.png" 
+                            alt="Tanda Tangan Bendahara" 
+                            style="
+                                width: 120px; 
+                                height: auto; 
+                                margin-top: 10px; 
+                                margin-bottom: -20px; 
+                                display: block; 
+                                margin-left: auto; 
+                                margin-right: auto; 
+                            " 
+                        />
+                        
+                        <p style="
+                            width: 150px; 
+                            margin: 0 auto; 
+                            padding-top: 5px; 
+                            text-align: center; 
+                            ">
+                <p style="border-bottom: 1px solid black; display: inline-block;">[Imam Baihaqi]</p>
+            </td>
+        </tr>
+    </table>
+    `;
+
+    return headerHTML + tableHTML;
+} // <-- PENUTUP FUNGSI generateSummaryPDFContent (SANGAT KRITIS)
     
     // --- KRITIS: PASTIKAN SEMICOLON (;) ADA DI SINI ---
     const headerHTML = `
@@ -1587,6 +1743,7 @@ async function generateSummaryPDFContent() {
 </script>
 </body>
 </html>
+
 
 
 
