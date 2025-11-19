@@ -1344,7 +1344,13 @@
                 html2canvas: { scale: 3, logging: false, useCORS: true }, 
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
-            html2pdf().from(element).set(opt).save(); 
+            setTimeout(function() {
+            html2pdf()
+                .set(opt)
+                .from(element)
+                // HAPUS TOTAL: .delay(1500)
+                .save();
+        }, 1500); 
         } catch (error) { 
             console.error("Error generating PDF (downloadPDF):", error); 
             alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
@@ -1463,6 +1469,7 @@
 </script>
 </body>
 </html>
+
 
 
 
