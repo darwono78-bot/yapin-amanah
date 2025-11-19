@@ -774,6 +774,106 @@
     const FINANCE_COLLECTION = "laporan"; 
 
     // =========================================================================
+// FUNGSI UTAMA LAPORAN (UNTUK MENGHILANGKAN ERROR EDITOR)
+// =========================================================================
+
+// Fungsi untuk menyimpan perubahan dari modal
+function saveEditChanges() {
+    if (!currentEditingId) return;
+
+    const newUraian = document.getElementById('edit-uraian').value.trim();
+    const newMasukValue = document.getElementById('edit-masuk').value.trim();
+    const newKeluarValue = document.getElementById('edit-keluar').value.trim();
+    
+    const finalMasuk = parseInt(newMasukValue) || 0;
+    const finalKeluar = parseInt(newKeluarValue) || 0;
+    const modalStatus = document.getElementById('modal-status');
+
+    if (!newUraian) {
+        modalStatus.textContent = "Uraian tidak boleh kosong!";
+        return;
+    }
+
+    if (finalMasuk < 0 || finalKeluar < 0) {
+        modalStatus.textContent = "Dana Masuk/Keluar tidak boleh negatif.";
+        return;
+    }
+    if (finalMasuk > 0 && finalKeluar > 0) {
+        modalStatus.textContent = "Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya.";
+        return;
+    }
+
+    modalStatus.textContent = 'Menyimpan...';
+    updateTransaction(currentEditingId, newUraian, finalMasuk, finalKeluar);
+}
+
+async function updateTransaction(id, uraian, danaMasuk, danaKeluar) {
+    try {
+        await db.collection(FINANCE_COLLECTION).doc(id).update({
+            uraian: uraian,
+            danaMasuk: danaMasuk,
+            danaKeluar: danaKeluar
+        });
+        document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
+        document.getElementById('modal-status').style.color = 'lime';
+        // Tutup modal setelah jeda sebentar
+        setTimeout(() => {
+            // Asumsi ID modal adalah 'editModal'
+            const editModalElement = document.getElementById('editModal');
+            if (editModalElement) {
+                 editModalElement.style.display = 'none';
+            }
+        }, 1000); 
+        
+        // Perbarui status di bagian utama
+        const authStatusElement = document.getElementById('auth-status');
+        if (authStatusElement) { // Pengecekan Null untuk menghindari Error Konsol
+            authStatusElement.textContent = 'Transaksi berhasil diupdate!';
+            authStatusElement.style.color = 'lime';
+        }
+
+    } catch (error) {
+        document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
+        document.getElementById('modal-status').style.color = 'red';
+        console.error("Error updating document: ", error);
+    }
+}
+
+
+window.resetData = function() { // Didefinisikan menggunakan window. karena dipanggil langsung dari HTML
+    if (!auth.currentUser) {
+        alert("Anda harus login sebagai admin untuk mereset data.");
+        return;
+    }
+
+    if (!confirm("PERINGATAN! Ini akan menghapus SEMUA data laporan keuangan (Reset Bulanan). Pastikan Anda sudah mengunduh laporannya. Lanjutkan?")) {
+        return;
+    }
+
+    // Menjalankan Batch Delete (Cara efisien hapus banyak data di Firestore)
+    db.collection(FINANCE_COLLECTION).get().then((snapshot) => {
+        const batch = db.batch();
+        snapshot.docs.forEach((doc) => {
+            batch.delete(doc.ref);
+        });
+
+        return batch.commit();
+    }).then(() => {
+        const authStatusElement = document.getElementById('auth-status');
+        if (authStatusElement) {
+            authStatusElement.textContent = "Semua data laporan berhasil direset (dihapus).";
+            authStatusElement.style.color = 'lime';
+        }
+    }).catch((error) => {
+        const authStatusElement = document.getElementById('auth-status');
+        if (authStatusElement) {
+            authStatusElement.textContent = "Gagal mereset data: " + error.message;
+            authStatusElement.style.color = 'red';
+        }
+    });
+}
+    
+    // =========================================================================
     // 1. LOGIKA PAGINATION & GLOBAL VARIABLES
     // =========================================================================
     const rowsPerPage = 10; 
@@ -1579,3 +1679,4 @@ function login() {
 </script>
 </body>
 </html>
+
