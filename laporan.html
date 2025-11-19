@@ -1037,10 +1037,7 @@
     // =========================================================================
     // 4. FUNGSI AUTENTIKASI & 5. FUNGSI CRUD (TEMPATKAN LOGIKA ANDA DI SINI)
     // =========================================================================
-    
-    // =========================================================================
-// FUNGSI UTAMA LOGIN (Diambil dari donatur-yapin.html yang berfungsi)
-// =========================================================================
+
 function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -1056,9 +1053,6 @@ function login() {
         statusText.style.color = 'red';
     });
 }
-// =========================================================================
-
-
     // =========================================================================
     // 6. FUNGSI UNDUH PDF (DETAIL TANPA TANDA TANGAN, RINGKASAN DENGAN TANDA TANGAN)
     // =========================================================================
@@ -1563,29 +1557,12 @@ function login() {
 
 
     // Expose fungsi ke window
- function login() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const statusText = document.getElementById('auth-status');
-
-        auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                statusText.textContent = 'Login Berhasil!';
-                statusText.style.color = 'lime';
-            })
-            .catch((error) => {
-                statusText.textContent = `Login Gagal: ${error.message}`;
-                statusText.style.color = 'red';
-            });
-    }
-
-    function logout() {
-        auth.signOut().then(() => {
-            document.getElementById('auth-status').textContent = 'Anda telah Logout.';
-            document.getElementById('auth-status').style.color = 'red';
-        });
-    }
-
+    window.login = login;
+    window.logout = logout;
+    window.addTransaction = addTransaction;
+    window.resetData = resetData;
+    window.deleteTransaction = deleteTransaction; 
+    window.editTransactionPrompt = editTransactionPrompt; 
 
 </script>
 <script>
@@ -1602,5 +1579,3 @@ function login() {
 </script>
 </body>
 </html>
-
-
