@@ -1154,6 +1154,34 @@ function login() {
     });
 }
     // =========================================================================
+// FUNGSI LOGOUT (DITAMBAHKAN)
+// =========================================================================
+function logout() {
+    // 1. Panggil fungsi SignOut dari Firebase
+    auth.signOut().then(() => {
+        // Ambil elemen status (jika ada)
+        const statusText = document.getElementById('auth-status'); 
+
+        // 2. Tambahkan pengecekan keamanan (NULL CHECK)
+        if (statusText) {
+            statusText.textContent = 'Anda telah logout.';
+            statusText.style.color = 'yellow';
+        }
+        
+        // 3. Muat ulang halaman untuk kembali ke tampilan awal
+        window.location.reload(); 
+
+    }).catch((error) => {
+        // Jika gagal logout (sangat jarang terjadi)
+        const statusText = document.getElementById('auth-status'); 
+        if (statusText) {
+            statusText.textContent = `Logout Gagal: ${error.message}`;
+            statusText.style.color = 'red';
+        }
+    });
+}
+// =========================================================================
+    // =========================================================================
     // 6. FUNGSI UNDUH PDF (DETAIL TANPA TANDA TANGAN, RINGKASAN DENGAN TANDA TANGAN)
     // =========================================================================
 
@@ -1679,4 +1707,5 @@ function login() {
 </script>
 </body>
 </html>
+
 
