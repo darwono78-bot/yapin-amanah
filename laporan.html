@@ -432,21 +432,21 @@
             text-align: center;
         }
 
-        .close-btn {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
+        .close {
+            color: #ffd700; /* Warna Emas/Kuning */
+            font-size: 30px;
             font-weight: bold;
+            position: absolute; /* Posisikan relatif terhadap .modal-content */
+            top: 10px; /* Jarak dari atas kotak */
+            right: 20px; /* Jarak dari kanan kotak */
             cursor: pointer;
-            line-height: 1; 
-            transition: 0.3s;
+            transition: color 0.3s;
         }
-
-        .close-btn:hover,
-        .close-btn:focus {
-            color: #fff;
+        
+        .close:hover,
+        .close:focus {
+            color: #fff; /* Beri efek warna putih saat dihover */
             text-decoration: none;
-            transform: scale(1.1);
         }
 
         .modal-content input[type="text"],
@@ -1779,6 +1779,7 @@
 </script>
 </body>
 </html>
+
 
 
 
