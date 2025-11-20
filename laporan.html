@@ -1214,18 +1214,21 @@ async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
         document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
         document.getElementById('modal-status').style.color = 'lime';
         
-        // Tutup modal setelah jeda sebentar
+        // Pindahkan loadData() ke sini (di dalam setTimeout)
         setTimeout(() => {
             document.getElementById('editModal').style.display = 'none';
+            
+            // KRITIS: loadData() HARUS DI SINI!
+            loadData(); // <-- Akan dieksekusi setelah 1 detik
+            
         }, 1000); 
         
-        // KRITIS: TAMBAHKAN loadData() DI SINI! 
-        // Ini akan memuat ulang tabel data setelah sukses update.
-        loadData();
-        
-        // Perbarui status di bagian utama
+        // Perbarui status di bagian utama (ini akan muncul sebelum 1 detik)
         document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
         document.getElementById('auth-status').style.color = 'lime';
+        
+        // PASTIKAN loadData() TIDAK ADA LAGI DI SINI (Jika sebelumnya ada)
+        
     } catch (error) {
         document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
         document.getElementById('modal-status').style.color = 'red';
@@ -1898,6 +1901,7 @@ async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
 </script>
 </body>
 </html>
+
 
 
 
