@@ -578,79 +578,6 @@
             font-weight: bold;
             color: #006400; /* Warna hijau sedikit lebih gelap untuk label group */
         }
-
-@media (max-width: 600px) {
-    
-    /* 1. KONTROL LEBAR UTAMA */
-    .container, .modal-content {
-        width: 95% !important;
-        padding: 10px;
-        margin: 10px auto;
-    }
-
-    /* 2. PERBAIKAN TAMPILAN INPUT GROUP */
-    .input-group {
-        flex-direction: column; 
-    }
-    
-    .input-group > div {
-        margin-bottom: 10px; 
-        width: 100%; 
-    }
-
-    /* 3. PERBAIKAN TABEL (KRITIS UNTUK PONSEL) */
-    table, thead, tbody, th, td, tr { 
-        display: block; 
-    }
-    
-    /* Sembunyikan Header Kolom */
-    thead { 
-        display: none;
-    }
-    
-    /* Perbaikan Baris dan Sel */
-    tr {
-        margin-bottom: 15px;
-        border: 1px solid #444; 
-        padding: 10px;
-        border-radius: 5px;
-        background-color: #111; 
-    }
-    
-    td {
-        border: none;
-        border-bottom: 1px solid #333;
-        position: relative;
-        padding-left: 50% !important; 
-        text-align: right;
-    }
-
-    /* Tampilkan Label Kolom */
-    td:before {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
-        color: #fff;
-    }
-    
-    /* PERBAIKAN TOMBOL LOGOUT/STATUS */
-    #auth-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .auth-button-group button {
-        margin-top: 5px;
-        width: 100%;
-    }
-}
-
     </style>
 </head>
 <body>
@@ -1091,54 +1018,54 @@
                 totalMasuk += danaMasuk;
                 totalKeluar += danaKeluar;
 
-               // Baris ini (const row = tableBody.insertRow();) TIDAK PERLU DIGANTI
-
-                // KOLOM 1: NO (Index 0)
+                const row = tableBody.insertRow();
                 row.insertCell(0).textContent = no++;
-                row.cells[0].setAttribute('data-label', 'No');
-                
-                // KOLOM 2: TANGGAL (Index 1)
                 row.insertCell(1).textContent = data.tanggal;
-                row.cells[1].setAttribute('data-label', 'Tanggal');
                 
-                // KOLOM 3: URAIAN (Index 2)
-                row.insertCell(2).textContent = data.uraian || '-'; 
-                row.cells[2].setAttribute('data-label', 'Uraian');
+                const descriptionCell = row.insertCell(2);
+                let textColor = '';
+                if (danaMasuk > 0) { 
+                    textColor = 'masuk-text'; 
+                } 
+                descriptionCell.innerHTML = `<span class="${textColor}">${data.uraian}</span>`;
                 
-                // KOLOM 4: DANA MASUK (Index 3)
-                row.insertCell(3).textContent = formatRupiah(danaMasuk); 
-                row.cells[3].setAttribute('data-label', 'Masuk'); 
-                
-                // KOLOM 5: DANA KELUAR (Index 4)
-                row.insertCell(4).textContent = formatRupiah(danaKeluar);
-                row.cells[4].setAttribute('data-label', 'Keluar');
-                
-                // KOLOM 6: SALDO (Index 5)
-                // Asumsi Anda memiliki logika styling warna yang ditambahkan di sini
-                const saldoCell = row.insertCell(5);
-                saldoCell.textContent = formatRupiah(saldo);
-                saldoCell.setAttribute('data-label', 'Saldo');
-                // Jika Anda punya kode warna, tambahkan di sini (misalnya: saldoCell.style.color = '#C6FF00';)
-                
-                // KOLOM 7: AKSI (Index 6) - HANYA JIKA LOGIN
                 if (isLoggedIn) {
-                    // Kita asumsikan offset = 0, sehingga index 6 adalah kolom Aksi.
-                    const actionCell = row.insertCell(6); 
-                    
-                    // Kode tombol aksi dari Anda
+                    const kategoriCell = row.insertCell(3);
+                    kategoriCell.textContent = kategori; 
+                    kategoriCell.style.textAlign = 'center';
+                }
+
+                const masukCell = row.insertCell(4 + offset); 
+                masukCell.textContent = danaMasuk > 0 ? formatRupiah(danaMasuk) : '-';
+                masukCell.style.textAlign = 'right';
+
+                const keluarCell = row.insertCell(5 + offset);
+                keluarCell.textContent = danaKeluar > 0 ? formatRupiah(danaKeluar) : '-';
+                keluarCell.style.textAlign = 'right';
+
+                const saldoCell = row.insertCell(6 + offset);
+                saldoCell.textContent = formatRupiah(saldo);
+                saldoCell.style.textAlign = 'right';
+                
+                if (saldo < 0) {
+                    saldoCell.className = 'saldo-minus';
+                    saldoCell.style.color = '#FF4136';   
+                } else if (saldo > 0) {
+                    saldoCell.className = 'saldo-plus';
+                    saldoCell.style.color = '#C6FF00';   
+                }
+
+                if (isLoggedIn) {
+                    const actionCell = row.insertCell(7 + offset); 
                     actionCell.innerHTML = `
                         <button class="aksi-btn" onclick="editTransactionPrompt('${id}', '${data.tanggal}', '${data.uraian}', '${kategori}', ${danaMasuk}, ${danaKeluar})">Edit</button>
                         <button class="aksi-btn" onclick="deleteTransaction('${id}')" style="background-color: #dc3545;">Hapus</button>
                     `;
-                    
-                    // Styling dan data-label ditambahkan di dalam blok IF
                     actionCell.style.textAlign = 'center';
-                    actionCell.setAttribute('data-label', 'Aksi');
-                } 
+                }
                 
-                // KODE INI TETAP DIBIARKAN SETELAH SEMUA KOLOM DIBUAT
-                allDataRows.push(row); 
-                // } <-- Tag penutup snapshot.forEach (ini juga dibiarkan)
+                allDataRows.push(row);
+            });
             
             setupPagination();
 
@@ -2033,6 +1960,3 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
-
-
-
