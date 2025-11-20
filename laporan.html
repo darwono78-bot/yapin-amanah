@@ -1200,31 +1200,38 @@
         updateTransaction(id, newUraian, newKategori, finalMasuk, finalKeluar);
     }
     
-    async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
-        try {
-            await db.collection(FINANCE_COLLECTION).doc(id).update({
-                uraian: uraian,
-                kategori: kategori,
-                danaMasuk: danaMasuk,
-                danaKeluar: danaKeluar
-            });
-            document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
-            document.getElementById('modal-status').style.color = 'lime';
-            // Tutup modal setelah jeda sebentar
-            setTimeout(() => {
-                document.getElementById('editModal').style.display = 'none';
-            }, 1000); 
-            
-            // Perbarui status di bagian utama
-            document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
-            document.getElementById('auth-status').style.color = 'lime';
-        } catch (error) {
-            document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
-            document.getElementById('modal-status').style.color = 'red';
-            console.error("Error updating document: ", error);
-        }
-    }
+   // Anda tidak perlu mengubah window.saveEditChanges, fokus ke updateTransaction
 
+async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
+    try {
+        await db.collection(FINANCE_COLLECTION).doc(id).update({
+            uraian: uraian,
+            kategori: kategori,
+            danaMasuk: danaMasuk,
+            danaKeluar: danaKeluar
+        });
+        
+        document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
+        document.getElementById('modal-status').style.color = 'lime';
+        
+        // Tutup modal setelah jeda sebentar
+        setTimeout(() => {
+            document.getElementById('editModal').style.display = 'none';
+        }, 1000); 
+        
+        // KRITIS: TAMBAHKAN loadData() DI SINI! 
+        // Ini akan memuat ulang tabel data setelah sukses update.
+        loadData();
+        
+        // Perbarui status di bagian utama
+        document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
+        document.getElementById('auth-status').style.color = 'lime';
+    } catch (error) {
+        document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
+        document.getElementById('modal-status').style.color = 'red';
+        console.error("Error updating document: ", error);
+    }
+}
 
     window.resetData = function() {
         if (!auth.currentUser) {
@@ -1891,6 +1898,7 @@
 </script>
 </body>
 </html>
+
 
 
 
