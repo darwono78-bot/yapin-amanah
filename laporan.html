@@ -1085,28 +1085,27 @@
     // 4. FUNGSI AUTENTIKASI & 5. FUNGSI CRUD (TEMPATKAN LOGIKA ANDA DI SINI)
     // =========================================================================
    // ⚠️ NOTE: Pastikan Anda mengisi fungsi-fungsi ini sesuai logika Firebase Authentication dan Firestore Anda!
-    window.login = function() { console.log("Login function called - Implement your logic here"); }
-    window.logout = function() { console.log("Logout function called - Implement your logic here"); }
-    window.saveEditChanges = function() { console.log("Save edit called - Implement your logic here"); }
-    window.resetData = function() { console.log("Reset data called - Implement your logic here"); }
     window.deleteTransaction = function(docId) {
-        if (!auth.currentUser) {
-            alert("Anda harus login sebagai admin untuk menghapus data.");
-            return;
-        }
-        
-        if (confirm("Yakin ingin menghapus transaksi ini?")) {
-            db.collection(FINANCE_COLLECTION).doc(docId).delete()
-            .then(() => {
-                document.getElementById('auth-status').textContent = "Transaksi berhasil dihapus!";
-                document.getElementById('auth-status').style.color = 'lime';
-            })
-            .catch((error) => {
-                document.getElementById('auth-status').textContent = "Error menghapus: Pastikan Anda masih login. " + error.message;
-                document.getElementById('auth-status').style.color = 'red';
-            });
-        }
+    if (!auth.currentUser) {
+        alert("Anda harus login sebagai admin untuk menghapus data.");
+        return;
     }
+    
+    if (confirm("Yakin ingin menghapus transaksi ini?")) {
+        db.collection(FINANCE_COLLECTION).doc(docId).delete()
+        .then(() => {
+            document.getElementById('auth-status').textContent = "Transaksi berhasil dihapus!";
+            document.getElementById('auth-status').style.color = 'lime';
+            
+            // TAMBAHKAN INI: Fungsi untuk memuat ulang tabel data
+            loadData(); 
+        })
+        .catch((error) => {
+            document.getElementById('auth-status').textContent = "Error menghapus: Pastikan Anda masih login. " + error.message;
+            document.getElementById('auth-status').style.color = 'red';
+        });
+    }
+}
 
     // Fungsi untuk menampilkan modal dan mengisi data (PENGGANTI PROMPT)
     window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
@@ -1870,6 +1869,7 @@
 </script>
 </body>
 </html>
+
 
 
 
