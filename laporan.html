@@ -720,7 +720,7 @@
         <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar">
     </div>
 </div>
-        <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
+        <button onclick="saveEditChanges()" class="btn-action">Simpan Transaksi</button>
         </div>
         </div>
    </section>
@@ -749,12 +749,9 @@
         <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar">
     </div>
 </div>
-<div class="modal-actions">
-    <button onclick="saveEditChanges()" class="btn-action">Simpan Perubahan</button> 
-    <button onclick="closeEditModal()" class="btn-cancel">Batal</button> 
-    </div>
-
-<p id="modal-status" style="margin-top: 10px; text-align: center;"></p>
+        <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
+        </div>
+        </div>
     </select>
      
 <footer>
@@ -1873,6 +1870,7 @@
 </script>
 </body>
 </html>
+
 
 
 
