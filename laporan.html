@@ -1128,8 +1128,8 @@
     }
 }
     // Fungsi untuk menyimpan perubahan dari modal
-    window.saveEditChanges() {
-        if (!currentEditingId) return;
+    window.saveEditChanges = function() {
+    if (!currentEditingId) return;
 
         const id = document.getElementById('modal-id').value;
         const newUraian = document.getElementById('edit-uraian').value.trim();
@@ -1779,6 +1779,7 @@
 </script>
 </body>
 </html>
+
 
 
 
