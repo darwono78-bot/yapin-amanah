@@ -708,51 +708,18 @@
         <label for="input-kategori" style="color:#fff; margin-top: 5px;">Pilih Kategori Transaksi</label>
         <select id="input-kategori" required>
              <option value="" selected disabled>--- Pilih Kategori ---</option>
-             <optgroup label="Dana Pemerintah">
-                 </optgroup>
-             <optgroup label="Iuran Santri">
-                 </optgroup>
-            <optgroup label="Dana Proposal">
-                 </optgroup>
-            <optgroup label="Dana Donatur">
-                 </optgroup>
-            <optgroup label="Dana Donatur Jamaah / Masyarakat">
-                 </optgroup>
-            <optgroup label="Dana Kotak Amal">
-                 </optgroup>
-            <optgroup label="Hasil Kebun">
-                 </optgroup>
-             <optgroup label="Uang Kembalian">
-                 </optgroup>
-            <optgroup label="Hasil Usaha">
-                 </optgroup>
-            <optgroup label="Dana Iuran Sertivikasi Guru">
-                 </optgroup>
-             <optgroup label="Saldo Bulan Lalu">
-                 </optgroup>
-            <optgroup label="Pengeluaran Pasti (PP)">
-                 </optgroup>
-            <optgroup label="Pengeluaran Tidak Pasti (PTP)">
-                 </optgroup>
-            <optgroup label="Pengeluaran Pembangunan & Perawatan Gedung (P3G)">
-                 </optgroup>
-            <optgroup label="Pengeluaran Sosial (PS)">
-                 </optgroup>
-             <optgroup label="Pengeluaran Pembiayaan Perawatan Barang (P3B)">
-                 </optgroup>
-            <optgroup label="Pengeluaran PHBI">
-                 </optgroup>
-            <optgroup label="Pengeluaran Lain-Lain (PL2)">
-                 </optgroup>
         </select>
 
         <div class="input-group">
             <div>
-                <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
+                <label for="edit-masuk">Dana Masuk</label>
+                <input type="number" id="edit-masuk" placeholder="Jumlah Dana Masuk">
             </div>
             <div>
-                <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
+                <label for="edit-keluar">Dana Keluar</label>
+                <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
             </div>
+        </div>
         </div>
         <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
         </div>
@@ -764,7 +731,6 @@
         <span class="close" onclick="closeEditModal()">&times;</span>
         <h3>Edit Transaksi Laporan</h3>
         <input type="hidden" id="modal-id">
-
         <label for="edit-tanggal">Tanggal Transaksi</label>
         <input type="date" id="edit-tanggal" disabled> <label for="edit-uraian">Uraian Transaksi</label>
         <input type="text" id="edit-uraian" required>
@@ -772,49 +738,16 @@
         <label for="edit-kategori">Kategori Transaksi</label>
         <select id="edit-kategori" required>
              <option value="" selected disabled>--- Pilih Kategori ---</option>
-<optgroup label="Dana Pemerintah">
-                 </optgroup>
-             <optgroup label="Iuran Santri">
-                 </optgroup>
-            <optgroup label="Dana Proposal">
-                 </optgroup>
-            <optgroup label="Dana Donatur">
-                 </optgroup>
-            <optgroup label="Dana Donatur Jamaah / Masyarakat">
-                 </optgroup>
-            <optgroup label="Dana Kotak Amal">
-                 </optgroup>
-            <optgroup label="Hasil Kebun">
-                 </optgroup>
-             <optgroup label="Uang Kembalian">
-                 </optgroup>
-            <optgroup label="Hasil Usaha">
-                 </optgroup>
-            <optgroup label="Dana Iuran Sertivikasi Guru">
-                 </optgroup>
-             <optgroup label="Saldo Bulan Lalu">
-                 </optgroup>
-            <optgroup label="Pengeluaran Pasti (PP)">
-                 </optgroup>
-            <optgroup label="Pengeluaran Tidak Pasti (PTP)">
-                 </optgroup>
-            <optgroup label="Pengeluaran Pembangunan & Perawatan Gedung (P3G)">
-                 </optgroup>
-            <optgroup label="Pengeluaran Sosial (PS)">
-                 </optgroup>
-             <optgroup label="Pengeluaran Pembiayaan Perawatan Barang (P3B)">
-                 </optgroup>
-            <optgroup label="Pengeluaran PHBI">
-                 </optgroup>
-            <optgroup label="Pengeluaran Lain-Lain (PL2)">
-                 </optgroup>
         </select>
+        
         <div class="input-group">
             <div>
-                <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk (isi 0 jika Dana Keluar)">
+                <label for="edit-masuk">Dana Masuk</label>
+                <input type="number" id="edit-masuk" placeholder="Jumlah Dana Masuk">
             </div>
             <div>
-                <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar (isi 0 jika Dana Masuk)">
+                <label for="edit-keluar">Dana Keluar</label>
+                <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
             </div>
         </div>
         <p id="modal-status" style="text-align: center; color: red; margin-top: 10px;"></p>
@@ -878,6 +811,38 @@
         "Pengeluaran Pembiayaan Perawatan Barang (P3B)", "Pengeluaran PHBI", 
         "Pengeluaran Lain-Lain (PL2)" 
     ]; 
+    function populateCategories(selectId) {
+    const selectElement = document.getElementById(selectId);
+    if (!selectElement) return;
+
+    // 1. Membersihkan Opsi Lama
+    // Hapus semua elemen anak kecuali opsi pertama ('--- Pilih Kategori ---')
+    while (selectElement.children.length > 1) {
+        selectElement.removeChild(selectElement.lastChild);
+    }
+
+    // 2. Mengisi Kategori Dana Masuk
+    const optGroupMasuk = document.createElement('optgroup');
+    optGroupMasuk.label = 'Dana Masuk';
+    KATEGORI_MASUK.forEach(kategori => {
+        const option = document.createElement('option');
+        option.value = kategori;
+        option.textContent = kategori;
+        optGroupMasuk.appendChild(option);
+    });
+    selectElement.appendChild(optGroupMasuk);
+
+    // 3. Mengisi Kategori Dana Keluar
+    const optGroupKeluar = document.createElement('optgroup');
+    optGroupKeluar.label = 'Dana Keluar';
+    KATEGORI_KELUAR.forEach(kategori => {
+        const option = document.createElement('option');
+        option.value = kategori;
+        option.textContent = kategori;
+        optGroupKeluar.appendChild(option);
+    });
+    selectElement.appendChild(optGroupKeluar);
+}
     
     // --- DOM REFERENCES (Hanya untuk elemen yang pasti ada, yang bermasalah dipindahkan) ---
     const tableBody = document.getElementById('finance-body');
@@ -1155,31 +1120,28 @@
              alert("Anda harus login sebagai admin untuk mengedit data.");
              return;
         }
-        
         currentEditingId = id; // Simpan ID transaksi yang sedang diedit
-        
         document.getElementById('modal-id').value = id; // Simpan ID di hidden input
         document.getElementById('edit-tanggal').value = tanggal;
         document.getElementById('edit-uraian').value = uraian;
+        populateCategories('edit-kategori'); // <--- BARIS YANG DITAMBAHKAN
         document.getElementById('edit-kategori').value = kategori; // Set kategori yang tersimpan
-        
         // Isi input dengan nilai, jika 0 tampilkan kosong agar user mudah input baru
         document.getElementById('edit-masuk').value = masuk > 0 ? masuk : ''; 
         document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
         document.getElementById('modal-status').textContent = ''; // Bersihkan pesan status
-
         document.getElementById('editModal').style.display = 'block';
+        }
+        window.closeEditModal = function() {
+        // Pastikan ID modal Anda benar, yaitu 'editModal'
+        document.getElementById('editModal').style.display = 'none';
+        
+        // Opsional: Bersihkan pesan status atau form setelah ditutup
+        const modalStatus = document.getElementById('modal-status');
+        if (modalStatus) {
+            modalStatus.textContent = ''; 
+        }
     }
-    window.closeEditModal = function() {
-    // Pastikan ID modal Anda benar, yaitu 'editModal'
-    document.getElementById('editModal').style.display = 'none';
-    
-    // Opsional: Bersihkan pesan status atau form setelah ditutup
-    const modalStatus = document.getElementById('modal-status');
-    if (modalStatus) {
-        modalStatus.textContent = ''; 
-    }
-}
     // Fungsi untuk menyimpan perubahan dari modal
     window.saveEditChanges = function() {
     if (!currentEditingId) return;
@@ -1816,7 +1778,7 @@
     window.resetData = resetData;
     window.deleteTransaction = deleteTransaction; 
     window.editTransactionPrompt = editTransactionPrompt; 
-
+    populateCategories('input-kategori'); // <--- TAMBAHKAN DI SINI!
 </script>
 <script>
     // Script untuk Animasi Scroll Anda
@@ -1832,15 +1794,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
