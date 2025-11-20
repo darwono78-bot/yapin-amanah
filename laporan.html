@@ -710,17 +710,16 @@
              <option value="" selected disabled>--- Pilih Kategori ---</option>
         </select>
 
-        <div class="input-group">
-            <div>
-                <label for="edit-masuk">Dana Masuk</label>
-                <input type="number" id="edit-masuk" placeholder="Jumlah Dana Masuk">
-            </div>
-            <div>
-                <label for="edit-keluar">Dana Keluar</label>
-                <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
-            </div>
-        </div>
-        </div>
+     <div class="input-group">
+    <div>
+        <label for="input-masuk">Dana Masuk</label>
+        <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk">
+    </div>
+    <div>
+        <label for="input-keluar">Dana Keluar</label>
+        <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar">
+    </div>
+</div>
         <button onclick="addTransaction()" class="btn-action">Simpan Transaksi</button>
         </div>
         </div>
@@ -741,19 +740,15 @@
         </select>
         
         <div class="input-group">
-            <div>
-                <label for="edit-masuk">Dana Masuk</label>
-                <input type="number" id="edit-masuk" placeholder="Jumlah Dana Masuk">
-            </div>
-            <div>
-                <label for="edit-keluar">Dana Keluar</label>
-                <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
-            </div>
-        </div>
-        <p id="modal-status" style="text-align: center; color: red; margin-top: 10px;"></p>
-        <button type="button" onclick="saveEditChanges()">Simpan Perubahan</button>
-      </div>
+    <div>
+        <label for="input-masuk">Dana Masuk</label>
+        <input type="number" id="input-masuk" placeholder="Jumlah Dana Masuk">
     </div>
+    <div>
+        <label for="input-keluar">Dana Keluar</label>
+        <input type="number" id="input-keluar" placeholder="Jumlah Dana Keluar">
+    </div>
+</div>
 </select>
      
 <footer>
@@ -1242,7 +1237,90 @@
             document.getElementById('auth-status').style.color = 'red';
         });
     }
+    async function addTransaction() {
+    // 1. Ambil Nilai dari Formulir (Menggunakan ID yang Sudah Dikoreksi: input-...)
+    const tanggal = document.getElementById('input-tanggal').value;
+    const uraian = document.getElementById('input-uraian').value.trim();
+    const kategori = document.getElementById('input-kategori').value;
+    const danaMasukValue = document.getElementById('input-masuk').value.trim();
+    const danaKeluarValue = document.getElementById('input-keluar').value.trim();
+
+    // Konversi ke Angka dan pastikan 0 jika kosong
+    const danaMasuk = parseInt(danaMasukValue) || 0;
+    const danaKeluar = parseInt(danaKeluarValue) || 0;
     
+    // Status pesan (sesuai template Anda)
+    const statusText = document.getElementById('auth-status');
+    statusText.style.color = 'red'; 
+
+    // 2. Validasi Dasar
+    if (!tanggal || !uraian || !kategori) {
+        statusText.textContent = "Tanggal, Uraian, dan Kategori harus diisi.";
+        return;
+    }
+
+    // 3. Validasi Angka dan Keseimbangan
+    if (danaMasuk < 0 || danaKeluar < 0) {
+        statusText.textContent = "Dana Masuk/Keluar tidak boleh negatif.";
+        return;
+    }
+
+    if (danaMasuk > 0 && danaKeluar > 0) {
+        statusText.textContent = "Hanya boleh mengisi Dana Masuk atau Dana Keluar, tidak keduanya.";
+        return;
+    }
+
+    if (danaMasuk === 0 && danaKeluar === 0) {
+        statusText.textContent = "Salah satu kolom (Dana Masuk atau Dana Keluar) harus diisi.";
+        return;
+    }
+    
+    // 4. Validasi Kategori vs Jenis Dana (Menggunakan KATEGORI_MASUK dan KATEGORI_KELUAR global)
+    // Asumsi KATEGORI_MASUK dan KATEGORI_KELUAR sudah didefinisikan sebelumnya
+    const isMasukCategory = KATEGORI_MASUK.includes(kategori);
+    const isKeluarCategory = KATEGORI_KELUAR.includes(kategori);
+
+    if (danaMasuk > 0 && !isMasukCategory) {
+        statusText.textContent = `Kategori '${kategori}' hanya berlaku untuk Dana Keluar.`;
+        return;
+    }
+    
+    if (danaKeluar > 0 && !isKeluarCategory) {
+        statusText.textContent = `Kategori '${kategori}' hanya berlaku untuk Dana Masuk.`;
+        return;
+    }
+
+    // 5. Simpan ke Database
+    statusText.textContent = "Menyimpan data...";
+    statusText.style.color = 'yellow';
+    
+    try {
+        await db.collection(FINANCE_COLLECTION).add({
+            tanggal: tanggal,
+            uraian: uraian,
+            kategori: kategori,
+            danaMasuk: danaMasuk,
+            danaKeluar: danaKeluar,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+        });
+
+        // 6. Reset Formulir dan Tampilkan Sukses
+        document.getElementById('input-uraian').value = '';
+        document.getElementById('input-kategori').value = ''; 
+        document.getElementById('input-masuk').value = '';
+        document.getElementById('input-keluar').value = '';
+        document.getElementById('input-tanggal').value = ''; 
+
+        statusText.textContent = "Transaksi berhasil disimpan!";
+        statusText.style.color = 'lime';
+        
+        loadData(); // Memuat ulang data tabel untuk menampilkan entri baru
+        
+    } catch (error) {
+        statusText.textContent = `Gagal menyimpan transaksi: ${error.message}`;
+        console.error("Error adding document: ", error);
+    }
+}
     // =========================================================================
     // 6. FUNGSI UNDUH PDF (DETAIL TANPA TANDA TANGAN, RINGKASAN DENGAN TANDA TANGAN)
     // =========================================================================
@@ -1794,3 +1872,4 @@
 </script>
 </body>
 </html>
+
