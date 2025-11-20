@@ -729,14 +729,51 @@
     <div class="modal-content">
         <span class="close" onclick="closeEditModal()">&times;</span>
         <h3>Edit Transaksi Laporan</h3>
+        
         <input type="hidden" id="modal-id">
-        <label for="edit-tanggal">Tanggal Transaksi</label>
-        <input type="date" id="edit-tanggal" disabled> <label for="edit-uraian">Uraian Transaksi</label>
-        <input type="text" id="edit-uraian" required>
+        
+        <div class="input-group">
+            <div>
+                <label for="edit-tanggal">Tanggal Transaksi</label>
+                <input type="date" id="edit-tanggal" required>
+            </div>
+        </div>
 
-        <label for="edit-kategori">Kategori Transaksi</label>
-        <select id="edit-kategori" required>
-             <option value="" selected disabled>--- Pilih Kategori ---</option>
+        <div class="input-group">
+            <div>
+                <label for="edit-uraian">Uraian Transaksi</label>
+                <input type="text" id="edit-uraian" placeholder="Uraian Transaksi" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div>
+                <label for="edit-kategori">Kategori Transaksi</label>
+                <select id="edit-kategori" required>
+                    <option value="" selected disabled>--- Pilih Kategori ---</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <div>
+                <label for="edit-masuk">Dana Masuk</label>
+                <input type="number" id="edit-masuk" placeholder="Jumlah Dana Masuk">
+            </div>
+            <div>
+                <label for="edit-keluar">Dana Keluar</label>
+                <input type="number" id="edit-keluar" placeholder="Jumlah Dana Keluar">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <p id="modal-status" style="margin-bottom: 10px;"></p>
+            <button onclick="saveEditChanges()" class="btn-action">Simpan Perubahan</button> 
+            <button onclick="closeEditModal()" class="btn-cancel">Batal</button> 
+        </div>
+
+    </div>
+</div>
         </select>
         
         <div class="input-group">
@@ -1869,6 +1906,7 @@
 </script>
 </body>
 </html>
+
 
 
 
