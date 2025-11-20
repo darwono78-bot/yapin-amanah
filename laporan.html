@@ -1081,7 +1081,13 @@
     // =========================================================================
     // 4. FUNGSI AUTENTIKASI & 5. FUNGSI CRUD (TEMPATKAN LOGIKA ANDA DI SINI)
     // =========================================================================
-
+   // ⚠️ NOTE: Pastikan Anda mengisi fungsi-fungsi ini sesuai logika Firebase Authentication dan Firestore Anda!
+    window.login = function() { console.log("Login function called - Implement your logic here"); }
+    window.logout = function() { console.log("Logout function called - Implement your logic here"); }
+    window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) { console.log("Edit prompt called - Implement your logic here"); }
+    window.saveEditChanges = function() { console.log("Save edit called - Implement your logic here"); }
+    window.resetData = function() { console.log("Reset data called - Implement your logic here"); }
+    window.deleteTransaction = function(docId) {
         if (!auth.currentUser) {
             alert("Anda harus login sebagai admin untuk menghapus data.");
             return;
@@ -1863,5 +1869,6 @@
 </script>
 </body>
 </html>
+
 
 
