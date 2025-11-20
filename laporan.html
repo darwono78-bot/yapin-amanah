@@ -293,22 +293,26 @@
             background: #fff799;
             transform: scale(1.05);
         }
-        /* Gaya untuk tombol Logout di dalam area #auth-info */
-#auth-info button {
+        /* Styling Khusus untuk Tombol Logout */
+#logout-btn {
+    /* Desain Visual */
     background-color: #dc3545; /* Merah Solid */
     color: white;
     border: none;
-    padding: 5px 10px; /* Ukuran yang nyaman */
-    margin-left: 10px; /* Jarak dari teks "Selamat datang, Bendahara!" */
-    border-radius: 4px; /* Sudut melengkung */
+    padding: 6px 12px; 
+    margin-left: 10px;
+    border-radius: 6px; /* Sudut melengkung yang modern */
     cursor: pointer;
     font-weight: bold;
-    font-size: 0.9em; /* Sedikit lebih kecil agar proporsional */
-    transition: background-color 0.3s ease; /* Efek halus saat disentuh */
+    font-size: 1.0em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Tambah bayangan lembut */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transisi halus */
 }
 
-#auth-info button:hover {
-    background-color: #c82333; /* Warna sedikit lebih gelap saat di-hover */
+/* Efek saat mouse diarahkan (hover) */
+#logout-btn:hover {
+    background-color: #a71d2a; /* Merah sedikit lebih gelap */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Bayangan sedikit membesar */
 }
 /* ======================================================= */
 /* GLONDONGAN 1: CSS BARU UNTUK TOMBOL RESET KECIL DI KIRI */
@@ -722,7 +726,7 @@
         
         <p style="text-align: right; margin: 0;">
             Selamat datang, Bendahara! 
-            <button onclick="logout()" style="background-color: #dc3545">Logout</button>
+            <button id="logout-btn" onclick="logout()">Logout</button>
         </p>
     </div>
     
@@ -1977,4 +1981,5 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
