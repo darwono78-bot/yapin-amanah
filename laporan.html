@@ -1084,7 +1084,6 @@
    // ⚠️ NOTE: Pastikan Anda mengisi fungsi-fungsi ini sesuai logika Firebase Authentication dan Firestore Anda!
     window.login = function() { console.log("Login function called - Implement your logic here"); }
     window.logout = function() { console.log("Logout function called - Implement your logic here"); }
-    window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) { console.log("Edit prompt called - Implement your logic here"); }
     window.saveEditChanges = function() { console.log("Save edit called - Implement your logic here"); }
     window.resetData = function() { console.log("Reset data called - Implement your logic here"); }
     window.deleteTransaction = function(docId) {
@@ -1119,10 +1118,10 @@
         populateCategories('edit-kategori'); // <--- BARIS YANG DITAMBAHKAN
         document.getElementById('edit-kategori').value = kategori; // Set kategori yang tersimpan
         // Isi input dengan nilai, jika 0 tampilkan kosong agar user mudah input baru
+        document.getElementById('editModal').style.display = 'block';
         document.getElementById('edit-masuk').value = masuk > 0 ? masuk : ''; 
         document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
         document.getElementById('modal-status').textContent = ''; // Bersihkan pesan status
-        document.getElementById('editModal').style.display = 'block';
         }
         window.closeEditModal = function() {
         // Pastikan ID modal Anda benar, yaitu 'editModal'
@@ -1868,6 +1867,7 @@
 </script>
 </body>
 </html>
+
 
 
 
