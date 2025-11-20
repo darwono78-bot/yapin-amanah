@@ -293,6 +293,23 @@
             background: #fff799;
             transform: scale(1.05);
         }
+        /* Gaya untuk tombol Logout di dalam area #auth-info */
+#auth-info button {
+    background-color: #dc3545; /* Merah Solid */
+    color: white;
+    border: none;
+    padding: 5px 10px; /* Ukuran yang nyaman */
+    margin-left: 10px; /* Jarak dari teks "Selamat datang, Bendahara!" */
+    border-radius: 4px; /* Sudut melengkung */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9em; /* Sedikit lebih kecil agar proporsional */
+    transition: background-color 0.3s ease; /* Efek halus saat disentuh */
+}
+
+#auth-info button:hover {
+    background-color: #c82333; /* Warna sedikit lebih gelap saat di-hover */
+}
 /* ======================================================= */
 /* GLONDONGAN 1: CSS BARU UNTUK TOMBOL RESET KECIL DI KIRI */
 /* ======================================================= */
@@ -1960,3 +1977,4 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
