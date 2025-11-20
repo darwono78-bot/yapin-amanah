@@ -652,11 +652,20 @@
 <section class="section">
     
     <h2>Laporan Pertanggungjawaban Keuangan</h2>
+<div class="actions" style="text-align: right; margin-bottom: 20px;">
+    <button id="btn-unduh-detail" onclick="downloadPDF()" 
+            style="background-color: #008CBA; margin-right: 10px;">
+        📥 Unduh PDF Lampiran (Detail Transaksi)
+    </button>
+    
+    <button id="btn-unduh-global" onclick="downloadSummaryPDF()" 
+            style="background-color: #00A9A5;">
+        📥 Unduh PDF Global (Ringkasan LPJ)
+    </button>
+</div>
 
-    <div class="actions" style="text-align: right; margin-bottom: 20px;">
-        <button onclick="downloadPDF()" style="background-color: #008CBA; margin-right: 10px;">📥 Unduh PDF Lampiran (Detail Transaksi)</button>
-        <button onclick="downloadSummaryPDF()" style="background-color: #00A9A5;">📥 Unduh PDF Global (Ringkasan LPJ)</button>
-    </div>
+<p id="pdf-status" style="margin-top: 10px; font-weight: bold; color: yellow; text-align: right;"></p>
+   
     <table id="finance-table">
         <thead>
             <tr>
@@ -1732,66 +1741,116 @@ async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
     }
 
 
-    // FUNGSI UTAMA DOWNLOAD LAMPIRAN (Detail Transaksi)
-    window.downloadPDF = async function() { 
-        try {
-            const content = await generatePDFContent(false);
-            const element = document.createElement('div');
-            element.innerHTML = content;
-            
-            const opt = { 
-                margin: [10, 10, 10, 10], 
-                filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
-            setTimeout(function() {
-            html2pdf()
-                .set(opt)
-                .from(element)
-                // HAPUS TOTAL: .delay(1500)
-                .save();
-        }, 3000); 
-        } catch (error) { 
-            console.error("Error generating PDF (downloadPDF):", error); 
-            alert("Gagal membuat PDF Lampiran. Cek Konsol Browser (F12) untuk detail error."); 
-        } 
-    }
+    // Dapatkan referensi ke elemen yang akan dikontrol (diperlukan dari Langkah 1 HTML)
+const STATUS_ELEMENT = document.getElementById('pdf-status');
+const BUTTON_DETAIL = document.getElementById('btn-unduh-detail');
+const BUTTON_GLOBAL = document.getElementById('btn-unduh-global');
 
-    // FUNGSI UTAMA DOWNLOAD GLOBAL (Ringkasan LPJ)
-    window.downloadSummaryPDF = async function() { 
-        try {
-            const content = await generateSummaryPDFContent();
-            const element = document.createElement('div');
-            element.innerHTML = content;
-            
-            const opt = { 
-                margin: [10, 10, 10, 10], 
-                filename: 'Laporan_Keuangan_RINGKASAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 3, logging: false, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-            };
 
-            setTimeout(function() {
-            html2pdf()
-                .set(opt)
-                .from(element)
-                // HAPUS TOTAL: .delay(1500)
-                .save();
-        }, 3000); 
+// ===============================================
+// 1. FUNGSI UNDUH PDF DETAIL (downloadPDF)
+// ===============================================
+window.downloadPDF = async function() {
+    if (!BUTTON_DETAIL || !STATUS_ELEMENT) return;
 
-        } catch (error) { 
-            console.error("Error generating Summary PDF:", error); 
-            alert("Gagal membuat PDF Ringkasan. Cek Konsol Browser (F12) untuk detail error."); 
-        } 
-    }
-    
-    async function aggregateData() { 
-        return {}; 
-    }
+    // 1. Tampilkan Efek Loading dan Matikan Tombol
+    STATUS_ELEMENT.textContent = "Sedang Memproses PDF Detail (Mohon Tunggu 3 Detik)...";
+    STATUS_ELEMENT.style.color = 'yellow';
+    BUTTON_DETAIL.disabled = true;
 
+    try {
+        const content = await generatePDFContent(false);
+        const element = document.createElement('div');
+        element.innerHTML = content;
+        
+        const opt = { 
+            margin: [10, 10, 10, 10], 
+            filename: 'Laporan_Keuangan_LAMPIRAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
+            image: { type: 'jpeg', quality: 0.98 }, 
+            html2canvas: { scale: 3, logging: false, useCORS: true }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+
+        // Jeda 3 detik dilakukan DI SINI, sebelum html2pdf dijalankan
+        await new Promise(resolve => setTimeout(resolve, 3000)); 
+
+        // Proses pembuatan dan penyimpanan PDF
+        await html2pdf() // Menggunakan await karena html2pdf mengembalikan Promise
+            .set(opt)
+            .from(element)
+            .save();
+
+        // Tampilkan Sukses
+        STATUS_ELEMENT.textContent = "✅ Unduhan PDF Lampiran Berhasil!";
+
+    } catch (error) { 
+        console.error("Error generating PDF (downloadPDF):", error); 
+        // Ganti alert() dengan pesan di status element
+        STATUS_ELEMENT.textContent = "❌ Gagal membuat PDF Lampiran. Cek Konsol Browser (F12).";
+        STATUS_ELEMENT.style.color = 'red';
+    } finally {
+        // 2. Aktifkan Kembali Tombol
+        BUTTON_DETAIL.disabled = false;
+        
+        // Bersihkan status setelah 5 detik
+        setTimeout(() => {
+            STATUS_ELEMENT.textContent = "";
+        }, 5000);
+    } 
+};
+
+
+// ===============================================
+// 2. FUNGSI UNDUH PDF GLOBAL (downloadSummaryPDF)
+// ===============================================
+window.downloadSummaryPDF = async function() { 
+    if (!BUTTON_GLOBAL || !STATUS_ELEMENT) return;
+
+    // 1. Tampilkan Efek Loading dan Matikan Tombol
+    STATUS_ELEMENT.textContent = "Sedang Memproses PDF Global (Mohon Tunggu 3 Detik)...";
+    STATUS_ELEMENT.style.color = 'yellow';
+    BUTTON_GLOBAL.disabled = true;
+
+    try {
+        const content = await generateSummaryPDFContent();
+        const element = document.createElement('div');
+        element.innerHTML = content;
+        
+        const opt = { 
+            margin: [10, 10, 10, 10], 
+            filename: 'Laporan_Keuangan_RINGKASAN_' + new Date().toLocaleDateString('id-ID') + '.pdf', 
+            image: { type: 'jpeg', quality: 0.98 }, 
+            html2canvas: { scale: 3, logging: false, useCORS: true }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+        };
+
+        // Jeda 3 detik
+        await new Promise(resolve => setTimeout(resolve, 3000)); 
+
+        // Proses pembuatan dan penyimpanan PDF
+        await html2pdf() // Menggunakan await
+            .set(opt)
+            .from(element)
+            .save();
+
+        // Tampilkan Sukses
+        STATUS_ELEMENT.textContent = "✅ Unduhan PDF Global Berhasil!";
+
+    } catch (error) { 
+        console.error("Error generating Summary PDF:", error); 
+        // Ganti alert() dengan pesan di status element
+        STATUS_ELEMENT.textContent = "❌ Gagal membuat PDF Ringkasan. Cek Konsol Browser (F12).";
+        STATUS_ELEMENT.style.color = 'red';
+    } finally {
+        // 2. Aktifkan Kembali Tombol
+        BUTTON_GLOBAL.disabled = false;
+        
+        // Bersihkan status setelah 5 detik
+        setTimeout(() => {
+            STATUS_ELEMENT.textContent = "";
+        }, 5000);
+    } 
+};
 
     // =========================================================================
     // 7. LISTENER PERUBAHAN STATUS AUTENTIKASI (FIXED: Mengatasi TypeError)
@@ -1901,17 +1960,4 @@ async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
