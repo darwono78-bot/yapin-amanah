@@ -1117,9 +1117,18 @@
 
         document.getElementById('editModal').style.display = 'block';
     }
+    window.closeEditModal = function() {
+    // Pastikan ID modal Anda benar, yaitu 'editModal'
+    document.getElementById('editModal').style.display = 'none';
     
+    // Opsional: Bersihkan pesan status atau form setelah ditutup
+    const modalStatus = document.getElementById('modal-status');
+    if (modalStatus) {
+        modalStatus.textContent = ''; 
+    }
+}
     // Fungsi untuk menyimpan perubahan dari modal
-    function saveEditChanges() {
+    window.saveEditChanges() {
         if (!currentEditingId) return;
 
         const id = document.getElementById('modal-id').value;
@@ -1770,6 +1779,7 @@
 </script>
 </body>
 </html>
+
 
 
 
