@@ -463,8 +463,35 @@
             font-size: 0.9em;
             color: #ffd700;
         }
-        .modal-content .btn-action {
-            width: 100%;
+        /* Style untuk tombol Simpan Perubahan di dalam modal (menargetkan semua elemen <button> di dalam .modal-content) */
+        .modal-content button {
+            /* Warna Dasar & Bentuk */
+            background-color: #ffd700; /* Kuning Emas */
+            color: #000; /* Teks Hitam kontras */
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px; /* Sudut melengkung agar terlihat modern */
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 25px; /* Jarak dari input di atasnya */
+            width: 100%; /* Lebar penuh, agar terlihat menonjol */
+            
+            /* Efek Visual */
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.4); /* Bayangan emas */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Transisi halus saat dihover */
+        }
+        
+        /* Efek saat mouse diarahkan (hover) */
+        .modal-content button:hover {
+            background-color: #e6c200; /* Kuning lebih gelap saat dihover */
+            transform: translateY(-2px); /* Efek sedikit terangkat, terlihat interaktif */
+        }
+        
+        /* Efek saat tombol diklik (active) */
+        .modal-content button:active {
+            background-color: #ccad00; 
+            transform: translateY(0); /* Kembali ke posisi semula */
         }
         /* ========================================================================= */
         /* STYLING DROPDOWN NAVIGASI (KOREKSI UNTUK FLEX LAYOUT) */
@@ -1779,6 +1806,7 @@
 </script>
 </body>
 </html>
+
 
 
 
