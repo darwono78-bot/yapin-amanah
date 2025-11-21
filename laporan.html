@@ -1176,7 +1176,7 @@
 }
 
 // =========================================================
-// [BLOK 3 - GANTI UTUH] Fungsi Edit Versi Sederhana (untuk input type="text")
+// [BLOK 3 - GANTI UTUH] Fungsi Edit: Tes Diagnostik Final
 // =========================================================
 
 window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
@@ -1185,26 +1185,46 @@ window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, ke
          return;
     }
     
-    // Nilai tanggal YYYY-MM-DD yang bersih
-    const cleanTanggal = String(tanggal).trim(); 
-    
+    // Ambil referensi elemen
+    const dateInput = document.getElementById('edit-tanggal');
+    const cleanTanggal = String(tanggal).trim(); // Nilai yang mau diset
+
+    // 1. Isi semua input (kecuali tanggal)
     currentEditingId = id;
     document.getElementById('modal-id').value = id;
     document.getElementById('edit-uraian').value = uraian;
     populateCategories('edit-kategori'); 
     document.getElementById('edit-kategori').value = kategori; 
     
-    // Memastikan nilai 0 tampil sebagai kosong di input
     document.getElementById('edit-masuk').value = masuk > 0 ? masuk : '';
     document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
     
-    // Tampilkan Modal & Bersihkan Status
+    // 2. Tampilkan Modal
     document.getElementById('editModal').style.display = 'block';
     document.getElementById('modal-status').textContent = ''; 
 
-    // BARIS PENGISIAN TANGGAL (PENGISIAN LANGSUNG)
-    document.getElementById('edit-tanggal').value = cleanTanggal;
+    // 3. Tes Diagnostik 1 Detik
+    setTimeout(() => {
+        console.log("--- DIAGNOSTIK FINAL ---");
+        
+        // A. Cek apakah elemen input tanggal ditemukan di DOM
+        console.log("A. Elemen ditemukan?", !!dateInput); 
+        
+        // B. Cek nilai yang mau diset
+        console.log("B. Nilai Tanggal yang mau diset:", cleanTanggal); 
+        
+        // C. Paksa set value
+        if (dateInput) {
+            dateInput.value = cleanTanggal;
+            // D. Cek nilai setelah diset
+            console.log("D. Nilai Tanggal di elemen setelah diset:", dateInput.value); 
+        } else {
+             console.error("Gagal menemukan elemen 'edit-tanggal'!");
+        }
+    }, 1000); 
 }
+
+// =========================================================
 
 // =========================================================
         window.closeEditModal = function() {
@@ -2010,6 +2030,7 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
 
