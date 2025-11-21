@@ -1066,7 +1066,7 @@
 
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = no++;
-                row.insertCell(1).textContent = data.tanggal;
+                row.insertCell(1).textContent = formatDateForDisplay(data.tanggal);
                 
                 // BARIS RENDERING (KODE LAMA ANDA)
                 const descriptionCell = row.insertCell(2);
@@ -2034,4 +2034,5 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
