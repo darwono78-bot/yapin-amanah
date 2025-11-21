@@ -1177,34 +1177,39 @@
 
     // Fungsi untuk menampilkan modal dan mengisi data (PENGGANTI PROMPT)
     // =========================================================
+// =========================================================
+// [BLOK 3 - GANTI UTUH] FUNGSI EDIT DENGAN CHRONOLOGY FIX
+// =========================================================
+
 window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
     if (!auth.currentUser) {
          alert("Anda harus login sebagai admin untuk mengedit data.");
          return;
     }
+    const cleanTanggal = String(tanggal).trim(); // String tanggal YYYY-MM-DD yang bersih
     
-    const cleanTanggal = String(tanggal).trim();
-    
+    // 1. Set ID dan Uraian (sebelum modal tampil)
     currentEditingId = id;
     document.getElementById('modal-id').value = id;
     document.getElementById('edit-uraian').value = uraian;
+    
+    // 2. Set Kategori (Populate dan Set Value)
     populateCategories('edit-kategori'); 
     document.getElementById('edit-kategori').value = kategori; 
     
-    // Memastikan nilai 0 tampil sebagai kosong di input
+    // 3. Set Dana Masuk/Keluar
     document.getElementById('edit-masuk').value = masuk > 0 ? masuk : '';
     document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
     
-    // Tampilkan Modal & Bersihkan Status
+    // 4. Tampilkan Modal
     document.getElementById('editModal').style.display = 'block';
     document.getElementById('modal-status').textContent = ''; 
 
-    // PERBAIKAN TIMING KRITIS: Mengisi tanggal setelah jeda 1000ms (1 detik)
-    // JANGAN GUNAKAN INI SECARA PERMANEN, HANYA UNTUK TES
+    // ******* BARIS KRITIS & FIX ULTIMATE *******
+    // Assign date dengan jeda 100ms untuk memberi waktu input date untuk siap.
     setTimeout(() => {
         document.getElementById('edit-tanggal').value = cleanTanggal;
-        console.log("Tanggal diisi setelah 1 detik."); // Tambahkan log ini
-    }, 1000); 
+    }, 100); 
 }
 
 // =========================================================
@@ -2011,6 +2016,7 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
 
