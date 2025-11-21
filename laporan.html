@@ -1002,20 +1002,33 @@
             aksiHeader.style.display = isLoggedIn ? '' : 'none';
         }
     }
-
-// =========================================================
-// [GANTI UTUH] window.loadData (VERSI FINAL CHUNKING)
-// =========================================================
-window.loadData = async function() { 
-    // Gunakan variabel global yang sudah ada
-    if (!tableBody || !tableFooter) return; 
-    
-    tableBody.innerHTML = '';
-    tableFooter.innerHTML = '';
-    allDataRows = [];
-
-    const user = auth.currentUser;
-    const isLoggedIn = !!user;
+        // =========================================================
+        // TEMPELKAN INI DI AREA GLOBAL FILE JS ANDA
+        // =========================================================
+        function formatDateForDisplay(isoDate) {
+            // Memastikan input adalah string YYYY-MM-DD
+            if (!isoDate || typeof isoDate !== 'string' || isoDate.length !== 10) return isoDate;
+            
+            // Memecah menjadi [Tahun, Bulan, Hari]
+            const parts = isoDate.split('-'); 
+            
+            // Menggabungkan kembali menjadi Hari-Bulan-Tahun
+            return `${parts[2]}-${parts[1]}-${parts[0]}`; 
+        }
+        // =========================================================
+        // =========================================================
+        // [GANTI UTUH] window.loadData (VERSI FINAL CHUNKING)
+        // =========================================================
+        window.loadData = async function() { 
+            // Gunakan variabel global yang sudah ada
+            if (!tableBody || !tableFooter) return; 
+            
+            tableBody.innerHTML = '';
+            tableFooter.innerHTML = '';
+            allDataRows = [];
+        
+            const user = auth.currentUser;
+            const isLoggedIn = !!user;
 
     try {
         // 1. Ambil data dengan CEPAT
@@ -2021,3 +2034,4 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
