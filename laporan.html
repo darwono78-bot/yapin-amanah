@@ -767,7 +767,7 @@
         <div class="input-group">
             <div>
                 <label for="edit-tanggal">Tanggal Transaksi</label>
-                <input type="text" id="edit-tanggal" placeholder="YYYY-MM-DD" required>
+                <input type="date" id="edit-tanggal" required>
             </div>
         </div>
 
@@ -800,7 +800,7 @@
 
         <div class="modal-actions">
             <p id="modal-status" style="margin-bottom: 10px;"></p>
-            <button onclick="saveEditChanges()" class="btn-action">Simpan Perubahan</button> 
+            <button onclick="saveEditChanges(event)" class="btn-action">Simpan Perubahan</button>
             <button onclick="closeEditModal()" class="btn-cancel">Batal</button> 
         </div>
 
@@ -904,22 +904,8 @@
     function formatRupiah(angka) { 
         if (typeof angka !== 'number') { angka = parseInt(angka) || 0; }
         return new Intl.NumberFormat('id-ID', { style: 'decimal', minimumFractionDigits: 0 }).format(angka); 
-        } 
-    // =========================================================
-    // [BLOK 1 - SISIPKAN] FUNGSI BARU UNTUK FORMAT TAMPILAN
-    // =========================================================
-    
-    // Mengubah format YYYY-MM-DD (dari DB) menjadi DD-MM-YYYY (untuk tampilan)
-    function formatDateDisplay(dateString) {
-        if (!dateString) return '';
-        const parts = dateString.split('-'); 
-        if (parts.length === 3) {
-            return `${parts[2]}-${parts[1]}-${parts[0]}`; 
-        }
-        return dateString;
-    }
-    
-    // =========================================================
+    } 
+
     function displayTablePage(page) { 
         currentPage = page; 
         const start = (page - 1) * rowsPerPage; 
@@ -1057,7 +1043,7 @@
 
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = no++;
-                row.insertCell(1).textContent = formatDateDisplay(data.tanggal); // Tampilan sekarang DD-MM-YYYY
+                row.insertCell(1).textContent = data.tanggal;
                 
                 const descriptionCell = row.insertCell(2);
                 let textColor = '';
@@ -1175,36 +1161,24 @@
     }
 }
 
-        // =========================================================
-        // [BLOK 3 - GANTI UTUH] Fungsi Edit: VERSI STABIL TERAKHIR
-        // =========================================================
-        
-        window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
-            if (!auth.currentUser) {
-                 alert("Anda harus login sebagai admin untuk mengedit data.");
-                 return;
-            }
-            
-            // Semua input terisi, KECUALI TANGGAL
-            currentEditingId = id;
-            document.getElementById('modal-id').value = id;
-            document.getElementById('edit-uraian').value = uraian;
-            populateCategories('edit-kategori'); 
-            document.getElementById('edit-kategori').value = kategori; 
-            
-            document.getElementById('edit-masuk').value = masuk > 0 ? masuk : '';
-            document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
-            
-            // Tampilkan Modal
-            document.getElementById('editModal').style.display = 'block';
-            document.getElementById('modal-status').textContent = ''; 
-        
-            // CATATAN PENTING:
-            // Baris pengisian tanggal dihapus/dibiarkan, karena gagal diisi otomatis.
-            // Pengguna harus mengisi tanggal secara manual.
+    // Fungsi untuk menampilkan modal dan mengisi data (PENGGANTI PROMPT)
+    window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
+        if (!auth.currentUser) {
+             alert("Anda harus login sebagai admin untuk mengedit data.");
+             return;
         }
-
-// =========================================================
+        currentEditingId = id; // Simpan ID transaksi yang sedang diedit
+        document.getElementById('modal-id').value = id; // Simpan ID di hidden input
+        document.getElementById('edit-tanggal').value = tanggal;
+        document.getElementById('edit-uraian').value = uraian;
+        populateCategories('edit-kategori'); // <--- BARIS YANG DITAMBAHKAN
+        document.getElementById('edit-kategori').value = kategori; // Set kategori yang tersimpan
+        // Isi input dengan nilai, jika 0 tampilkan kosong agar user mudah input baru
+        document.getElementById('editModal').style.display = 'block';
+        document.getElementById('edit-masuk').value = masuk > 0 ? masuk : ''; 
+        document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
+        document.getElementById('modal-status').textContent = ''; // Bersihkan pesan status
+        }
         window.closeEditModal = function() {
         // Pastikan ID modal Anda benar, yaitu 'editModal'
         document.getElementById('editModal').style.display = 'none';
@@ -1216,8 +1190,16 @@
         }
     }
     // Fungsi untuk menyimpan perubahan dari modal
-    window.saveEditChanges = function() {
-    if (!currentEditingId) return;
+    // =========================================================
+    // [GANTI UTUH] window.saveEditChanges
+    // =========================================================
+    window.saveEditChanges = function(event) { // <--- KRITIS: TAMBAHKAN 'event' di sini
+        // BARIS KRITIS: Mencegah refresh halaman/reset form
+        if (event) {
+            event.preventDefault(); 
+        }
+        
+        if (!currentEditingId) return;
         const updatedTanggal = document.getElementById('edit-tanggal').value;
         console.log("Tanggal yang dibaca saat disave:", updatedTanggal);
         const id = document.getElementById('modal-id').value;
@@ -1229,12 +1211,12 @@
         const finalMasuk = parseInt(newMasukValue) || 0;
         const finalKeluar = parseInt(newKeluarValue) || 0;
         const modalStatus = document.getElementById('modal-status');
-
+    
         if (!newUraian || !newKategori) {
             modalStatus.textContent = "Uraian dan Kategori tidak boleh kosong!";
             return;
         }
-
+    
         if (finalMasuk < 0 || finalKeluar < 0) {
             modalStatus.textContent = "Dana Masuk/Keluar tidak boleh negatif.";
             return;
@@ -1244,56 +1226,61 @@
             return;
         }
         
-        // Tambahan validasi: Kategori harus sesuai dengan jenis dana yang diisi
         const isMasukCategory = KATEGORI_MASUK.includes(newKategori);
         const isKeluarCategory = KATEGORI_KELUAR.includes(newKategori);
-
+    
         if ((finalMasuk > 0 && finalKeluar === 0 && !isMasukCategory) || 
             (finalKeluar > 0 && finalMasuk === 0 && !isKeluarCategory)) {
             modalStatus.textContent = `Kategori '${newKategori}' tidak cocok dengan jenis dana yang Anda input.`;
             return;
         }
-
-
+    
+    
         modalStatus.textContent = 'Menyimpan...';
-        updateTransaction(id, newUraian, newKategori, finalMasuk, finalKeluar);
+        // KRITIS: TAMBAHKAN 'updatedTanggal' KE ARGUMEN FUNGSI updateTransaction
+        updateTransaction(id, updatedTanggal, newUraian, newKategori, finalMasuk, finalKeluar); 
     }
+    // =========================================================
     
    // Anda tidak perlu mengubah window.saveEditChanges, fokus ke updateTransaction
 
-async function updateTransaction(id, uraian, kategori, danaMasuk, danaKeluar) {
-    try {
-        await db.collection(FINANCE_COLLECTION).doc(id).update({
-            uraian: uraian,
-            kategori: kategori,
-            danaMasuk: danaMasuk,
-            danaKeluar: danaKeluar
-        });
-        
-        document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
-        document.getElementById('modal-status').style.color = 'lime';
-        
-        // Pindahkan loadData() ke sini (di dalam setTimeout)
-        setTimeout(() => {
-            document.getElementById('editModal').style.display = 'none';
+    // =========================================================
+    // [GANTI UTUH] async function updateTransaction
+    // =========================================================
+    // PERBAIKAN: Fungsi ini HARUS menerima 6 parameter, termasuk 'tanggal'
+    async function updateTransaction(id, tanggal, uraian, kategori, danaMasuk, danaKeluar) { 
+        try {
+            await db.collection(FINANCE_COLLECTION).doc(id).update({
+                // BARIS KRITIS: Menyimpan tanggal ke database
+                tanggal: tanggal, 
+                uraian: uraian,
+                kategori: kategori,
+                danaMasuk: danaMasuk,
+                danaKeluar: danaKeluar
+            });
             
-            // KRITIS: loadData() HARUS DI SINI!
-            loadData(); // <-- Akan dieksekusi setelah 1 detik
+            document.getElementById('modal-status').textContent = 'Transaksi berhasil diupdate!';
+            document.getElementById('modal-status').style.color = 'lime';
             
-        }, 1000); 
-        
-        // Perbarui status di bagian utama (ini akan muncul sebelum 1 detik)
-        document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
-        document.getElementById('auth-status').style.color = 'lime';
-        
-        // PASTIKAN loadData() TIDAK ADA LAGI DI SINI (Jika sebelumnya ada)
-        
-    } catch (error) {
-        document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
-        document.getElementById('modal-status').style.color = 'red';
-        console.error("Error updating document: ", error);
+            // Pindahkan loadData() ke sini (di dalam setTimeout)
+            setTimeout(() => {
+                document.getElementById('editModal').style.display = 'none';
+                
+                // KRITIS: loadData() HARUS DI SINI!
+                loadData();
+            }, 1000); 
+            
+            // Perbarui status di bagian utama
+            document.getElementById('auth-status').textContent = 'Transaksi berhasil diupdate!';
+            document.getElementById('auth-status').style.color = 'lime';
+            
+        } catch (error) {
+            document.getElementById('modal-status').textContent = `Gagal mengupdate transaksi: ${error.message}`;
+            document.getElementById('modal-status').style.color = 'red';
+            console.error("Error updating document: ", error);
+        }
     }
-}
+    // =========================================================
 
     window.resetData = function() {
         if (!auth.currentUser) {
@@ -1994,6 +1981,7 @@ window.downloadSummaryPDF = async function() {
     window.addTransaction = addTransaction;
     window.resetData = resetData;
     window.deleteTransaction = deleteTransaction; 
+    window.editTransactionPrompt = editTransactionPrompt; 
     populateCategories('input-kategori'); // <--- TAMBAHKAN DI SINI!
 
     // Script untuk Animasi Scroll Anda
@@ -2009,19 +1997,3 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
