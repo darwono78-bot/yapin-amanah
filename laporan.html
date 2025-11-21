@@ -1003,19 +1003,13 @@
         }
     }
 
-    // =========================================================================
-// [GANTI UTUH] window.loadData (VERSI OPTIMASI GABUNGAN)
-// =========================================================================
-// =========================================================================
-// [GANTI UTUH] window.loadData (VERSI GABUNGAN AMAN)
+// =========================================================
+// [GANTI UTUH] window.loadData (VERSI FINAL CHUNKING)
 // =========================================================
 window.loadData = async function() { 
-    // Hapus baris 'const tableBody = document.getElementById(...)'
-    // Hapus baris 'const tableFooter = document.getElementById(...)'
-    // dan gunakan variabel global yang sudah ada!
+    // Gunakan variabel global yang sudah ada
+    if (!tableBody || !tableFooter) return; 
     
-    // Bersihkan tampilan awal
-    if (!tableBody || !tableFooter) return; // KRITIS: Pastikan variabel global sudah benar
     tableBody.innerHTML = '';
     tableFooter.innerHTML = '';
     allDataRows = [];
@@ -1026,43 +1020,26 @@ window.loadData = async function() {
     try {
         // 1. Ambil data dengan CEPAT
         const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
-        const docs = snapshot.docs; 
+        const docs = snapshot.docs; // Data yang akan di-chunk
+        
+        // Inisialisasi variabel untuk perhitungan global
+        let no = 1;
+        let saldo = 0;
+        let totalMasuk = 0;
+        let totalKeluar = 0;
+        const offset = isLoggedIn ? 0 : -1;
+        
+        // KONSTANTA CHUNKING
+        const CHUNK_SIZE = 50; // Render 50 baris setiap kali loop
+        let docIndex = 0;
 
-        // Jika tidak ada data, tampilkan footer kosong dan keluar (LOGIKA FOOTER DI SINI)
-        if (docs.length === 0) {
-            setupPagination();
-            // ... (Kode Footer untuk Data Kosong yang sudah kita buat) ...
+        // FUNGSI UTAMA UNTUK RENDERING BERTAHAP
+        const processBatch = () => {
+            let chunkEnd = Math.min(docIndex + CHUNK_SIZE, docs.length);
             
-            // LOGIKA FOOTER LAMA (Sudah digabungkan kembali)
-            const saldo = 0;
-            const totalMasuk = 0;
-            const totalKeluar = 0;
-            const footerRow = tableFooter.insertRow();
-            footerRow.className = 'total-row';
-            const colspanValue = isLoggedIn ? 4 : 3;
-            
-            footerRow.insertCell(0).colSpan = colspanValue;
-            footerRow.insertCell(0).textContent = 'TOTAL AKHIR:';
-            footerRow.insertCell(0).style.textAlign = 'right';
-            footerRow.insertCell(1).textContent = formatRupiah(totalMasuk);
-            footerRow.insertCell(2).textContent = formatRupiah(totalKeluar);
-            footerRow.insertCell(3).textContent = formatRupiah(saldo);
-            if (isLoggedIn) {
-                footerRow.insertCell(4).textContent = '';
-            }
-            return;
-        }
-
-        // KRITIS: Tunda proses rendering berat ke siklus event loop berikutnya (TIMEOUT 0ms)
-        setTimeout(() => {
-            let no = 1;
-            let saldo = 0;
-            let totalMasuk = 0;
-            let totalKeluar = 0;
-            const offset = isLoggedIn ? 0 : -1;
-            
-            // 2. Rendering dan Perhitungan Saldo (Berjalan di latar belakang)
-            docs.forEach((doc) => {
+            // 2. Rendering dan Perhitungan Saldo (Hanya 50 baris per iterasi)
+            for (let i = docIndex; i < chunkEnd; i++) {
+                const doc = docs[i];
                 const data = doc.data();
                 const id = doc.id;
 
@@ -1079,7 +1056,6 @@ window.loadData = async function() {
                 row.insertCell(1).textContent = data.tanggal;
                 
                 // BARIS RENDERING (KODE LAMA ANDA)
-                // START KODE RENDERING BARIS (Anda harus menempatkan kode lama Anda di sini)
                 const descriptionCell = row.insertCell(2);
                 let textColor = '';
                 if (danaMasuk > 0) { 
@@ -1123,51 +1099,59 @@ window.loadData = async function() {
                 }
                 
                 allDataRows.push(row);
-                // END KODE RENDERING BARIS
-
-            });
-            
-            // 3. Setup Pagination dan Footer
-            setupPagination();
-
-            // LOGIKA FOOTER LAMA (Sudah digabungkan kembali)
-            const footerRow = tableFooter.insertRow();
-            footerRow.className = 'total-row';
-            
-            const colspanValue = isLoggedIn ? 4 : 3;
-            
-            const totalLabelCell = footerRow.insertCell(0);
-            totalLabelCell.colSpan = colspanValue;
-            totalLabelCell.textContent = 'TOTAL AKHIR:';
-            totalLabelCell.style.textAlign = 'right';
-
-            const totalMasukCell = footerRow.insertCell(1);
-            totalMasukCell.textContent = formatRupiah(totalMasuk);
-            totalMasukCell.style.textAlign = 'right';
-
-            const totalKeluarCell = footerRow.insertCell(2);
-            totalKeluarCell.textContent = formatRupiah(totalKeluar);
-            totalKeluarCell.style.textAlign = 'right';
-            totalKeluarCell.style.color = '#FF4136';
-
-            const finalSaldoCell = footerRow.insertCell(3);
-            finalSaldoCell.textContent = formatRupiah(saldo);
-            finalSaldoCell.style.textAlign = 'right';
-            
-            if (saldo < 0) {
-                finalSaldoCell.className = 'saldo-minus';
-                finalSaldoCell.style.color = '#FF4136';
-            } else if (saldo > 0) {
-                finalSaldoCell.className = 'saldo-plus';
-                finalSaldoCell.style.color = '#00FFCC';
             }
 
-            if (isLoggedIn) {
-                const emptyActionCell = footerRow.insertCell(4);
-                emptyActionCell.textContent = '';
-            }
+            docIndex = chunkEnd;
 
-        }, 0); // KRITIS: Timeout 0ms untuk menunda rendering
+            // Panggil Fungsi Selanjutnya (Rekursif)
+            if (docIndex < docs.length) {
+                // Lanjutkan ke batch berikutnya, memungkinkan UI bernapas
+                setTimeout(processBatch, 0); 
+            } else {
+                // 3. Setelah semua selesai, jalankan setup Pagination dan Footer
+                setupPagination();
+                
+                // LOGIKA FOOTER LAMA
+                const footerRow = tableFooter.insertRow();
+                footerRow.className = 'total-row';
+                
+                const colspanValue = isLoggedIn ? 4 : 3;
+                
+                const totalLabelCell = footerRow.insertCell(0);
+                totalLabelCell.colSpan = colspanValue;
+                totalLabelCell.textContent = 'TOTAL AKHIR:';
+                totalLabelCell.style.textAlign = 'right';
+
+                const totalMasukCell = footerRow.insertCell(1);
+                totalMasukCell.textContent = formatRupiah(totalMasuk);
+                totalMasukCell.style.textAlign = 'right';
+
+                const totalKeluarCell = footerRow.insertCell(2);
+                totalKeluarCell.textContent = formatRupiah(totalKeluar);
+                totalKeluarCell.style.textAlign = 'right';
+                totalKeluarCell.style.color = '#FF4136';
+
+                const finalSaldoCell = footerRow.insertCell(3);
+                finalSaldoCell.textContent = formatRupiah(saldo);
+                finalSaldoCell.style.textAlign = 'right';
+                
+                if (saldo < 0) {
+                    finalSaldoCell.className = 'saldo-minus';
+                    finalSaldoCell.style.color = '#FF4136';
+                } else if (saldo > 0) {
+                    finalSaldoCell.className = 'saldo-plus';
+                    finalSaldoCell.style.color = '#00FFCC';
+                }
+
+                if (isLoggedIn) {
+                    const emptyActionCell = footerRow.insertCell(4);
+                    emptyActionCell.textContent = '';
+                }
+            }
+        };
+
+        // Mulai Proses Batching
+        processBatch();
         
     } catch (error) {
         console.error("Error loading data:", error);
@@ -2037,3 +2021,4 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
