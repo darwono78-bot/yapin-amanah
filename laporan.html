@@ -1218,7 +1218,8 @@
     // Fungsi untuk menyimpan perubahan dari modal
     window.saveEditChanges = function() {
     if (!currentEditingId) return;
-
+        const updatedTanggal = document.getElementById('edit-tanggal').value;
+        console.log("Tanggal yang dibaca saat disave:", updatedTanggal);
         const id = document.getElementById('modal-id').value;
         const newUraian = document.getElementById('edit-uraian').value.trim();
         const newKategori = document.getElementById('edit-kategori').value;
@@ -2008,6 +2009,7 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
 
