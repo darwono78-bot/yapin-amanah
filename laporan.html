@@ -767,7 +767,7 @@
         <div class="input-group">
             <div>
                 <label for="edit-tanggal">Tanggal Transaksi</label>
-                <input type="date" id="edit-tanggal" required>
+                <input type="text" id="edit-tanggal" placeholder="YYYY-MM-DD" required>
             </div>
         </div>
 
@@ -1175,10 +1175,8 @@
     }
 }
 
-    // Fungsi untuk menampilkan modal dan mengisi data (PENGGANTI PROMPT)
-    // =========================================================
 // =========================================================
-// [BLOK 3 - GANTI UTUH] Fungsi Edit: SetAttribute Fix
+// [BLOK 3 - GANTI UTUH] Fungsi Edit Versi Sederhana (untuk input type="text")
 // =========================================================
 
 window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
@@ -1187,9 +1185,8 @@ window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, ke
          return;
     }
     
+    // Nilai tanggal YYYY-MM-DD yang bersih
     const cleanTanggal = String(tanggal).trim(); 
-    // Ambil referensi elemen tanggal
-    const dateInput = document.getElementById('edit-tanggal'); 
     
     currentEditingId = id;
     document.getElementById('modal-id').value = id;
@@ -1205,14 +1202,8 @@ window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, ke
     document.getElementById('editModal').style.display = 'block';
     document.getElementById('modal-status').textContent = ''; 
 
-    // ***** PERBAIKAN ULTIMATE *****
-    // Gunakan setTimeout 100ms dan metode setAttribute() yang lebih agresif.
-    setTimeout(() => {
-        // Metode ini seringkali lebih kuat untuk input date yang bandel
-        dateInput.setAttribute('value', cleanTanggal); 
-        dateInput.value = cleanTanggal; // Set value juga sebagai fallback
-        console.log("Tanggal diisi menggunakan setAttribute.");
-    }, 100); 
+    // BARIS PENGISIAN TANGGAL (PENGISIAN LANGSUNG)
+    document.getElementById('edit-tanggal').value = cleanTanggal;
 }
 
 // =========================================================
@@ -2019,6 +2010,7 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
 
