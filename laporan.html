@@ -25,6 +25,17 @@
             color: #fff;
             overflow-x: hidden;
         }
+        /* Kode untuk memastikan data transaksi mudah di-copy ke Excel */
+
+        #finance-table tbody {
+            /* Menargetkan seluruh area data transaksi untuk mengubah Font */
+            font-family: Calibri, sans-serif !important; 
+        }
+        
+        #finance-table tbody td {
+            /* Menargetkan setiap sel data untuk mengubah Warna */
+            color: #000 !important; /* MEMAKSA WARNA TULISAN MENJADI HITAM */
+        }
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -1981,5 +1992,6 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
