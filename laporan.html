@@ -1003,33 +1003,64 @@
         }
     }
 
-
     // =========================================================================
-    // 3. FUNGSI MEMUAT DATA UTAMA (LOAD DATA) 
-    // =========================================================================
+// [GANTI UTUH] window.loadData (VERSI OPTIMASI GABUNGAN)
+// =========================================================================
+window.loadData = async function() { 
+    // Bersihkan tampilan awal
+    const tableBody = document.getElementById('tableBody'); // Pastikan ID ini benar
+    const tableFooter = document.getElementById('tableFooter'); // Pastikan ID ini benar
+    
+    if (!tableBody || !tableFooter) return;
+    tableBody.innerHTML = '';
+    tableFooter.innerHTML = '';
+    allDataRows = [];
 
-    window.loadData = async function() { 
-        let no = 1;
-        let saldo = 0;
-        let totalMasuk = 0;
-        let totalKeluar = 0;
-        
-        const user = auth.currentUser;
-        const isLoggedIn = !!user;
+    const user = auth.currentUser;
+    const isLoggedIn = !!user;
 
-        // Pastikan elemen ada
-        if (!tableBody || !tableFooter) return;
+    try {
+        // 1. Ambil data dengan CEPAT
+        const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+        const docs = snapshot.docs; 
 
-        tableBody.innerHTML = '';
-        tableFooter.innerHTML = '';
-        allDataRows = [];
+        // TUGAS KRITIS: Kita juga harus memastikan fungsi formatRupiah() sudah terdefinisi 
+        // agar kode ini berjalan lancar.
 
-        try {
-            const snapshot = await db.collection(FINANCE_COLLECTION).orderBy("timestamp", "asc").get();
+        // Jika tidak ada data, tampilkan footer kosong dan keluar
+        if (docs.length === 0) {
+            setupPagination();
             
-            const offset = isLoggedIn ? 0 : -1;
+            // Logic Footer untuk Data Kosong
+            const saldo = 0;
+            const totalMasuk = 0;
+            const totalKeluar = 0;
+            const footerRow = tableFooter.insertRow();
+            footerRow.className = 'total-row';
+            const colspanValue = isLoggedIn ? 4 : 3;
+            
+            footerRow.insertCell(0).colSpan = colspanValue;
+            footerRow.insertCell(0).textContent = 'TOTAL AKHIR:';
+            footerRow.insertCell(0).style.textAlign = 'right';
+            footerRow.insertCell(1).textContent = formatRupiah(totalMasuk);
+            footerRow.insertCell(2).textContent = formatRupiah(totalKeluar);
+            footerRow.insertCell(3).textContent = formatRupiah(saldo);
+            if (isLoggedIn) {
+                footerRow.insertCell(4).textContent = '';
+            }
+            return;
+        }
 
-            snapshot.forEach((doc) => {
+        // KRITIS: Tunda proses rendering berat ke siklus event loop berikutnya (TIMEOUT 0ms)
+        setTimeout(() => {
+            let no = 1;
+            let saldo = 0;
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+            const offset = isLoggedIn ? 0 : -1;
+            
+            // 2. Rendering dan Perhitungan Saldo (Berjalan di latar belakang)
+            docs.forEach((doc) => {
                 const data = doc.data();
                 const id = doc.id;
 
@@ -1045,6 +1076,8 @@
                 row.insertCell(0).textContent = no++;
                 row.insertCell(1).textContent = data.tanggal;
                 
+                // BARIS RENDERING (KODE LAMA ANDA)
+                // START KODE RENDERING BARIS
                 const descriptionCell = row.insertCell(2);
                 let textColor = '';
                 if (danaMasuk > 0) { 
@@ -1088,20 +1121,23 @@
                 }
                 
                 allDataRows.push(row);
+                // END KODE RENDERING BARIS
+
             });
             
+            // 3. Setup Pagination dan Footer
             setupPagination();
 
-            // Tampilkan Total Laporan di Footer
+            // LOGIKA FOOTER LAMA (Sudah digabungkan kembali)
             const footerRow = tableFooter.insertRow();
             footerRow.className = 'total-row';
             
-            const colspanValue = isLoggedIn ? 4 : 3; 
+            const colspanValue = isLoggedIn ? 4 : 3;
             
             const totalLabelCell = footerRow.insertCell(0);
-            totalLabelCell.colSpan = colspanValue; 
+            totalLabelCell.colSpan = colspanValue;
             totalLabelCell.textContent = 'TOTAL AKHIR:';
-            totalLabelCell.style.textAlign = 'right'; 
+            totalLabelCell.style.textAlign = 'right';
 
             const totalMasukCell = footerRow.insertCell(1);
             totalMasukCell.textContent = formatRupiah(totalMasuk);
@@ -1110,7 +1146,7 @@
             const totalKeluarCell = footerRow.insertCell(2);
             totalKeluarCell.textContent = formatRupiah(totalKeluar);
             totalKeluarCell.style.textAlign = 'right';
-            totalKeluarCell.style.color = '#FF4136'; 
+            totalKeluarCell.style.color = '#FF4136';
 
             const finalSaldoCell = footerRow.insertCell(3);
             finalSaldoCell.textContent = formatRupiah(saldo);
@@ -1129,12 +1165,13 @@
                 emptyActionCell.textContent = '';
             }
 
-        } catch (error) {
-            console.error("Error loading data:", error);
-            alert("Gagal memuat data keuangan. Cek konsol browser untuk detail error.");
-        }
+        }, 0); // KRITIS: Timeout 0ms untuk menunda rendering
+        
+    } catch (error) {
+        console.error("Error loading data:", error);
+        alert("Gagal memuat data keuangan. Cek konsol browser untuk detail error.");
     }
-
+}
     // =========================================================================
     // 4. FUNGSI AUTENTIKASI & 5. FUNGSI CRUD (TEMPATKAN LOGIKA ANDA DI SINI)
     // =========================================================================
@@ -1997,3 +2034,4 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
