@@ -1177,42 +1177,34 @@
 
     // Fungsi untuk menampilkan modal dan mengisi data (PENGGANTI PROMPT)
     // =========================================================
-// [BLOK 3 - GANTI UTUH] Fungsi Edit dengan String Cleanup
-// =========================================================
 
-window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
-    if (!auth.currentUser) {
-         alert("Anda harus login sebagai admin untuk mengedit data.");
-         return;
+    window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
+        if (!auth.currentUser) {
+             alert("Anda harus login sebagai admin untuk mengedit data.");
+             return;
+        }
+        
+        const cleanTanggal = String(tanggal).trim(); // String cleaning
+        
+        currentEditingId = id;
+        document.getElementById('modal-id').value = id;
+        document.getElementById('edit-uraian').value = uraian;
+        populateCategories('edit-kategori'); 
+        document.getElementById('edit-kategori').value = kategori; 
+        
+        // Memastikan nilai 0 tampil sebagai kosong di input
+        document.getElementById('edit-masuk').value = masuk > 0 ? masuk : '';
+        document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
+        
+        // Tampilkan Modal & Bersihkan Status
+        document.getElementById('editModal').style.display = 'block';
+        document.getElementById('modal-status').textContent = ''; 
+    
+        // BARIS PERBAIKAN TIMING KRITIS: Mengisi tanggal setelah jeda 50ms
+        setTimeout(() => {
+            document.getElementById('edit-tanggal').value = cleanTanggal;
+        }, 50); // Jeda 50 milidetik (cukup cepat, tapi memberi waktu input date untuk siap)
     }
-    
-    // LANGKAH DEBUGGING: Tampilkan tanggal yang diterima
-    console.log("Tanggal yang diterima dari tombol Edit:", tanggal); 
-    
-    // PERBAIKAN KRITIS: Membersihkan string dari spasi (trim)
-    const cleanTanggal = String(tanggal).trim();
-    
-    // LANGKAH DEBUGGING: Tampilkan tanggal setelah dibersihkan
-    console.log("Tanggal setelah dibersihkan:", cleanTanggal); 
-
-    currentEditingId = id;
-    document.getElementById('modal-id').value = id;
-    
-    // Mengisi input tanggal dengan string yang sudah bersih
-    document.getElementById('edit-tanggal').value = cleanTanggal; 
-    
-    document.getElementById('edit-uraian').value = uraian;
-    populateCategories('edit-kategori'); 
-    document.getElementById('edit-kategori').value = kategori; 
-    
-    // Memastikan nilai 0 tampil sebagai kosong di input
-    document.getElementById('edit-masuk').value = masuk > 0 ? masuk : '';
-    document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
-    
-    // Tampilkan Modal & Bersihkan Status
-    document.getElementById('editModal').style.display = 'block';
-    document.getElementById('modal-status').textContent = ''; 
-}
 
 // =========================================================
         window.closeEditModal = function() {
@@ -2018,6 +2010,7 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
 
