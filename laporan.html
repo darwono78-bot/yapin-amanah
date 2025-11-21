@@ -1176,7 +1176,7 @@
 }
 
 // =========================================================
-// [BLOK 3 - GANTI UTUH] Fungsi Edit: Tes Diagnostik Final
+// [BLOK 3 - GANTI UTUH] Fungsi Edit: Double-Set Fix
 // =========================================================
 
 window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, keluar) {
@@ -1185,11 +1185,9 @@ window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, ke
          return;
     }
     
-    // Ambil referensi elemen
     const dateInput = document.getElementById('edit-tanggal');
-    const cleanTanggal = String(tanggal).trim(); // Nilai yang mau diset
+    const cleanTanggal = String(tanggal).trim(); 
 
-    // 1. Isi semua input (kecuali tanggal)
     currentEditingId = id;
     document.getElementById('modal-id').value = id;
     document.getElementById('edit-uraian').value = uraian;
@@ -1199,32 +1197,24 @@ window.editTransactionPrompt = function(id, tanggal, uraian, kategori, masuk, ke
     document.getElementById('edit-masuk').value = masuk > 0 ? masuk : '';
     document.getElementById('edit-keluar').value = keluar > 0 ? keluar : '';
     
-    // 2. Tampilkan Modal
+    // Tampilkan Modal
     document.getElementById('editModal').style.display = 'block';
     document.getElementById('modal-status').textContent = ''; 
 
-    // 3. Tes Diagnostik 1 Detik
-    setTimeout(() => {
-        console.log("--- DIAGNOSTIK FINAL ---");
-        
-        // A. Cek apakah elemen input tanggal ditemukan di DOM
-        console.log("A. Elemen ditemukan?", !!dateInput); 
-        
-        // B. Cek nilai yang mau diset
-        console.log("B. Nilai Tanggal yang mau diset:", cleanTanggal); 
-        
-        // C. Paksa set value
-        if (dateInput) {
-            dateInput.value = cleanTanggal;
-            // D. Cek nilai setelah diset
-            console.log("D. Nilai Tanggal di elemen setelah diset:", dateInput.value); 
-        } else {
-             console.error("Gagal menemukan elemen 'edit-tanggal'!");
-        }
-    }, 1000); 
-}
+    // ***** PERBAIKAN ULTIMATE: DOUBLE-SET FIX *****
+    // Isi tanggal pertama kali saat fungsi berjalan.
+    if (dateInput) {
+        dateInput.value = cleanTanggal; 
+    }
 
-// =========================================================
+    // Isi tanggal kedua kali setelah jeda singkat (untuk mengalahkan reset)
+    setTimeout(() => {
+        if (dateInput) {
+            dateInput.value = cleanTanggal; 
+            console.log("Tanggal diisi kedua kali."); // Log untuk memastikan ini berjalan
+        }
+    }, 50); // Jeda sangat singkat 50ms
+}
 
 // =========================================================
         window.closeEditModal = function() {
@@ -2030,6 +2020,7 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
 
