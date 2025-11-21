@@ -25,17 +25,7 @@
             color: #fff;
             overflow-x: hidden;
         }
-        /* Kode untuk memastikan data transaksi mudah di-copy ke Excel */
-
-        #finance-table tbody {
-            /* Menargetkan seluruh area data transaksi untuk mengubah Font */
-            font-family: Calibri, sans-serif !important; 
-        }
         
-        #finance-table tbody td {
-            /* Menargetkan setiap sel data untuk mengubah Warna */
-            color: #000 !important; /* MEMAKSA WARNA TULISAN MENJADI HITAM */
-        }
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -610,6 +600,27 @@
             font-weight: bold;
             color: #006400; /* Warna hijau sedikit lebih gelap untuk label group */
         }
+        /* ========================================================= */
+/* PENTING: Gaya Khusus untuk Printing/Copying ke Excel/Word */
+/* ========================================================= */
+
+@media print {
+    /* 1. Paksa Teks Tabel menjadi Hitam */
+    #finance-table tbody td {
+        color: #000 !important;
+    }
+    
+    /* 2. Paksa Font Menjadi Calibri */
+    #finance-table tbody {
+        font-family: Calibri, sans-serif !important;
+    }
+    
+    /* 3. Paksa Background Baris Menjadi Putih atau Transparan agar data terlihat */
+    #finance-table tbody tr {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -1992,6 +2003,7 @@ window.downloadSummaryPDF = async function() {
 </script>
 </body>
 </html>
+
 
 
 
